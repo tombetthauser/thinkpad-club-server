@@ -1,6 +1,5 @@
 # Local Pi sync/backup artifacts
-local-pi-dup/
-~/local-pi-dup/
+pi-backups/
 
 # Machine-specific deploy notes (copy from docs/pi-deploy-reference.example.md)
 docs/pi-deploy-reference.md
@@ -17,6 +16,7 @@ docs/pi-deploy-reference.md
 logs/
 tmp/
 *.pid
+node_modules/
 
 # OS/editor noise
 .DS_Store
