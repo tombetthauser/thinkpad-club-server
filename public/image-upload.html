@@ -1,0 +1,164 @@
+<!doctype html>
+<html>
+  <body>
+    <h1>Upload an Image!</h1>
+
+    <div id="drop-zone" style="width: 350px; height: 175px; border: 1px dashed #555; padding: 20px; margin: 12px 0;">
+      drop or paste an image here ⤵
+    </div>
+
+    <p>
+      <input id="file-input" type="file" accept="image/*" />
+    </p>
+    <p>
+      Name your file: <input id="name-input" type="text" placeholder="my-picture" />
+    </p>
+    <p id="name-warning" style="color: red; display: none;">Please name your file.</p>
+
+    <p id="status"></p>
+    <div id="example-wrap" style="display: none;">
+      <pre id="example-code" style="background: #f4f4f4; padding: 10px; width: 500px; overflow-x: auto;"></pre>
+      <button id="copy-example-button" type="button" style="margin-bottom: 20px;">⬆️ Copy Image HTML</button>
+    </div>
+    <img id="preview" alt="Image preview" style="width: 250px; display: none; border: 1px solid #ccc; padding: 4px;" />
+    <div id="ready-wrap" style="display: none; margin-top: 10px;">
+      <p>Ready to upload!</p>
+      <button id="upload-button" type="button">Upload</button>
+    </div>
+
+    <script>
+      const dropZone = document.getElementById("drop-zone");
+      const fileInput = document.getElementById("file-input");
+      const nameInput = document.getElementById("name-input");
+      const uploadButton = document.getElementById("upload-button");
+      const statusText = document.getElementById("status");
+      const nameWarning = document.getElementById("name-warning");
+      const exampleWrap = document.getElementById("example-wrap");
+      const exampleCode = document.getElementById("example-code");
+      const copyExampleButton = document.getElementById("copy-example-button");
+      const preview = document.getElementById("preview");
+      const readyWrap = document.getElementById("ready-wrap");
+
+      let selectedFile = null;
+
+      function setFile(file) {
+        if (!file || !file.type.startsWith("image/")) return;
+        selectedFile = file;
+        const suggestedName = file.name.replace(/\.[^.]+$/, "");
+        nameInput.value = suggestedName;
+        statusText.style.marginTop = "0";
+        statusText.style.fontSize = "16px";
+        statusText.textContent = `Selected: ${file.name}`;
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = "block";
+        readyWrap.style.display = "block";
+      }
+
+      function onDragOver(event) {
+        event.preventDefault();
+      }
+
+      function onDrop(event) {
+        event.preventDefault();
+        const file = event.dataTransfer.files[0];
+        setFile(file);
+      }
+
+      function onPaste(event) {
+        const items = event.clipboardData && event.clipboardData.items;
+        if (!items) return;
+        for (const item of items) {
+          if (item.type.startsWith("image/")) {
+            const file = item.getAsFile();
+            if (file) {
+              setFile(file);
+              break;
+            }
+          }
+        }
+      }
+
+      function fileToDataUrl(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(new Error("Could not read file."));
+          reader.readAsDataURL(file);
+        });
+      }
+
+      async function uploadImage() {
+        if (!selectedFile) {
+          statusText.style.marginTop = "0";
+          statusText.style.fontSize = "16px";
+          statusText.textContent = "Please choose, drop, or paste an image first.";
+          return;
+        }
+        if (!nameInput.value.trim()) {
+          nameWarning.style.display = "block";
+          statusText.textContent = "";
+          return;
+        }
+
+        nameWarning.style.display = "none";
+
+        statusText.textContent = "Uploading...";
+        try {
+          const dataUrl = await fileToDataUrl(selectedFile);
+          const response = await fetch("/upload-image", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              fileName: nameInput.value,
+              dataUrl
+            })
+          });
+
+          const result = await response.json();
+          if (!response.ok) {
+            statusText.style.marginTop = "0";
+            statusText.style.fontSize = "16px";
+            statusText.textContent = result.error || "Upload failed.";
+            return;
+          }
+
+          const path = `./images/${result.fileName}`;
+          const imgTag = `<img src="${path}" alt="My image">`;
+          statusText.style.marginTop = "16px";
+          statusText.style.fontSize = "24px";
+          statusText.textContent = `Your image has been uploaded! 🎉`;
+          exampleCode.textContent = imgTag;
+          exampleWrap.style.display = "block";
+          preview.style.display = "none";
+          preview.src = "";
+          readyWrap.style.display = "none";
+          selectedFile = null;
+          fileInput.value = "";
+        } catch (error) {
+          statusText.style.marginTop = "0";
+          statusText.style.fontSize = "16px";
+          statusText.textContent = "Upload failed.";
+        }
+      }
+
+      dropZone.addEventListener("dragover", onDragOver);
+      dropZone.addEventListener("drop", onDrop);
+      fileInput.addEventListener("change", () => setFile(fileInput.files[0]));
+      nameInput.addEventListener("input", () => {
+        if (nameInput.value.trim()) nameWarning.style.display = "none";
+      });
+      uploadButton.addEventListener("click", uploadImage);
+      document.addEventListener("paste", onPaste);
+      copyExampleButton.addEventListener("click", async () => {
+        const text = exampleCode.textContent || "";
+        if (!text) return;
+        try {
+          await navigator.clipboard.writeText(text);
+          statusText.textContent = "Image HTML Copied! 🎉";
+        } catch (error) {
+          statusText.textContent = "Copy failed. Select the code block and copy manually.";
+        }
+      });
+    </script>
+  </body>
+</html>
