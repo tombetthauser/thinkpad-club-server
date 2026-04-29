@@ -1,0 +1,23 @@
+# Local Pi sync/backup artifacts
+local-pi-dup/
+~/local-pi-dup/
+
+# Machine-specific deploy notes (copy from docs/pi-deploy-reference.example.md)
+docs/pi-deploy-reference.md
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Logs and runtime files
+*.log
+logs/
+tmp/
+*.pid
+
+# OS/editor noise
+.DS_Store
+.vscode/
