@@ -53,25 +53,21 @@ git commit -m "Describe the change"
 git push origin main
 ```
 
-### 4) Pull on the Pi + restart the service
+### 4) Deploy on the Pi
 
-SSH to the Pi:
+Recommended: run the deploy helper (does `git pull`, restarts `thinkpad-server`, and retries `/health`):
+
+```bash
+ssh tom@192.168.1.222 '/usr/local/bin/deploy-thinkpad-server.sh'
+```
+
+If you want to do it manually instead (fallback):
 
 ```bash
 ssh tom@192.168.1.222
-```
-
-Find the directory the service runs from, then pull there:
-
-```bash
 systemctl cat thinkpad-server | grep -E "WorkingDirectory|ExecStart"
 cd <WORKING_DIRECTORY_FROM_THE_OUTPUT>
 git pull
-```
-
-Restart and verify:
-
-```bash
 sudo systemctl restart thinkpad-server
 systemctl status thinkpad-server --no-pager
 curl -i http://127.0.0.1:3000/health
