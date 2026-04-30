@@ -11,6 +11,9 @@ docs/pi-deploy-reference.md
 *.pem
 *.key
 
+# Per-user Scratch games (JSON “database”)
+data/games/*.json
+
 # Logs and runtime files
 *.log
 logs/

@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Escape the Ghast and Blaze</title>
+    <!--
+      Blocky “Minecraft style” scene: boxes and colors in HTML + CSS.
+      Try changing a background color in the &lt;style&gt; section.
+    -->
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: #87ceeb;
+        font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
+      }
+
+      .page-box {
+        max-width: 720px;
+        margin: 20px auto;
+        padding: 20px 24px 28px;
+        border: 3px dashed #6ec4e8;
+        border-radius: 16px;
+        background: #e8f4fc;
+        box-sizing: border-box;
+      }
+
+      h1 {
+        text-align: center;
+        color: #1a1a1a;
+        font-size: 1.65rem;
+        margin: 0 0 20px;
+        text-shadow: 1px 1px 0 #fff;
+      }
+
+      /*
+        The “level”: one wide box. Things inside use position: absolute
+        so we can place the player, ghast, and blaze like a side view.
+      */
+      .scene {
+        position: relative;
+        height: 300px;
+        margin: 0 auto;
+        max-width: 640px;
+        border: 2px solid #333;
+        border-radius: 8px;
+        background: linear-gradient(180deg, #b8e0ff 0%, #d4eeff 55%, #c9e8c0 55%, #a3d9a5 100%);
+        overflow: hidden;
+      }
+
+      .ground-line {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 52px;
+        height: 4px;
+        background: #5d4e37;
+        z-index: 1;
+      }
+
+      /* Nether portal — tilted frame with purple “sparkles” */
+      .portal {
+        position: absolute;
+        left: 8px;
+        bottom: 56px;
+        width: 44px;
+        height: 70px;
+        background: repeating-linear-gradient(
+          90deg,
+          #1a0528,
+          #1a0528 4px,
+          #3d1a5c 4px,
+          #3d1a5c 8px
+        );
+        border: 4px solid #111;
+        transform: rotate(-8deg);
+        z-index: 2;
+        box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+      }
+
+      .portal::before,
+      .portal::after {
+        content: "";
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #c9a0ff;
+        opacity: 0.9;
+      }
+
+      .portal::before {
+        left: 8px;
+        top: 12px;
+      }
+
+      .portal::after {
+        right: 6px;
+        bottom: 18px;
+        width: 6px;
+        height: 6px;
+        background: #e0d4ff;
+      }
+
+      /* Running player — blocky stick-figure blocks */
+      .player-wrap {
+        position: absolute;
+        left: 58px;
+        bottom: 56px;
+        z-index: 3;
+        display: flex;
+        align-items: flex-end;
+        gap: 4px;
+      }
+
+      .speed-lines {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        margin-bottom: 18px;
+      }
+
+      .speed-lines span {
+        display: block;
+        height: 3px;
+        background: #333;
+        border-radius: 1px;
+      }
+
+      .speed-lines span:nth-child(1) {
+        width: 14px;
+      }
+
+      .speed-lines span:nth-child(2) {
+        width: 18px;
+      }
+
+      .speed-lines span:nth-child(3) {
+        width: 12px;
+      }
+
+      .player {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .player .head {
+        width: 22px;
+        height: 22px;
+        background: #d4a574;
+        border: 2px solid #333;
+      }
+
+      .player .body {
+        width: 24px;
+        height: 28px;
+        background: #2e7d32;
+        border: 2px solid #333;
+        margin-top: -2px;
+      }
+
+      .player .legs {
+        display: flex;
+        gap: 4px;
+        margin-top: -2px;
+      }
+
+      .player .legs span {
+        width: 9px;
+        height: 14px;
+        background: #1e5a8c;
+        border: 2px solid #333;
+      }
+
+      /* Fireball flying toward the player */
+      .fireball {
+        position: absolute;
+        left: 42%;
+        bottom: 108px;
+        z-index: 4;
+        display: flex;
+        align-items: center;
+      }
+
+      .fireball .trail {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        margin-right: 2px;
+      }
+
+      .fireball .trail span {
+        display: block;
+        height: 2px;
+        background: #ff6b35;
+        border-radius: 1px;
+      }
+
+      .fireball .trail span:nth-child(1) {
+        width: 16px;
+      }
+
+      .fireball .trail span:nth-child(2) {
+        width: 22px;
+      }
+
+      .fireball .trail span:nth-child(3) {
+        width: 14px;
+      }
+
+      .fireball .ball {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, #ffeb3b, #ff5722);
+        border: 2px solid #bf360c;
+        box-shadow: 0 0 6px #ff9800;
+      }
+
+      /* Ghast — big floating cube with face + tentacles */
+      .ghast {
+        position: absolute;
+        left: 50%;
+        top: 28px;
+        transform: translateX(-50%);
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        animation: floaty 2.5s ease-in-out infinite;
+      }
+
+      @keyframes floaty {
+        0%,
+        100% {
+          transform: translateX(-50%) translateY(0);
+        }
+        50% {
+          transform: translateX(-50%) translateY(-8px);
+        }
+      }
+
+      .ghast-body {
+        width: 100px;
+        height: 90px;
+        background: #eceff1;
+        border: 3px solid #37474f;
+        box-shadow: inset -6px -6px 0 rgba(0, 0, 0, 0.06);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+
+      .ghast-eyes {
+        display: flex;
+        gap: 18px;
+      }
+
+      .ghast-eyes span {
+        width: 22px;
+        height: 22px;
+        background: #263238;
+        border: 2px solid #111;
+      }
+
+      .ghast-mouth {
+        width: 14px;
+        height: 10px;
+        background: #263238;
+        border: 2px solid #111;
+      }
+
+      .ghast-tentacles {
+        display: flex;
+        gap: 6px;
+        margin-top: -2px;
+      }
+
+      .ghast-tentacles span {
+        width: 10px;
+        height: 36px;
+        background: #cfd8dc;
+        border: 2px solid #37474f;
+        border-top: none;
+      }
+
+      /* Blaze — cluster of floating rods */
+      .blaze {
+        position: absolute;
+        right: 24px;
+        bottom: 58px;
+        z-index: 3;
+        width: 70px;
+        height: 70px;
+      }
+
+      .blaze span {
+        position: absolute;
+        width: 8px;
+        height: 28px;
+        background: #ffc107;
+        border: 1px solid #e65100;
+        border-radius: 2px;
+        box-shadow: 0 0 4px #ff9800;
+      }
+
+      .blaze span:nth-child(1) {
+        left: 10px;
+        top: 8px;
+        transform: rotate(-12deg);
+      }
+
+      .blaze span:nth-child(2) {
+        left: 26px;
+        top: 0;
+        transform: rotate(4deg);
+        height: 32px;
+      }
+
+      .blaze span:nth-child(3) {
+        left: 42px;
+        top: 12px;
+        transform: rotate(18deg);
+      }
+
+      .blaze span:nth-child(4) {
+        left: 18px;
+        top: 28px;
+        transform: rotate(-6deg);
+        height: 26px;
+      }
+
+      .blaze span:nth-child(5) {
+        left: 36px;
+        top: 32px;
+        transform: rotate(10deg);
+      }
+
+      .caption {
+        margin-top: 16px;
+        text-align: center;
+        color: #333;
+        font-size: 0.95rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-box">
+      <h1>Escape the Ghast and Blaze</h1>
+
+      <div class="scene" role="img" aria-label="Side view: player runs from a Ghast fireball near a portal; a Blaze floats on the right.">
+        <div class="ground-line"></div>
+
+        <div class="portal" aria-hidden="true"></div>
+
+        <div class="player-wrap">
+          <div class="speed-lines" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="player">
+            <div class="head"></div>
+            <div class="body"></div>
+            <div class="legs"><span></span><span></span></div>
+          </div>
+        </div>
+
+        <div class="fireball" aria-hidden="true">
+          <div class="trail">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="ball"></div>
+        </div>
+
+        <div class="ghast">
+          <div class="ghast-body">
+            <div class="ghast-eyes"><span></span><span></span></div>
+            <div class="ghast-mouth"></div>
+          </div>
+          <div class="ghast-tentacles">
+            <span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+
+        <div class="blaze" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+
+      <p class="caption">Run right — dodge the fireball — don’t stop!</p>
+    </div>
+  </body>
+</html>

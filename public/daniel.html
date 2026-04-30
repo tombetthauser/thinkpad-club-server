@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Circle Moving — Daniel</title>
+    <!--
+      HTML = the words and boxes. CSS = colors, sizes, and the moving circle (animation).
+      Try changing the animation time (2.5s) or colors, then refresh the page.
+    -->
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: white;
+        font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
+      }
+
+      /*
+        The whole page content sits inside .page-box — light blue dashed border
+        with rounded corners, like the drawing.
+      */
+      .page-box {
+        max-width: 640px;
+        margin: 24px auto;
+        padding: 24px 28px 32px;
+        border: 3px dashed #6ec4e8;
+        border-radius: 16px;
+        background: white;
+        box-sizing: border-box;
+      }
+
+      /* Top title — pencil / dark gray */
+      .site-title {
+        color: #2c2c2c;
+        font-size: 1.85rem;
+        margin: 0 0 8px;
+        font-weight: bold;
+      }
+
+      /* Game name — brown marker */
+      .game-title {
+        color: #6b4423;
+        font-size: 1.35rem;
+        margin: 0 0 28px;
+        font-weight: bold;
+      }
+
+      /*
+        The game row: left bar | track (yellow + circle + purple) | right bar
+      */
+      .game-row {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        min-height: 140px;
+      }
+
+      /* Thick gray sides, like paddles or walls */
+      .side-bar {
+        width: 22px;
+        min-height: 120px;
+        background: #3d3d3d;
+        border-radius: 6px;
+        flex-shrink: 0;
+      }
+
+      /*
+        .track holds the yellow band, purple band, and the black circle.
+        The circle is position: absolute so it can slide on top of the bands.
+      */
+      .track {
+        flex: 1;
+        position: relative;
+        height: 100px;
+        margin: 0 6px;
+      }
+
+      /* Curved brown “motion” lines above the path (simple arcs) */
+      .motion-lines {
+        position: absolute;
+        left: 8%;
+        right: 8%;
+        height: 14px;
+        pointer-events: none;
+      }
+
+      .motion-lines.top {
+        top: 0;
+      }
+
+      .motion-lines.bottom {
+        bottom: 0;
+      }
+
+      .motion-lines span {
+        display: block;
+        height: 6px;
+        border: 2px solid #6b4423;
+        border-bottom: none;
+        border-radius: 50% 50% 0 0;
+        margin-bottom: 2px;
+        opacity: 0.85;
+      }
+
+      .motion-lines.bottom span {
+        border-top: none;
+        border-bottom: 2px solid #6b4423;
+        border-radius: 0 0 50% 50%;
+        margin-bottom: 0;
+        margin-top: 2px;
+      }
+
+      /* Yellow and purple horizontal bands */
+      .band-yellow {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: calc(50% - 22px);
+        height: 28px;
+        background: #f1c40f;
+        border-radius: 4px;
+      }
+
+      .band-purple {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: calc(50% - 22px);
+        height: 28px;
+        background: #7d3c98;
+        border-radius: 4px;
+      }
+
+      /* Black circle — the “player” — slides left and right */
+      .player-circle {
+        position: absolute;
+        top: 50%;
+        width: 40px;
+        height: 40px;
+        background: #111;
+        border-radius: 50%;
+        animation: slide-circle 2.5s ease-in-out infinite alternate;
+      }
+
+      /*
+        @keyframes = tell the browser how to move from “from” to “to”
+        translate(-50%, -50%) keeps the circle centered on its path as left changes.
+      */
+      @keyframes slide-circle {
+        from {
+          left: 18%;
+          transform: translate(-50%, -50%);
+        }
+        to {
+          left: 82%;
+          transform: translate(-50%, -50%);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-box">
+      <p><a href="/daniel/games">Scratch games</a></p>
+      <h1 class="site-title">Me own website</h1>
+      <h2 class="game-title">Circle Moving (game)</h2>
+
+      <div class="game-row">
+        <div class="side-bar" aria-hidden="true"></div>
+
+        <div class="track">
+          <div class="motion-lines top" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <div class="band-yellow"></div>
+          <div class="band-purple"></div>
+          <div class="player-circle" title="moving circle"></div>
+
+          <div class="motion-lines bottom" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+
+        <div class="side-bar" aria-hidden="true"></div>
+      </div>
+    </div>
+  </body>
+</html>
