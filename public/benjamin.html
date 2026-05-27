@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>You vs Boss — Benjamin</title>
+    <!--
+      HTML = the words and boxes on the page.
+      CSS  = colors, sizes, and where things sit.
+      JavaScript = what happens when you click (the game rules).
+
+      Try changing a color, save the file, and refresh the browser!
+    -->
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: white;
+        font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
+      }
+
+      /* The dashed blue frame, like the drawing on paper */
+      .page-box {
+        max-width: 700px;
+        margin: 24px auto;
+        padding: 20px 24px 28px;
+        border: 3px dashed #6ec4e8;
+        border-radius: 16px;
+        background: white;
+        box-sizing: border-box;
+      }
+
+      h1 {
+        text-align: center;
+        color: #2c2c2c;
+        margin: 0 0 8px;
+        font-size: 1.6rem;
+      }
+
+      .hint {
+        text-align: center;
+        color: #555;
+        margin: 0 0 16px;
+        font-size: 1.05rem;
+      }
+
+      /* The whole game fits in this box */
+      .game {
+        position: relative;
+        height: 320px;
+        border: 2px solid #333;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #fafafa;
+      }
+
+      /* Green grass at the bottom */
+      .ground {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 55px;
+        background: #7cb342;
+        z-index: 1;
+      }
+
+      /* Left half = You, right half = Boss */
+      .side {
+        position: absolute;
+        top: 0;
+        bottom: 55px;
+        width: 50%;
+        z-index: 2;
+      }
+
+      .side-you {
+        left: 0;
+      }
+
+      .side-boss {
+        right: 0;
+      }
+
+      /* Yellow labels from the drawing */
+      .label {
+        position: absolute;
+        top: 12px;
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #f1c40f;
+        text-shadow: 1px 1px 0 #333;
+      }
+
+      .label-you {
+        left: 20px;
+      }
+
+      .label-boss {
+        right: 24px;
+      }
+
+      /* Health bar = gray box with pink inside */
+      .health-bar {
+        position: absolute;
+        top: 48px;
+        height: 18px;
+        border: 2px solid #333;
+        background: #eee;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .health-bar-you {
+        left: 20px;
+        width: 200px;
+      }
+
+      .health-bar-boss {
+        right: 20px;
+        width: 120px;
+      }
+
+      .health-pink {
+        height: 100%;
+        width: 100%;
+        background: #ff69b4;
+      }
+
+      /* Brown circle around You */
+      .you-ring {
+        position: absolute;
+        left: 50%;
+        bottom: 70px;
+        transform: translateX(-50%);
+        width: 110px;
+        height: 110px;
+        border: 5px solid #6b4423;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Little brown rectangle = You */
+      .you-body {
+        width: 36px;
+        height: 48px;
+        background: #6b4423;
+        border-radius: 4px;
+        position: relative;
+      }
+
+      .you-face {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 1.1rem;
+      }
+
+      .you-arm {
+        position: absolute;
+        top: 22px;
+        width: 14px;
+        height: 4px;
+        background: #3498db;
+        border-radius: 2px;
+      }
+
+      .you-arm-left {
+        left: -10px;
+      }
+
+      .you-arm-right {
+        right: -10px;
+      }
+
+      /* Big brown Boss — moves down when you click */
+      .boss-body {
+        position: absolute;
+        right: 50px;
+        bottom: 70px;
+        width: 70px;
+        height: 140px;
+        background: #6b4423;
+        border: 4px solid #6ec4e8;
+        border-radius: 6px;
+        transition: transform 0.2s ease;
+      }
+
+      .boss-eye {
+        position: absolute;
+        top: 18px;
+        width: 22px;
+        height: 22px;
+        background: #f1c40f;
+        border: 2px solid #333;
+      }
+
+      .boss-eye-left {
+        left: 8px;
+      }
+
+      .boss-eye-right {
+        right: 8px;
+      }
+
+      .boss-eye::after {
+        content: "";
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: #e67e22;
+        border-radius: 50%;
+        top: 5px;
+        left: 5px;
+      }
+
+      .boss-arm {
+        position: absolute;
+        top: 40px;
+        width: 8px;
+        height: 50px;
+        background: #3498db;
+        border-radius: 4px;
+      }
+
+      .boss-arm-left {
+        left: -12px;
+        transform: rotate(-25deg);
+      }
+
+      .boss-arm-right {
+        right: -12px;
+        transform: rotate(25deg);
+      }
+
+      /* Brown line down the middle */
+      .middle-line {
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 55px;
+        width: 6px;
+        background: #6b4423;
+        transform: translateX(-50%);
+        z-index: 3;
+      }
+
+      /* Pink circle — click this! */
+      .pink-circle {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 56px;
+        height: 56px;
+        background: #ff69b4;
+        border: 3px solid #333;
+        border-radius: 50%;
+        z-index: 4;
+        cursor: pointer;
+      }
+
+      .pink-circle:hover {
+        background: #ff85c1;
+      }
+
+      .pink-circle.done {
+        cursor: default;
+        opacity: 0.5;
+      }
+
+      /* Win message */
+      #message {
+        text-align: center;
+        margin-top: 16px;
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #6b4423;
+        min-height: 1.5em;
+      }
+
+      .home-link {
+        text-align: center;
+        margin-top: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-box">
+      <h1>You vs Boss</h1>
+      <p class="hint">Click the pink circle in the middle!</p>
+
+      <div class="game">
+        <div class="side side-you">
+          <div class="label label-you">You</div>
+          <div class="health-bar health-bar-you">
+            <div class="health-pink" id="you-health"></div>
+          </div>
+          <div class="you-ring">
+            <div class="you-body">
+              <span class="you-face">:)</span>
+              <span class="you-arm you-arm-left"></span>
+              <span class="you-arm you-arm-right"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="side side-boss">
+          <div class="label label-boss">Boss</div>
+          <div class="health-bar health-bar-boss">
+            <div class="health-pink" id="boss-health"></div>
+          </div>
+          <div class="boss-body" id="boss">
+            <div class="boss-eye boss-eye-left"></div>
+            <div class="boss-eye boss-eye-right"></div>
+            <div class="boss-arm boss-arm-left"></div>
+            <div class="boss-arm boss-arm-right"></div>
+          </div>
+        </div>
+
+        <div class="middle-line"></div>
+        <button type="button" class="pink-circle" id="pink-circle" aria-label="Hit the boss">
+        </button>
+        <div class="ground"></div>
+      </div>
+
+      <p id="message"></p>
+
+      <p class="home-link"><a href="/">← Home</a></p>
+    </div>
+
+    <script>
+      /*
+        Game rules (from Benjamin):
+        - Click the pink circle in the middle.
+        - The boss moves down 1 cm.
+        - The pink in the boss health bar gets smaller.
+        - When there is no pink left, the boss is out — you win!
+      */
+
+      var clicks = 0;
+      var pinkCircle = document.getElementById("pink-circle");
+      var boss = document.getElementById("boss");
+      var bossHealth = document.getElementById("boss-health");
+      var message = document.getElementById("message");
+
+      // How much pink to remove each click (percent)
+      var damagePerClick = 10;
+
+      function clickPink() {
+        clicks = clicks + 1;
+
+        // Boss rolls down 1 cm (each click)
+        boss.style.transform = "translateY(" + clicks + "cm)";
+
+        // Less pink in the boss health bar
+        var newWidth = 100 - clicks * damagePerClick;
+        if (newWidth < 0) {
+          newWidth = 0;
+        }
+        bossHealth.style.width = newWidth + "%";
+
+        // No pink left? Boss is out!
+        if (newWidth === 0) {
+          message.textContent = "You win! The boss is out!";
+          pinkCircle.classList.add("done");
+          pinkCircle.disabled = true;
+        }
+      }
+
+      pinkCircle.addEventListener("click", clickPink);
+    </script>
+  </body>
+</html>

@@ -1,7 +1,419 @@
-<html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>ThinkPad Club Server!</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: #fff8e7;
+        font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      h1 {
+        color: #1a1a1a;
+        margin-top: 0;
+      }
+
+      a {
+        color: #c41e3a;
+      }
+
+      /* --- Crazy head-dunk scene --- */
+      .dunk-zone {
+        max-width: 520px;
+        margin: 24px 0 32px;
+        padding: 16px 20px 20px;
+        border: 3px dashed #ff6b35;
+        border-radius: 16px;
+        background: linear-gradient(180deg, #87ceeb 0%, #87ceeb 62%, #d4a574 62%, #c9956a 100%);
+        overflow: hidden;
+      }
+
+      .dunk-zone h2 {
+        margin: 0 0 12px;
+        font-size: 1.15rem;
+        text-align: center;
+        color: #1a1a1a;
+        text-shadow: 1px 1px 0 #fff;
+      }
+
+      .court {
+        position: relative;
+        height: 200px;
+        border: 2px solid #333;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .court-line {
+        position: absolute;
+        left: 50%;
+        bottom: 38%;
+        width: 80px;
+        height: 80px;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        transform: translateX(-50%);
+        pointer-events: none;
+      }
+
+      /* Hoop — he's dunking head-first through it */
+      .hoop-wrap {
+        position: absolute;
+        right: 28px;
+        top: 18px;
+        z-index: 5;
+      }
+
+      .backboard {
+        width: 72px;
+        height: 48px;
+        background: #eee;
+        border: 3px solid #c41e3a;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .backboard-inner {
+        width: 28px;
+        height: 22px;
+        border: 2px solid #c41e3a;
+      }
+
+      .rim {
+        width: 48px;
+        height: 8px;
+        margin: -2px auto 0;
+        background: #ff4500;
+        border: 2px solid #8b2500;
+        border-radius: 0 0 4px 4px;
+      }
+
+      .net {
+        width: 40px;
+        height: 28px;
+        margin: 0 auto;
+        border-left: 2px solid #c41e3a;
+        border-right: 2px solid #c41e3a;
+        border-bottom: 2px solid #c41e3a;
+        background: repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 5px,
+            #c41e3a 5px,
+            #c41e3a 6px
+          ),
+          repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 5px,
+            #c41e3a 5px,
+            #c41e3a 6px
+          );
+        opacity: 0.85;
+      }
+
+      /* The crazy upside-down dunker */
+      .crazy-dunker {
+        position: absolute;
+        left: 12%;
+        bottom: 38%;
+        width: 56px;
+        height: 100px;
+        z-index: 10;
+        animation: head-dunk 2.4s ease-in-out infinite;
+        transform-origin: center center;
+      }
+
+      @keyframes head-dunk {
+        0%,
+        100% {
+          left: 8%;
+          bottom: 38%;
+          transform: rotate(168deg) scale(1);
+        }
+        35% {
+          left: 38%;
+          bottom: 55%;
+          transform: rotate(192deg) scale(1.08);
+        }
+        55% {
+          left: 58%;
+          bottom: 72%;
+          transform: rotate(178deg) scale(1.12);
+        }
+        70% {
+          left: 68%;
+          bottom: 78%;
+          transform: rotate(185deg) scale(0.95);
+        }
+        85% {
+          left: 62%;
+          bottom: 68%;
+          transform: rotate(180deg) scale(1);
+        }
+      }
+
+      .crazy-head {
+        width: 34px;
+        height: 34px;
+        border: 3px solid #111;
+        border-radius: 50%;
+        background: #ffdbac;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+      }
+
+      .crazy-eyes {
+        position: absolute;
+        left: 50%;
+        top: 38%;
+        transform: translate(-50%, -50%);
+        font-size: 0.55rem;
+        font-weight: bold;
+        letter-spacing: 2px;
+        white-space: nowrap;
+        animation: eye-wiggle 0.15s steps(2) infinite;
+      }
+
+      @keyframes eye-wiggle {
+        50% {
+          transform: translate(-50%, -50%) scaleX(-1);
+        }
+      }
+
+      .crazy-mouth {
+        position: absolute;
+        left: 50%;
+        bottom: 18%;
+        transform: translateX(-50%);
+        font-size: 1rem;
+        line-height: 1;
+      }
+
+      .crazy-hair {
+        position: absolute;
+        left: 50%;
+        top: -14px;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+      }
+
+      .crazy-hair span {
+        position: absolute;
+        width: 4px;
+        height: 18px;
+        background: #4a148c;
+        border-radius: 2px;
+        bottom: 0;
+        left: 50%;
+        transform-origin: bottom center;
+      }
+
+      .crazy-hair span:nth-child(1) {
+        transform: translateX(-14px) rotate(-35deg);
+      }
+      .crazy-hair span:nth-child(2) {
+        transform: translateX(-7px) rotate(-12deg);
+      }
+      .crazy-hair span:nth-child(3) {
+        transform: translateX(0) rotate(0deg);
+      }
+      .crazy-hair span:nth-child(4) {
+        transform: translateX(7px) rotate(12deg);
+      }
+      .crazy-hair span:nth-child(5) {
+        transform: translateX(14px) rotate(35deg);
+      }
+
+      .crazy-torso {
+        width: 5px;
+        height: 32px;
+        background: #ff6b35;
+        margin: 2px auto 0;
+      }
+
+      .crazy-arms {
+        display: flex;
+        justify-content: center;
+        gap: 36px;
+        margin-top: -28px;
+      }
+
+      .crazy-arm {
+        width: 28px;
+        height: 4px;
+        background: #ff6b35;
+        border-radius: 2px;
+      }
+
+      .crazy-arm.left {
+        transform: rotate(-55deg);
+        transform-origin: right center;
+        animation: arm-flail-left 0.35s ease-in-out infinite alternate;
+      }
+
+      .crazy-arm.right {
+        transform: rotate(55deg);
+        transform-origin: left center;
+        animation: arm-flail-right 0.35s ease-in-out infinite alternate;
+        animation-delay: 0.12s;
+      }
+
+      @keyframes arm-flail-left {
+        to {
+          transform: rotate(-25deg);
+        }
+      }
+
+      @keyframes arm-flail-right {
+        to {
+          transform: rotate(25deg);
+        }
+      }
+
+      .crazy-legs {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 2px;
+      }
+
+      .crazy-leg {
+        width: 4px;
+        height: 26px;
+        background: #1565c0;
+        border-radius: 2px;
+        animation: leg-kick 0.5s ease-in-out infinite alternate;
+      }
+
+      .crazy-leg:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      @keyframes leg-kick {
+        to {
+          transform: rotate(18deg);
+        }
+      }
+
+      .dunk-ball {
+        position: absolute;
+        left: 50%;
+        top: -8px;
+        width: 22px;
+        height: 22px;
+        margin-left: -11px;
+        border-radius: 50%;
+        border: 2px solid #8b4513;
+        background: #ff8c00;
+        z-index: 1;
+        animation: ball-spin 0.6s linear infinite;
+      }
+
+      .dunk-ball::before,
+      .dunk-ball::after {
+        content: "";
+        position: absolute;
+        background: #8b4513;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .dunk-ball::before {
+        width: 2px;
+        height: 16px;
+      }
+
+      .dunk-ball::after {
+        width: 16px;
+        height: 2px;
+      }
+
+      @keyframes ball-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .swoosh {
+        position: absolute;
+        right: 52px;
+        top: 72px;
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #ff0;
+        text-shadow: 2px 2px 0 #c41e3a;
+        opacity: 0;
+        z-index: 20;
+        animation: swoosh-pop 2.4s ease-in-out infinite;
+      }
+
+      @keyframes swoosh-pop {
+        68%,
+        78% {
+          opacity: 1;
+          transform: scale(1.3) rotate(-8deg);
+        }
+        88% {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+      }
+
+      .caption {
+        text-align: center;
+        margin: 10px 0 0;
+        font-size: 0.9rem;
+        color: #333;
+      }
+    </style>
+  </head>
   <body>
     <h1>ThinkPad Club Server!</h1>
     <p>Welcome to our new server!</p>
+
+    <section class="dunk-zone" aria-label="Crazy guy head dunking on basketball">
+      <h2>🤪 LIVE: head-first slam dunk!!!</h2>
+      <div class="court">
+        <div class="court-line" aria-hidden="true"></div>
+        <div class="hoop-wrap">
+          <div class="backboard"><div class="backboard-inner"></div></div>
+          <div class="rim"></div>
+          <div class="net" aria-hidden="true"></div>
+        </div>
+        <div class="crazy-dunker" aria-hidden="true">
+          <div class="dunk-ball"></div>
+          <div class="crazy-legs">
+            <div class="crazy-leg"></div>
+            <div class="crazy-leg"></div>
+          </div>
+          <div class="crazy-arms">
+            <div class="crazy-arm left"></div>
+            <div class="crazy-arm right"></div>
+          </div>
+          <div class="crazy-torso"></div>
+          <div class="crazy-head">
+            <div class="crazy-hair">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <span class="crazy-eyes">◎ ◎</span>
+            <span class="crazy-mouth">O</span>
+          </div>
+        </div>
+        <span class="swoosh">SWOOSH!</span>
+      </div>
+      <p class="caption">He's upside down. His HEAD does the dunk. Totally normal.</p>
+    </section>
 
     <p>
       <a href="https://scratch.mit.edu/">Scratch</a>

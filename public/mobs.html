@@ -5,7 +5,7 @@
     <title>Escape the Ghast and Blaze</title>
     <!--
       Blocky “Minecraft style” scene: boxes and colors in HTML + CSS.
-      Try changing a background color in the &lt;style&gt; section.
+      Fireball: scripted arc + ground jiggle; optional custom ball image.
     -->
     <style>
       body {
@@ -33,10 +33,6 @@
         text-shadow: 1px 1px 0 #fff;
       }
 
-      /*
-        The “level”: one wide box. Things inside use position: absolute
-        so we can place the player, ghast, and blaze like a side view.
-      */
       .scene {
         position: relative;
         height: 300px;
@@ -58,7 +54,6 @@
         z-index: 1;
       }
 
-      /* Nether portal — tilted frame with purple “sparkles” */
       .portal {
         position: absolute;
         left: 8px;
@@ -102,7 +97,6 @@
         background: #e0d4ff;
       }
 
-      /* Running player — blocky stick-figure blocks */
       .player-wrap {
         position: absolute;
         left: 58px;
@@ -118,6 +112,18 @@
         flex-direction: column;
         gap: 3px;
         margin-bottom: 18px;
+        animation: speedPulse 0.35s ease-in-out infinite alternate;
+      }
+
+      @keyframes speedPulse {
+        from {
+          opacity: 0.65;
+          transform: translateX(0);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(-3px);
+        }
       }
 
       .speed-lines span {
@@ -173,52 +179,106 @@
         border: 2px solid #333;
       }
 
-      /* Fireball flying toward the player */
+      /* Fireball — position base + JS translate; inner ball squashes on impact */
       .fireball {
         position: absolute;
-        left: 42%;
-        bottom: 108px;
+        left: 52%;
+        bottom: 198px;
         z-index: 4;
         display: flex;
         align-items: center;
+        will-change: transform;
+        filter: drop-shadow(2px 4px 6px rgba(255, 80, 0, 0.45));
       }
 
       .fireball .trail {
         display: flex;
         flex-direction: column;
         gap: 2px;
-        margin-right: 2px;
+        margin-right: 4px;
+        animation: trailWhip 0.22s ease-in-out infinite alternate;
+      }
+
+      @keyframes trailWhip {
+        from {
+          opacity: 0.85;
+          transform: skewY(-4deg) scaleX(1);
+        }
+        to {
+          opacity: 1;
+          transform: skewY(6deg) scaleX(1.15);
+        }
       }
 
       .fireball .trail span {
         display: block;
-        height: 2px;
-        background: #ff6b35;
-        border-radius: 1px;
+        height: 3px;
+        background: linear-gradient(90deg, #ffecb3, #ff6b35);
+        border-radius: 2px;
+        box-shadow: 0 0 4px #ff9800;
       }
 
       .fireball .trail span:nth-child(1) {
-        width: 16px;
+        width: 18px;
       }
 
       .fireball .trail span:nth-child(2) {
-        width: 22px;
+        width: 26px;
       }
 
       .fireball .trail span:nth-child(3) {
-        width: 14px;
-      }
-
-      .fireball .ball {
         width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        background: radial-gradient(circle at 30% 30%, #ffeb3b, #ff5722);
-        border: 2px solid #bf360c;
-        box-shadow: 0 0 6px #ff9800;
       }
 
-      /* Ghast — big floating cube with face + tentacles */
+      .fireball .ball-outer {
+        --ball-size: 22px;
+        width: var(--ball-size);
+        height: var(--ball-size);
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transform-origin: 50% 100%;
+        will-change: transform;
+      }
+
+      .fireball .ball-inner {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transform-origin: 50% 100%;
+        will-change: transform;
+      }
+
+      .fireball .ball-inner img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .fireball .ball-default {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: #ffffff;
+        border: none;
+        box-shadow: none;
+      }
+
+      .fireball .ball-default.is-hidden {
+        display: none;
+      }
+
+      .fireball .ball-inner img.is-hidden {
+        display: none;
+      }
+
+
       .ghast {
         position: absolute;
         left: 50%;
@@ -228,16 +288,19 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        animation: floaty 2.5s ease-in-out infinite;
+        animation: floaty 2.2s ease-in-out infinite;
       }
 
       @keyframes floaty {
         0%,
         100% {
-          transform: translateX(-50%) translateY(0);
+          transform: translateX(-50%) translateY(0) rotate(-1deg);
         }
-        50% {
-          transform: translateX(-50%) translateY(-8px);
+        35% {
+          transform: translateX(-50%) translateY(-14px) rotate(2deg);
+        }
+        65% {
+          transform: translateX(-50%) translateY(-6px) rotate(-2deg);
         }
       }
 
@@ -287,7 +350,6 @@
         border-top: none;
       }
 
-      /* Blaze — cluster of floating rods */
       .blaze {
         position: absolute;
         right: 24px;
@@ -295,6 +357,17 @@
         z-index: 3;
         width: 70px;
         height: 70px;
+        animation: blazeShiver 1.8s ease-in-out infinite;
+      }
+
+      @keyframes blazeShiver {
+        0%,
+        100% {
+          transform: translate(0, 0);
+        }
+        50% {
+          transform: translate(-2px, -3px);
+        }
       }
 
       .blaze span {
@@ -339,6 +412,74 @@
         transform: rotate(10deg);
       }
 
+      .ball-controls {
+        margin-top: 14px;
+        padding: 14px 16px;
+        border: 2px solid #90caf9;
+        border-radius: 12px;
+        background: #f5fbff;
+        font-size: 0.88rem;
+      }
+
+      .ball-controls h2 {
+        margin: 0 0 10px;
+        font-size: 1rem;
+        color: #1565c0;
+      }
+
+      .ball-controls-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px 16px;
+      }
+
+      @media (max-width: 560px) {
+        .ball-controls-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .ball-controls label {
+        display: block;
+        margin-bottom: 4px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .ball-controls input[type="range"] {
+        width: 100%;
+      }
+
+      .ball-controls .row-checks {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .ball-controls .row-checks label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: normal;
+        margin: 0;
+      }
+
+      .trim-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .trim-grid label span {
+        font-weight: normal;
+        opacity: 0.85;
+      }
+
+      .trim-grid input[type="range"] {
+        margin-top: 2px;
+      }
+
       .caption {
         margin-top: 16px;
         text-align: center;
@@ -367,11 +508,16 @@
           </div>
         </div>
 
-        <div class="fireball" aria-hidden="true">
+        <div class="fireball" id="fireball" aria-hidden="true">
           <div class="trail">
             <span></span><span></span><span></span>
           </div>
-          <div class="ball"></div>
+          <div class="ball-outer" id="ballOuter">
+            <div class="ball-inner" id="ballInner">
+              <img id="ballImg" class="is-hidden" alt="" />
+              <div class="ball-default" id="ballDefault"></div>
+            </div>
+          </div>
         </div>
 
         <div class="ghast">
@@ -389,7 +535,208 @@
         </div>
       </div>
 
+      <div class="ball-controls">
+        <h2>Fireball image</h2>
+        <div class="ball-controls-grid">
+          <div>
+            <label for="ballUpload">Upload image</label>
+            <input id="ballUpload" type="file" accept="image/*" />
+          </div>
+          <div>
+            <label for="ballSize">Ball size <span id="ballSizeLabel">22</span> px</label>
+            <input id="ballSize" type="range" min="14" max="56" value="22" />
+          </div>
+          <div class="row-checks" style="grid-column: 1 / -1">
+            <label><input id="flipH" type="checkbox" /> Flip horizontal</label>
+            <label><input id="flipV" type="checkbox" /> Flip vertical</label>
+          </div>
+          <div style="grid-column: 1 / -1">
+            <label>Trim edges (%)</label>
+            <div class="trim-grid">
+              <div>
+                <label for="trimTop"><span>Top</span></label>
+                <input id="trimTop" type="range" min="0" max="45" value="0" />
+              </div>
+              <div>
+                <label for="trimRight"><span>Right</span></label>
+                <input id="trimRight" type="range" min="0" max="45" value="0" />
+              </div>
+              <div>
+                <label for="trimBottom"><span>Bottom</span></label>
+                <input id="trimBottom" type="range" min="0" max="45" value="0" />
+              </div>
+              <div>
+                <label for="trimLeft"><span>Left</span></label>
+                <input id="trimLeft" type="range" min="0" max="45" value="0" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <p class="caption">Run right — dodge the fireball — don’t stop!</p>
     </div>
+
+    <script>
+      (function () {
+        const fireball = document.getElementById("fireball");
+        const ballOuter = document.getElementById("ballOuter");
+        const ballInner = document.getElementById("ballInner");
+        const ballImg = document.getElementById("ballImg");
+        const ballDefault = document.getElementById("ballDefault");
+        const ballUpload = document.getElementById("ballUpload");
+        const ballSize = document.getElementById("ballSize");
+        const ballSizeLabel = document.getElementById("ballSizeLabel");
+        const flipH = document.getElementById("flipH");
+        const flipV = document.getElementById("flipV");
+        const trimTop = document.getElementById("trimTop");
+        const trimRight = document.getElementById("trimRight");
+        const trimBottom = document.getElementById("trimBottom");
+        const trimLeft = document.getElementById("trimLeft");
+
+        let hasCustomImage = false;
+        function easeInCubic(t) {
+          return t * t * t;
+        }
+
+        function easeOutCubic(t) {
+          return 1 - Math.pow(1 - t, 3);
+        }
+
+        function applyBallStyles() {
+          const px = ballSize.value;
+          ballOuter.style.setProperty("--ball-size", px + "px");
+          ballSizeLabel.textContent = px;
+
+          const sx = flipH.checked ? -1 : 1;
+          const sy = flipV.checked ? -1 : 1;
+
+          const top = trimTop.value + "%";
+          const right = trimRight.value + "%";
+          const bottom = trimBottom.value + "%";
+          const left = trimLeft.value + "%";
+
+          if (hasCustomImage) {
+            ballImg.classList.remove("is-hidden");
+            ballDefault.classList.add("is-hidden");
+            ballImg.style.clipPath = `inset(${top} ${right} ${bottom} ${left})`;
+            ballImg.style.transform = `scale(${sx}, ${sy})`;
+          } else {
+            ballImg.classList.add("is-hidden");
+            ballDefault.classList.remove("is-hidden");
+            ballImg.style.clipPath = "";
+            ballImg.style.transform = "";
+          }
+        }
+
+        ballUpload.addEventListener("change", function () {
+          const file = ballUpload.files && ballUpload.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = function () {
+            ballImg.src = reader.result;
+            hasCustomImage = true;
+            applyBallStyles();
+          };
+          reader.readAsDataURL(file);
+        });
+
+        [
+          ballSize,
+          flipH,
+          flipV,
+          trimTop,
+          trimRight,
+          trimBottom,
+          trimLeft,
+        ].forEach(function (el) {
+          el.addEventListener("input", applyBallStyles);
+        });
+
+        applyBallStyles();
+
+        /* --- Flight path: dramatic swoop + natural damped jiggle on ground --- */
+        const CYCLE_MS = 4200;
+        let start = performance.now();
+
+        function flySample(k) {
+          const tx =
+            52 -
+            easeInCubic(k) * 228 +
+            Math.sin(k * Math.PI * 1.15) * 34 * (1 - Math.pow(k - 0.55, 2));
+          const arcLift = (1 - Math.cos(Math.PI * k)) / 2;
+          const ty = -42 + arcLift * 142 + Math.sin(k * Math.PI * 2.4) * 16 * (1 - k);
+          const rotDeg = Math.sin(k * Math.PI * 2.8) * 22 * (1 - k * 0.35);
+          return { tx, ty, rotDeg };
+        }
+
+        function sampleMotion(u) {
+          /* u in [0,1) — translate is added to fireball base position */
+          const flyEnd = 0.5;
+          const tuckEnd = 0.64;
+          const jiggleEnd = 0.88;
+
+          let tx = 0;
+          let ty = 0;
+          let scaleX = 1;
+          let scaleY = 1;
+          let rotDeg = 0;
+
+          const fly1 = flySample(1);
+
+          if (u < flyEnd) {
+            const k = u / flyEnd;
+            const f = flySample(k);
+            tx = f.tx;
+            ty = f.ty;
+            rotDeg = f.rotDeg;
+          } else if (u < tuckEnd) {
+            const k = (u - flyEnd) / (tuckEnd - flyEnd);
+            tx = fly1.tx + easeOutCubic(k) * -42;
+            ty = fly1.ty + easeInCubic(k) * 44;
+            rotDeg = fly1.rotDeg * (1 - k);
+          } else if (u < jiggleEnd) {
+            const k = (u - tuckEnd) / (jiggleEnd - tuckEnd);
+            tx = fly1.tx - 42;
+            ty = fly1.ty + 44;
+            const damp = Math.exp(-11 * k);
+            const wobble = Math.sin(k * Math.PI * 10);
+            rotDeg = wobble * 18 * damp + Math.sin(k * Math.PI * 19) * 8 * damp;
+            scaleX = 1 + Math.abs(wobble) * 0.2 * damp;
+            scaleY = 1 - Math.abs(wobble) * 0.28 * damp;
+            ty -= Math.abs(Math.sin(k * Math.PI * 13)) * 11 * damp;
+            ty += Math.sin(k * Math.PI * 23) * 4 * damp;
+          } else {
+            const k = (u - jiggleEnd) / (1 - jiggleEnd);
+            tx = fly1.tx - 42;
+            ty = fly1.ty + 44 + Math.sin(k * Math.PI * 2 * 2.8) * 3;
+            scaleX = 1;
+            scaleY = 1;
+            rotDeg = Math.sin(k * Math.PI * 2 * 3.5) * 2.8;
+          }
+
+          return { tx, ty, scaleX, scaleY, rotDeg };
+        }
+
+        function frame(now) {
+          const u = ((now - start) % CYCLE_MS) / CYCLE_MS;
+          const m = sampleMotion(u);
+
+          fireball.style.transform = `translate(${m.tx}px, ${m.ty}px)`;
+          ballInner.style.transform = `scale(${m.scaleX}, ${m.scaleY}) rotate(${m.rotDeg}deg)`;
+
+          if (hasCustomImage) {
+            const imgSx = flipH.checked ? -1 : 1;
+            const imgSy = flipV.checked ? -1 : 1;
+            ballImg.style.clipPath = `inset(${trimTop.value}% ${trimRight.value}% ${trimBottom.value}% ${trimLeft.value}%)`;
+            ballImg.style.transform = `scale(${imgSx}, ${imgSy})`;
+          }
+
+          requestAnimationFrame(frame);
+        }
+
+        requestAnimationFrame(frame);
+      })();
+    </script>
   </body>
 </html>
