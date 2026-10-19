@@ -1,0 +1,30 @@
+/* These rules belong to the shared editor, not the student's page. */
+#page-preview {
+  display: block;
+  width: 100%;
+  min-height: 120px;
+  border: 0;
+}
+
+#page-editor {
+  border-top: 1px solid #cccccc;
+  margin-top: 16px;
+  padding: 16px 0;
+}
+
+#page-editor summary,
+#page-editor button {
+  cursor: pointer;
+}
+
+#page-editor textarea {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 8px 0;
+  font-family: monospace;
+  tab-size: 2;
+}
+
+#page-editor button {
+  margin: 4px 0;
+}
