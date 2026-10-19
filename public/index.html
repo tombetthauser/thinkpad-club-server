@@ -1,442 +1,293 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>ThinkPad Club Server!</title>
-    <style>
-      body {
-        margin: 0;
-        min-height: 100vh;
-        background: #fff8e7;
-        font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
-        padding: 20px;
-        box-sizing: border-box;
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ThinkPad Club</title>
+
+  
+<style>
+    .intro {
+      background-color: yellow;
+      color: red;
+    }
+  </style></head>
+
+<body>
+  <h1>Hello</h1>
+  <p>Welcome to ThinkPad Club.</p>
+
+  <div class="intro">
+    <h2>About the club</h2>
+    <p>A place to learn, experiment, and make things together.</p>
+  </div>
+
+  <hr>
+<details id="page-editor">
+    <summary>Edit this page</summary>
+
+    <p>Edit the styles and body below, then select Update to save and reload. Select Show all code to include the editor and JavaScript.</p>
+
+    <p>Insert an element at the top of the page, edit its text below, then select Update.</p>
+
+    <div role="group" aria-label="Page editor actions">
+      <button id="update-page" type="button">Update</button>
+      <button type="button" id="reset-page">Reset</button>
+    </div>
+
+    <label><input id="show-all-code" type="checkbox"> Show all code</label>
+    <br>
+    <label for="page-source">Page HTML</label>
+    <br>
+    <textarea id="page-source" rows="25" cols="80" spellcheck="false"></textarea>
+    <br>
+
+    <div role="group" aria-label="Add page elements">
+      <button type="button" data-add="paragraph">Add a paragraph</button>
+      <button type="button" data-add="title">Add a title</button>
+      <button type="button" data-add="list">Add a list</button>
+      <button type="button" data-add="link">Add a link</button>
+      <button type="button" id="add-style">Add style</button>
+    </div>
+
+    <p id="update-status" role="status"></p>
+  </details><script>
+    const source = document.getElementById("page-source");
+    const button = document.getElementById("update-page");
+    const resetButton = document.getElementById("reset-page");
+    const status = document.getElementById("update-status");
+    const showAll = document.getElementById("show-all-code");
+
+    // Capture clean source before populating any editor controls.
+    let draft = "<!doctype html>\n" + document.documentElement.outerHTML;
+    const editorTemplate = draft;
+    let fullView = false;
+
+    // Restore the editor after a successful update without changing saved HTML.
+    if (sessionStorage.getItem("thinkpad-editor-open") === "true") {
+      document.getElementById("page-editor").open = true;
+      sessionStorage.removeItem("thinkpad-editor-open");
+    }
+
+    function parse(html) {
+      return new DOMParser().parseFromString(html, "text/html");
+    }
+
+    function serialize(doc) {
+      return "<!doctype html>\n" + doc.documentElement.outerHTML;
+    }
+
+    function simplified(html) {
+      const doc = parse(html);
+
+      doc.querySelector("#page-editor")?.remove();
+      doc.querySelectorAll("script").forEach(node => node.remove());
+
+      const styles = [...doc.head.querySelectorAll("style")]
+        .map(node => node.outerHTML)
+        .join("\n\n");
+      return styles + "\n\n<body>\n" + doc.body.innerHTML.trimEnd().replace(/^\n/, "") + "\n</body>";
+    }
+
+    function captureEdits() {
+      if (fullView) {
+        draft = source.value;
+        return;
       }
 
-      h1 {
-        color: #1a1a1a;
-        margin-top: 0;
-      }
+      const doc = parse(draft);
+      const edited = parse(source.value);
+      const editor = doc.querySelector("#page-editor");
+      const scripts = [...doc.body.querySelectorAll("script")];
 
-      a {
-        color: #c41e3a;
-      }
+      doc.head.querySelectorAll("style").forEach(node => node.remove());
+      doc.head.append(...edited.head.querySelectorAll("style"));
 
-      /* --- Crazy head-dunk scene --- */
-      .dunk-zone {
-        max-width: 520px;
-        margin: 24px 0 32px;
-        padding: 16px 20px 20px;
-        border: 3px dashed #ff6b35;
-        border-radius: 16px;
-        background: linear-gradient(180deg, #87ceeb 0%, #87ceeb 62%, #d4a574 62%, #c9956a 100%);
-        overflow: hidden;
-      }
+      // Keep the editor and scripts outside the simplified editing surface.
+      edited.querySelectorAll("script, #page-editor").forEach(node => node.remove());
+      doc.body.replaceChildren(...edited.body.childNodes);
+      if (editor) doc.body.append(editor);
+      doc.body.append(...scripts);
+      draft = serialize(doc);
+    }
 
-      .dunk-zone h2 {
-        margin: 0 0 12px;
-        font-size: 1.15rem;
-        text-align: center;
-        color: #1a1a1a;
-        text-shadow: 1px 1px 0 #fff;
-      }
+    source.value = simplified(draft);
 
-      .court {
-        position: relative;
-        height: 200px;
-        border: 2px solid #333;
-        border-radius: 8px;
-        overflow: hidden;
-      }
+    const elements = {
+      paragraph: '  <p>Write your paragraph here.</p>',
+      title: '  <h1>Your title here</h1>',
+      list: '  <ul>\n    <li>First item</li>\n    <li>Second item</li>\n  </ul>',
+      link: '  <p><a href="https://example.com">Link text</a></p>'
+    };
 
-      .court-line {
-        position: absolute;
-        left: 50%;
-        bottom: 38%;
-        width: 80px;
-        height: 80px;
-        border: 2px solid rgba(255, 255, 255, 0.5);
-        border-radius: 50%;
-        transform: translateX(-50%);
-        pointer-events: none;
-      }
+    function insertElement(html, markup) {
+      const body = /<body\b[^>]*>/i.exec(html);
+      if (!body) throw new Error("Add an opening <body> tag before inserting an element.");
 
-      /* Hoop — he's dunking head-first through it */
-      .hoop-wrap {
-        position: absolute;
-        right: 28px;
-        top: 18px;
-        z-index: 5;
-      }
+      const position = body.index + body[0].length;
+      const before = html.slice(0, position);
+      const after = html.slice(position).replace(/^\s*\n/, "");
+      return before + "\n" + markup + "\n\n" + after;
+    }
 
-      .backboard {
-        width: 72px;
-        height: 48px;
-        background: #eee;
-        border: 3px solid #c41e3a;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
+    document.querySelectorAll("[data-add]").forEach(addButton => {
+      addButton.addEventListener("click", () => {
+        try {
+          const markup = elements[addButton.dataset.add];
+          source.value = insertElement(source.value, markup);
+          const position = /<body\b[^>]*>/i.exec(source.value);
+          const start = position.index + position[0].length + 1;
 
-      .backboard-inner {
-        width: 28px;
-        height: 22px;
-        border: 2px solid #c41e3a;
-      }
-
-      .rim {
-        width: 48px;
-        height: 8px;
-        margin: -2px auto 0;
-        background: #ff4500;
-        border: 2px solid #8b2500;
-        border-radius: 0 0 4px 4px;
-      }
-
-      .net {
-        width: 40px;
-        height: 28px;
-        margin: 0 auto;
-        border-left: 2px solid #c41e3a;
-        border-right: 2px solid #c41e3a;
-        border-bottom: 2px solid #c41e3a;
-        background: repeating-linear-gradient(
-            90deg,
-            transparent,
-            transparent 5px,
-            #c41e3a 5px,
-            #c41e3a 6px
-          ),
-          repeating-linear-gradient(
-            0deg,
-            transparent,
-            transparent 5px,
-            #c41e3a 5px,
-            #c41e3a 6px
-          );
-        opacity: 0.85;
-      }
-
-      /* The crazy upside-down dunker */
-      .crazy-dunker {
-        position: absolute;
-        left: 12%;
-        bottom: 38%;
-        width: 56px;
-        height: 100px;
-        z-index: 10;
-        animation: head-dunk 2.4s ease-in-out infinite;
-        transform-origin: center center;
-      }
-
-      @keyframes head-dunk {
-        0%,
-        100% {
-          left: 8%;
-          bottom: 38%;
-          transform: rotate(168deg) scale(1);
+          source.focus();
+          source.setSelectionRange(start, start + markup.length);
+          source.scrollTop = 0;
+          status.textContent = "Element added to the code. Edit it, then select Update to save.";
+        } catch (error) {
+          status.textContent = error.message;
         }
-        35% {
-          left: 38%;
-          bottom: 55%;
-          transform: rotate(192deg) scale(1.08);
-        }
-        55% {
-          left: 58%;
-          bottom: 72%;
-          transform: rotate(178deg) scale(1.12);
-        }
-        70% {
-          left: 68%;
-          bottom: 78%;
-          transform: rotate(185deg) scale(0.95);
-        }
-        85% {
-          left: 62%;
-          bottom: 68%;
-          transform: rotate(180deg) scale(1);
-        }
+      });
+    });
+
+    // A small starting point: students can change any of these values.
+    const modernStyle = `    /* Modern style: make it your own! */
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background-color: #f4f6fa;
+      color: #243047;
+      line-height: 1.6;
+    }
+
+    h1, h2 {
+      color: #2448a5;
+      line-height: 1.2;
+    }
+
+    a {
+      color: #2448a5;
+    }
+
+    .intro, details {
+      background-color: white;
+      color: #243047;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      background-color: #2448a5;
+      color: white;
+      border: 0;
+      border-radius: 6px;
+      padding: 10px 16px;
+      margin: 4px 0;
+      cursor: pointer;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      line-height: 1.5;
+    }`;
+
+    function addStyle(html) {
+      const style = /<style\b[^>]*>([\s\S]*?)<\/style>/i.exec(html);
+      if (style) {
+        if (style[1].includes("/* Modern style: make it your own! */")) return html;
+        const updated = style[0].replace(/\s*<\/style>$/i, "\n\n" + modernStyle + "\n  </style>");
+        return html.slice(0, style.index) + updated + html.slice(style.index + style[0].length);
       }
 
-      .crazy-head {
-        width: 34px;
-        height: 34px;
-        border: 3px solid #111;
-        border-radius: 50%;
-        background: #ffdbac;
-        margin: 0 auto;
-        position: relative;
-        z-index: 2;
-      }
+      const position = html.search(/<\/head>|<body\b/i);
+      if (position < 0) throw new Error("Add an opening <body> tag before adding styles.");
+      return html.slice(0, position) + "<style>\n" + modernStyle + "\n</style>\n\n" + html.slice(position);
+    }
 
-      .crazy-eyes {
-        position: absolute;
-        left: 50%;
-        top: 38%;
-        transform: translate(-50%, -50%);
-        font-size: 0.55rem;
-        font-weight: bold;
-        letter-spacing: 2px;
-        white-space: nowrap;
-        animation: eye-wiggle 0.15s steps(2) infinite;
+    document.getElementById("add-style").addEventListener("click", () => {
+      try {
+        const updated = addStyle(source.value);
+        const alreadyAdded = updated === source.value;
+        source.value = updated;
+        source.focus();
+        source.setSelectionRange(0, 0);
+        source.scrollTop = 0;
+        status.textContent = alreadyAdded
+          ? "The style preset is already in the code. Edit it to make it your own."
+          : "Styles added to the code. Select Update to apply them.";
+      } catch (error) {
+        status.textContent = error.message;
       }
+    });
 
-      @keyframes eye-wiggle {
-        50% {
-          transform: translate(-50%, -50%) scaleX(-1);
-        }
-      }
+    resetButton.addEventListener("click", async () => {
+      // Reset the editable content while keeping the editor and its controls.
+      const previousView = fullView;
+      draft = editorTemplate;
+      fullView = false;
+      source.value = `<style>
+    .intro {
+      background-color: yellow;
+      color: red;
+    }
+  </style>
 
-      .crazy-mouth {
-        position: absolute;
-        left: 50%;
-        bottom: 18%;
-        transform: translateX(-50%);
-        font-size: 1rem;
-        line-height: 1;
-      }
+<body>
+  <h1>Hello</h1>
+  <p>Welcome to ThinkPad Club.</p>
 
-      .crazy-hair {
-        position: absolute;
-        left: 50%;
-        top: -14px;
-        transform: translateX(-50%);
-        width: 0;
-        height: 0;
-      }
+  <div class="intro">
+    <h2>About the club</h2>
+    <p>A place to learn, experiment, and make things together.</p>
+  </div>
 
-      .crazy-hair span {
-        position: absolute;
-        width: 4px;
-        height: 18px;
-        background: #4a148c;
-        border-radius: 2px;
-        bottom: 0;
-        left: 50%;
-        transform-origin: bottom center;
-      }
+  <hr>
+</body>`;
+      captureEdits();
+      fullView = previousView;
+      source.value = fullView ? draft : simplified(draft);
+      await savePage();
+    });
 
-      .crazy-hair span:nth-child(1) {
-        transform: translateX(-14px) rotate(-35deg);
-      }
-      .crazy-hair span:nth-child(2) {
-        transform: translateX(-7px) rotate(-12deg);
-      }
-      .crazy-hair span:nth-child(3) {
-        transform: translateX(0) rotate(0deg);
-      }
-      .crazy-hair span:nth-child(4) {
-        transform: translateX(7px) rotate(12deg);
-      }
-      .crazy-hair span:nth-child(5) {
-        transform: translateX(14px) rotate(35deg);
-      }
+    showAll.addEventListener("change", () => {
+      captureEdits();
+      fullView = showAll.checked;
+      source.value = fullView ? draft : simplified(draft);
+      status.textContent = "";
+    });
 
-      .crazy-torso {
-        width: 5px;
-        height: 32px;
-        background: #ff6b35;
-        margin: 2px auto 0;
+    async function savePage() {
+      captureEdits();
+      button.disabled = true;
+      resetButton.disabled = true;
+      status.textContent = "Saving…";
+
+      try {
+        const response = await fetch("/api/page", {
+          method: "PUT",
+          headers: { "Content-Type": "text/html" },
+          body: draft
+        });
+
+        if (!response.ok) throw new Error(await response.text());
+        sessionStorage.setItem(
+          "thinkpad-editor-open",
+          String(document.getElementById("page-editor").open)
+        );
+        location.reload();
+      } catch (error) {
+        status.textContent = "Could not save: " + error.message;
+        button.disabled = false;
+        resetButton.disabled = false;
       }
+    }
 
-      .crazy-arms {
-        display: flex;
-        justify-content: center;
-        gap: 36px;
-        margin-top: -28px;
-      }
-
-      .crazy-arm {
-        width: 28px;
-        height: 4px;
-        background: #ff6b35;
-        border-radius: 2px;
-      }
-
-      .crazy-arm.left {
-        transform: rotate(-55deg);
-        transform-origin: right center;
-        animation: arm-flail-left 0.35s ease-in-out infinite alternate;
-      }
-
-      .crazy-arm.right {
-        transform: rotate(55deg);
-        transform-origin: left center;
-        animation: arm-flail-right 0.35s ease-in-out infinite alternate;
-        animation-delay: 0.12s;
-      }
-
-      @keyframes arm-flail-left {
-        to {
-          transform: rotate(-25deg);
-        }
-      }
-
-      @keyframes arm-flail-right {
-        to {
-          transform: rotate(25deg);
-        }
-      }
-
-      .crazy-legs {
-        display: flex;
-        justify-content: center;
-        gap: 8px;
-        margin-top: 2px;
-      }
-
-      .crazy-leg {
-        width: 4px;
-        height: 26px;
-        background: #1565c0;
-        border-radius: 2px;
-        animation: leg-kick 0.5s ease-in-out infinite alternate;
-      }
-
-      .crazy-leg:nth-child(2) {
-        animation-delay: 0.2s;
-      }
-
-      @keyframes leg-kick {
-        to {
-          transform: rotate(18deg);
-        }
-      }
-
-      .dunk-ball {
-        position: absolute;
-        left: 50%;
-        top: -8px;
-        width: 22px;
-        height: 22px;
-        margin-left: -11px;
-        border-radius: 50%;
-        border: 2px solid #8b4513;
-        background: #ff8c00;
-        z-index: 1;
-        animation: ball-spin 0.6s linear infinite;
-      }
-
-      .dunk-ball::before,
-      .dunk-ball::after {
-        content: "";
-        position: absolute;
-        background: #8b4513;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-      }
-
-      .dunk-ball::before {
-        width: 2px;
-        height: 16px;
-      }
-
-      .dunk-ball::after {
-        width: 16px;
-        height: 2px;
-      }
-
-      @keyframes ball-spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-
-      .swoosh {
-        position: absolute;
-        right: 52px;
-        top: 72px;
-        font-size: 1.4rem;
-        font-weight: bold;
-        color: #ff0;
-        text-shadow: 2px 2px 0 #c41e3a;
-        opacity: 0;
-        z-index: 20;
-        animation: swoosh-pop 2.4s ease-in-out infinite;
-      }
-
-      @keyframes swoosh-pop {
-        68%,
-        78% {
-          opacity: 1;
-          transform: scale(1.3) rotate(-8deg);
-        }
-        88% {
-          opacity: 0;
-          transform: scale(0.8);
-        }
-      }
-
-      .caption {
-        text-align: center;
-        margin: 10px 0 0;
-        font-size: 0.9rem;
-        color: #333;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>ThinkPad Club Server!</h1>
-    <p>Welcome to our new server!</p>
-
-    <section class="dunk-zone" aria-label="Crazy guy head dunking on basketball">
-      <h2>🤪 LIVE: head-first slam dunk!!!</h2>
-      <div class="court">
-        <div class="court-line" aria-hidden="true"></div>
-        <div class="hoop-wrap">
-          <div class="backboard"><div class="backboard-inner"></div></div>
-          <div class="rim"></div>
-          <div class="net" aria-hidden="true"></div>
-        </div>
-        <div class="crazy-dunker" aria-hidden="true">
-          <div class="dunk-ball"></div>
-          <div class="crazy-legs">
-            <div class="crazy-leg"></div>
-            <div class="crazy-leg"></div>
-          </div>
-          <div class="crazy-arms">
-            <div class="crazy-arm left"></div>
-            <div class="crazy-arm right"></div>
-          </div>
-          <div class="crazy-torso"></div>
-          <div class="crazy-head">
-            <div class="crazy-hair">
-              <span></span><span></span><span></span><span></span><span></span>
-            </div>
-            <span class="crazy-eyes">◎ ◎</span>
-            <span class="crazy-mouth">O</span>
-          </div>
-        </div>
-        <span class="swoosh">SWOOSH!</span>
-      </div>
-      <p class="caption">He's upside down. His HEAD does the dunk. Totally normal.</p>
-    </section>
-
-    <p>
-      <a href="https://scratch.mit.edu/">Scratch</a>
-    </p>
-    <p>
-      <a href="nihal.html">Nihal's basketball page</a>
-    </p>
-    <p>
-      <a href="daniel.html">Daniel's Circle Moving game</a>
-    </p>
-    <p>
-      <a href="chase.html">Chase's clock page</a>
-    </p>
-    <p>
-      <a href="mobs.html">Escape the Ghast and Blaze</a>
-    </p>
-    <p>
-      <a href="james.html">James's page</a>
-    </p>
-    <p>
-      Scratch games list (any name): <a href="/chase/games">/chase/games</a>,
-      <a href="/nihal/games">/nihal/games</a>, <a href="/daniel/games">/daniel/games</a>,
-      <a href="/james/games">/james/games</a>, …
-    </p>
-  </body>
-</html>
+    button.addEventListener("click", savePage);
+  </script></body></html>
