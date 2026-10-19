@@ -6,7 +6,7 @@ const vm = require("node:vm");
 
 // Test browser-side save/upload handlers without adding a browser dependency.
 // These tests exercise full-code mode; real layout and DOM parsing need a browser.
-async function editorFixture({ failSave = false } = {}) {
+async function editorFixture({ failSave = false, failCapture = false } = {}) {
   function element() {
     return {
       value: "", disabled: false, hidden: false, open: false,
@@ -19,7 +19,7 @@ async function editorFixture({ failSave = false } = {}) {
     "edit-password", "image-file", "add-style", "update-page", "reset-page", "upload-image",
     "image-result", "image-code", "password-area", "page-info"];
   const nodes = Object.fromEntries(ids.map(id => [id, element()]));
-  const addButtons = ["paragraph", "title", "list", "link"].map(kind => ({ ...element(), dataset: { add: kind } }));
+  const addButtons = ["paragraph", "title", "list", "link", "webcam"].map(kind => ({ ...element(), dataset: { add: kind } }));
   const controls = [nodes["update-page"], nodes["reset-page"], nodes["page-source"], nodes["show-all-code"], ...addButtons];
   nodes["page-editor"].querySelectorAll = () => controls;
   const html = '<!doctype html>\n<html><head><style>p { color: red; }</style></head><body>\n  <p>Existing work</p>\n</body></html>';
@@ -36,6 +36,11 @@ async function editorFixture({ failSave = false } = {}) {
     fetch: async (url, options = {}) => {
       requests.push({ url, ...options });
       if (options.method === "PUT") return { ok: !failSave, text: async () => "Password required" };
+      if (url === "/api/webcam/capture") return {
+        ok: !failCapture,
+        text: async () => "USB webcam is not connected.",
+        json: async () => ({ url: "/webcam/current.jpg?t=new" })
+      };
       if (options.method === "POST") return { ok: true, json: async () => ({ html: '<img src="/uploads/example.png" alt="Describe your image">' }) };
       return { ok: true, json: async () => ({ html, starter, saved: true, passwordRequired: true }) };
     }
@@ -43,7 +48,7 @@ async function editorFixture({ failSave = false } = {}) {
   const script = await fs.readFile(path.join(__dirname, "..", "public", "editor.js"), "utf8");
   vm.runInContext(script.replace(/loadPage\(\);\s*$/, "globalThis.ready = loadPage();"), context);
   await context.ready;
-  return { nodes, addButtons, requests, storage, html, starter, reloads: () => reloads };
+  return { context, nodes, addButtons, requests, storage, html, starter, reloads: () => reloads };
 }
 
 test("Add buttons preserve full source and Update sends changes with the class password", async () => {
@@ -100,4 +105,45 @@ test("failed Reset restores unsaved work and leaves the controls usable", async 
   assert.equal(f.nodes["reset-page"].disabled, false);
   assert.equal(f.reloads(), 0);
   assert.match(f.nodes["update-status"].textContent, /Could not save: Password required/);
+});
+
+
+test("Add webcam inserts a persistent image and update button without student JavaScript", async () => {
+  const f = await editorFixture();
+  await f.addButtons.find(button => button.dataset.add === "webcam").listeners.click();
+  assert.match(f.nodes["page-source"].value, /<body>\n  <section data-webcam>/);
+  assert.match(f.nodes["page-source"].value, /src="\/webcam\/current.jpg"/);
+  assert.match(f.nodes["page-source"].value, /data-webcam-update>Update webcam image/);
+  assert.doesNotMatch(f.nodes["page-source"].value, /<script|onclick=/);
+  await f.nodes["update-page"].listeners.click();
+  assert.match(f.requests.find(request => request.method === "PUT").body, /data-webcam/);
+});
+
+test("webcam update refreshes the image without saving page content; errors keep the previous image", async () => {
+  for (const failCapture of [false, true]) {
+    const f = await editorFixture({ failCapture });
+    const button = { disabled: false };
+    const image = { src: "/webcam/current.jpg?t=old", hidden: true };
+    const label = { textContent: "" };
+    const doc = { querySelectorAll: selector => ({
+      "[data-webcam-update]": [button],
+      "[data-webcam-image]": [image],
+      "[data-webcam-status]": [label]
+    })[selector] };
+    f.nodes["edit-password"].value = "class-secret";
+    await f.context.updateWebcam(doc, { querySelector: () => label });
+    const request = f.requests.find(item => item.url === "/api/webcam/capture");
+    assert.equal(request.method, "POST");
+    assert.equal(request.headers["X-Edit-Password"], "class-secret");
+    assert.equal(f.requests.some(item => item.method === "PUT"), false);
+    assert.equal(button.disabled, false);
+    if (failCapture) {
+      assert.equal(image.src, "/webcam/current.jpg?t=old");
+      assert.match(label.textContent, /not connected/);
+    } else {
+      assert.equal(image.src, "/webcam/current.jpg?t=new");
+      assert.equal(image.hidden, false);
+      assert.match(label.textContent, /just now/);
+    }
+  }
 });

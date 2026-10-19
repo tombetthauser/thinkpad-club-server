@@ -89,6 +89,7 @@ Try changing `blue` to `purple`, then click Update.
 | **Show all code** | Switches between the simple styles-and-body view and the full HTML document. Switching keeps your edits but does not save them. |
 | **Add a paragraph / title / list / link** | Adds example HTML at the top of the body in your code box. Change the example words, then Update. |
 | **Add style** | Adds a short CSS example for a modern look. Change its values to make it your own, then Update. |
+| **Add live webcam image** | Adds the club webcam picture and an Update webcam image button to your page. Click Update to save the block. |
 | **Upload image** | Uploads a picture and adds its image tag to the top of your code. Update to save the tag on your page. |
 
 The editor is supplied by the server. You do not need to include it in your HTML,
@@ -113,6 +114,28 @@ The uploaded image's code also appears in a separate box so you can copy it.
 The picture itself is uploaded right away; the page's image tag is saved when you
 click Update. Use the URL the site gives you. Images on other websites are not
 loaded in this version.
+
+### Add the club webcam
+
+1. Click **Add live webcam image** below the code box.
+2. Click **Update** to save the webcam block on your page.
+3. Use the block's **Update webcam image** button to take a fresh photo.
+
+This uses the USB webcam connected to the **club server**, not the camera on your
+computer. It shows the latest still photo, not a streaming video. Photos are taken
+only when someone clicks the webcam update button; visiting a page does not turn
+on the camera. If the server has a class password, open the editor and enter it
+before taking a photo.
+
+You can change the heading, description, image size, or button text in your code.
+Keep the `data-webcam`, `data-webcam-image`, `data-webcam-update`, and
+`data-webcam-status` attributes so the button keeps working. No JavaScript needs
+to be added to your page.
+
+All pages use the same club webcam and latest photo. A capture replaces that
+shared photo. Other open pages show the new picture when reloaded or when their
+webcam update button is clicked. If the camera is unplugged, the button explains
+what went wrong and the last successful photo stays available.
 
 ### Where does my work go?
 
@@ -156,6 +179,7 @@ for the homepage; it does not restore the legacy homepage.
 ```text
 server.js             HTTP routes, write access, uploads, response policies
 lib/pages.js          Page naming, starter documents, file reads and atomic saves
+lib/webcam.js         USB webcam capture, latest photo, and photo archive
 public/index.html     Default home content, without editor controls
 public/editor.html    Shared page preview and editor controls
 public/editor.js      Editing, code views, buttons, saves, and uploads
@@ -170,6 +194,7 @@ data/uploads/         Uploaded images with generated filenames
 
 test/server.test.js   HTTP integration tests using temporary data directories
 test/editor.test.js   Editor save, reset, upload, and button handler tests
+test/webcam.test.js   Camera capture, failure, archive, and concurrency tests
 archive/              Snapshot of the previous project
 ```
 
@@ -206,7 +231,9 @@ have separate data; there is no automatic synchronization between them.
 | `PORT` | `3000` | HTTP listening port. |
 | `HOST` | `127.0.0.1` | Listening address. The default is local access or access through a reverse proxy. |
 | `DATA_DIR` | This project's `data/` directory | Storage location. Prefer an absolute path when setting it. |
-| `EDIT_PASSWORD` | Empty | Optional shared class password required for all saves, resets, and uploads. |
+| `EDIT_PASSWORD` | Empty | Optional shared class password required for saves, resets, uploads, and webcam captures. |
+| `WEBCAM_DIR` | `~/Pictures/Webcam` for the Node service user | Latest webcam photo and archive location, matching the old app. |
+| `WEBCAM_DEVICE` | `/dev/video0` | Linux USB camera device passed to fswebcam. |
 | `PUBLIC_ORIGIN` | Check the request's host | Exact browser-facing origin for write checks, for example `https://thinkpad.club`. No trailing slash. |
 
 Example local run with a class password:
@@ -216,7 +243,7 @@ EDIT_PASSWORD='choose-a-class-password' node server.js
 ```
 
 With no `EDIT_PASSWORD`, anyone who can reach the server can edit every page and
-upload images. With a password, reading stays public, and anyone who knows the
+upload images or take webcam photos. With a password, reading stays public, and anyone who knows the
 password can edit any page. This is shared class access, not individual ownership.
 There are no student accounts, private pages, or per-page permissions.
 
@@ -231,6 +258,34 @@ student browsers. `127.0.0.1` on each student's computer refers to their own com
 not the teacher's. Shared passwords sent over plain HTTP are unencrypted; use the
 HTTPS-hosted version for internet access.
 
+### Webcam setup on the Pi
+
+The webcam integration reuses the old app's `fswebcam` tool and 1280×720 capture
+settings. On the Pi, install `fswebcam` if it is not already installed, connect
+the USB webcam, and make sure the Node service user has permission to access
+`/dev/video0` (normally through the Linux `video` group).
+
+The Node service user must also be able to write to its `~/Pictures/Webcam`
+directory. If the old app ran as a different user, set `WEBCAM_DIR` to that old
+photo directory or choose a new writable directory. Environment variables belong
+in the service configuration when running through systemd.
+
+The app runs `fswebcam` directly with argument arrays, not a shell. It skips two
+frames, waits at most 20 seconds, and allows only one capture at a time per server
+process. A capture goes into a temporary JPEG first. Only a successful capture
+replaces `current.jpg`; the previous photo is copied into `archive/`. Images are
+served without browser caching. No background capture loop runs.
+
+The shared parent editor handles the webcam button inside the sandboxed student
+page. This supplies one predefined interactive behavior without enabling arbitrary
+student scripts. Capture requires the same password and origin checks as saving.
+The latest photo is readable by anyone who can reach the site, like the other
+public images. Webcam photo archives are not served by the app and are not pruned
+automatically; back them up or clear old photos as appropriate for the club.
+
+This feature needs the Linux USB webcam setup on the server. It does not use
+browser camera permissions and is not a Mac-camera implementation.
+
 ### API routes
 
 | Request | Behavior |
@@ -242,17 +297,19 @@ HTTPS-hosted version for internet access.
 | `POST /api/uploads` | Accepts raw image bytes, returns JSON containing `url` and an `html` image tag. |
 | `GET /uploads/<generated-filename>` | Serves an uploaded image. |
 | `GET /assets/editor.js` and `/assets/editor.css` | Shared editor assets. |
+| `POST /api/webcam/capture` | Takes a fresh photo and returns a cache-busting image `url`. |
+| `GET /webcam/current.jpg` | Latest shared webcam photo; no capture is triggered by reading it. |
 | `GET /health` | Returns `ok`. |
 
 If a class password is configured, send it in `X-Edit-Password` for PUT and upload
-requests. The browser editor does this for you. Writes from other browser origins
+and webcam capture requests. The browser editor does this for you. Writes from other browser origins
 are rejected. CORS is not enabled. The previous single-page `/api/page` endpoint
 has been replaced with the per-page API.
 
 ### Boundaries and deliberate simplifications
 
 - Page names are 1–64 lowercase letters, digits, and single separating hyphens.
-  `api`, `assets`, `uploads`, and `health` are reserved. Nested page paths, filename
+  `api`, `assets`, `uploads`, `health`, and `webcam` are reserved. Nested page paths, filename
   extensions, and path traversal are rejected. A trailing slash redirects to the
   canonical address.
 - The HTML limit is 1 MB; the image limit is 5 MB. Images get generated filenames
@@ -282,7 +339,8 @@ has been replaced with the per-page API.
 
 Student pages and uploads are ignored by Git. **Pushing the code is not a backup
 of students' work.** Back up both `data/pages/` and `data/uploads/`, or the entire
-configured `DATA_DIR`, to another disk or backup service. Restore their directory
+configured `DATA_DIR`, to another disk or backup service. Webcam photos live
+separately under `WEBCAM_DIR`; back up that directory too if you want to retain them. Restore their directory
 structure under the same data directory to restore the site. Stop the server while
 copying if you need one consistent snapshot.
 
@@ -309,6 +367,9 @@ The tests use Node's built-in test runner, temporary data folders, and temporary
 localhost ports. They cover page creation, independent page saves, restart
 persistence, reset content, image uploads and retrieval, password checks,
 cross-origin restrictions, rendering policies, invalid paths, and size limits.
+Webcam tests simulate the capture tool to check camera settings, old-photo
+retention, photo archiving, timeouts, missing hardware, and simultaneous requests
+without accessing a real camera.
 They do not modify real student data. Editor handler tests also check save/reset
 requests, image-tag insertion, and recovery after a failed save. They use a small
 simulated browser environment; real browser layout and code-view DOM parsing are

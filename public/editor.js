@@ -109,7 +109,13 @@ const elements = {
   paragraph: '  <p>Write your paragraph here.</p>',
   title: '  <h1>Your title here</h1>',
   list: '  <ul>\n    <li>First item</li>\n    <li>Second item</li>\n  </ul>',
-  link: '  <p><a href="https://example.com">Link text</a></p>'
+  link: '  <p><a href="https://example.com">Link text</a></p>',
+  webcam: `  <section data-webcam>
+    <h2>Live webcam image</h2>
+    <img data-webcam-image src="/webcam/current.jpg" alt="Latest photo from the club webcam" width="640" style="max-width: 100%; height: auto;">
+    <p><button type="button" data-webcam-update>Update webcam image</button></p>
+    <p data-webcam-status role="status">Click Update webcam image to take a new photo from the club's webcam.</p>
+  </section>`
 };
 
 document.querySelectorAll("[data-add]").forEach(button => {
@@ -253,6 +259,40 @@ fileInput.addEventListener("change", async () => {
   }
 });
 
+// Trusted behavior for a plain-HTML webcam widget. Student scripts stay disabled.
+let webcamBusy = false;
+
+async function updateWebcam(doc, widget) {
+  if (webcamBusy) return;
+  webcamBusy = true;
+  const buttons = doc.querySelectorAll("[data-webcam-update]");
+  const message = widget.querySelector("[data-webcam-status]");
+  buttons.forEach(button => { button.disabled = true; });
+  if (message) message.textContent = "Taking a new photo…";
+
+  try {
+    const response = await fetch("/api/webcam/capture", {
+      method: "POST",
+      headers: passwordHeaders()
+    });
+    if (!response.ok) throw new Error(await response.text());
+    const photo = await response.json();
+    // Every widget on this page shows the same physical club webcam.
+    doc.querySelectorAll("[data-webcam-image]").forEach(image => {
+      image.hidden = false;
+      image.src = photo.url;
+    });
+    doc.querySelectorAll("[data-webcam-status]").forEach(label => {
+      label.textContent = "New webcam photo taken just now.";
+    });
+  } catch (error) {
+    if (message) message.textContent = error.message;
+  } finally {
+    buttons.forEach(button => { button.disabled = false; });
+    webcamBusy = false;
+  }
+}
+
 // The sandbox disables student scripts. Same-origin access only lets the
 // trusted parent measure the page and handle its links.
 preview.addEventListener("load", () => {
@@ -272,7 +312,25 @@ preview.addEventListener("load", () => {
   sizeObserver.observe(doc.body);
   resize();
 
+  doc.querySelectorAll("[data-webcam-image]").forEach(image => {
+    const showUnavailable = () => {
+      image.hidden = true;
+      const message = image.closest("[data-webcam]")?.querySelector("[data-webcam-status]");
+      if (message) message.textContent = "No webcam photo is available yet. Click Update webcam image to try taking one.";
+    };
+    image.addEventListener("error", showUnavailable);
+    if (image.complete && image.naturalWidth === 0) showUnavailable();
+  });
+
   doc.addEventListener("click", event => {
+    const webcamButton = event.target.closest?.("[data-webcam-update]");
+    const widget = webcamButton?.closest("[data-webcam]");
+    if (widget) {
+      event.preventDefault();
+      updateWebcam(doc, widget);
+      return;
+    }
+
     const link = event.target.closest?.("a[href]");
     if (!link) return;
     const address = new URL(link.getAttribute("href"), location.href);

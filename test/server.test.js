@@ -151,3 +151,40 @@ test("empty pages, wrong content types, oversized pages and uploads are rejected
   assert.equal((await fetch(`${base}/api/uploads`, { method: "POST", body: Buffer.alloc(5 * 1024 * 1024 + 1) })).status, 413);
   assert.deepEqual(await fs.readdir(dataDirectory), []);
 });
+
+test("webcam routes serve uncached images and protect capture with password and origin checks", async t => {
+  let captures = 0;
+  const camera = {
+    async image() { return Buffer.from([255, 216, 255]); },
+    async capture() { captures++; return { url: "/webcam/current.jpg?t=new" }; }
+  };
+  const { base } = await fixture(t, { editPassword: "class-secret", webcam: camera });
+  const image = await fetch(`${base}/webcam/current.jpg?t=old`);
+  assert.equal(image.status, 200);
+  assert.equal(image.headers.get("content-type"), "image/jpeg");
+  assert.equal(image.headers.get("cache-control"), "no-store");
+  assert.deepEqual(Buffer.from(await image.arrayBuffer()), Buffer.from([255, 216, 255]));
+  assert.equal(captures, 0);
+  assert.equal((await fetch(`${base}/api/webcam/capture`)).status, 405);
+  const capture = headers => fetch(`${base}/api/webcam/capture`, { method: "POST", headers });
+  assert.equal((await capture({})).status, 401);
+  assert.equal((await capture({ "X-Edit-Password": "class-secret", Origin: "https://another.example" })).status, 403);
+  assert.equal(captures, 0);
+  const saved = await capture({ "X-Edit-Password": "class-secret", Origin: base });
+  assert.equal(saved.status, 200);
+  assert.equal((await saved.json()).url, "/webcam/current.jpg?t=new");
+  assert.equal(captures, 1);
+  assert.equal((await put(base, "webcam", "<body>Reserved</body>")).status, 404);
+});
+
+test("webcam hardware failures return readable errors without crashing the server", async t => {
+  const { base } = await fixture(t, { webcam: {
+    async image() { throw Object.assign(new Error("No webcam photo yet."), { status: 404 }); },
+    async capture() { throw Object.assign(new Error("USB webcam is not connected."), { status: 503 }); }
+  } });
+  assert.equal((await fetch(`${base}/webcam/current.jpg`)).status, 404);
+  const response = await fetch(`${base}/api/webcam/capture`, { method: "POST" });
+  assert.equal(response.status, 503);
+  assert.match(await response.text(), /not connected/);
+  assert.equal((await fetch(`${base}/health`)).status, 200);
+});

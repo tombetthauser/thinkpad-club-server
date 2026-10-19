@@ -4,6 +4,8 @@ const path = require("node:path");
 const { randomUUID, createHash, timingSafeEqual } = require("node:crypto");
 const { ROOT, validSlug, starterPage, pageStore } = require("./lib/pages");
 
+const { webcam } = require("./lib/webcam");
+
 const PAGE_LIMIT = 1024 * 1024;
 const IMAGE_LIMIT = 5 * 1024 * 1024;
 const PREVIEW_POLICY = [
@@ -62,6 +64,7 @@ function createServer(options = {}) {
   const publicOrigin = options.publicOrigin ?? process.env.PUBLIC_ORIGIN ?? "";
   const pages = pageStore(path.join(dataDirectory, "pages"));
   const uploads = path.join(dataDirectory, "uploads");
+  const camera = options.webcam || webcam();
 
   function authorize(req) {
     const origin = req.headers.origin;
@@ -73,13 +76,13 @@ function createServer(options = {}) {
           ? parsed.origin === publicOrigin
           : ["http:", "https:"].includes(parsed.protocol) && parsed.host === req.headers.host;
       } catch { /* Malformed origins are rejected below. */ }
-      if (!allowed) throw fail(403, "Save and upload from the ThinkPad Club page itself.");
+      if (!allowed) throw fail(403, "Use these controls from the ThinkPad Club page itself.");
     }
     if (req.headers["sec-fetch-site"] && !["same-origin", "none"].includes(req.headers["sec-fetch-site"])) {
-      throw fail(403, "Save and upload from the ThinkPad Club page itself.");
+      throw fail(403, "Use these controls from the ThinkPad Club page itself.");
     }
     if (editPassword && !samePassword(req.headers["x-edit-password"] || "", editPassword)) {
-      throw fail(401, "Enter the class password to save or upload.");
+      throw fail(401, "Open Edit this page and enter the class password to save, upload, or update the webcam.");
     }
   }
 
@@ -109,6 +112,18 @@ function createServer(options = {}) {
       const method = req.method;
 
       if (pathname === "/health" && method === "GET") return reply(200, "ok");
+
+      if (pathname === "/api/webcam/capture") {
+        if (method !== "POST") return reply(405, "Use POST to take a webcam photo.", undefined, { Allow: "POST" });
+        authorize(req);
+        return json(await camera.capture());
+      }
+
+      if (pathname === "/webcam/current.jpg" && method === "GET") {
+        return reply(200, await camera.image(), "image/jpeg", {
+          "Content-Security-Policy": "default-src 'none'; sandbox"
+        });
+      }
 
       const assets = {
         "/assets/editor.js": ["editor.js", "text/javascript; charset=utf-8"],
