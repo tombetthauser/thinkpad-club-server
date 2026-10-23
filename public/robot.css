@@ -1,0 +1,10 @@
+body { font: 18px system-ui, sans-serif; margin: 2rem auto; padding: 0 1rem; max-width: 34rem; }
+label { display: block; margin: 1rem 0; }
+input, button { font: inherit; max-width: 100%; }
+button { padding: .8rem; margin: .2rem; touch-action: none; user-select: none; }
+.pad { display: grid; grid-template-columns: repeat(3, 1fr); }
+.forward, .backward { grid-column: 2; }
+.forward { grid-row: 1; }
+.backward { grid-row: 3; }
+#stop { background: #a00; color: white; font-weight: bold; }
+fieldset { min-width: 0; }

@@ -5,6 +5,7 @@ const { randomUUID, createHash, timingSafeEqual } = require("node:crypto");
 const { ROOT, validSlug, starterPage, pageStore } = require("./lib/pages");
 
 const { webcam } = require("./lib/webcam");
+const { robot } = require("./lib/robot");
 
 const PAGE_LIMIT = 1024 * 1024;
 const IMAGE_LIMIT = 5 * 1024 * 1024;
@@ -65,6 +66,9 @@ function createServer(options = {}) {
   const pages = pageStore(path.join(dataDirectory, "pages"));
   const uploads = path.join(dataDirectory, "uploads");
   const camera = options.webcam || webcam();
+  const robotPassword = options.robotPassword ?? process.env.ROBOT_PASSWORD ?? "";
+  // No GPIO process is started unless both enablement and a separate secret exist.
+  const motors = options.robot || robot({ enabled: process.env.ROBOT_ENABLED === '1' && Boolean(robotPassword) });
 
   function authorize(req) {
     const origin = req.headers.origin;
@@ -86,7 +90,7 @@ function createServer(options = {}) {
     }
   }
 
-  return http.createServer(async (req, res) => {
+  const server = http.createServer(async (req, res) => {
     function reply(status, contents, type = "text/plain; charset=utf-8", extra = {}) {
       res.writeHead(status, {
         "Content-Type": type,
@@ -113,6 +117,38 @@ function createServer(options = {}) {
 
       if (pathname === "/health" && method === "GET") return reply(200, "ok");
 
+      if (pathname.startsWith('/api/robot/')) {
+        // Reuse origin rules, but do not grant motor access with the class password.
+        const origin = req.headers.origin;
+        if ((origin && origin !== (publicOrigin || `http://${req.headers.host}`)) ||
+            (req.headers['sec-fetch-site'] && !['same-origin', 'none'].includes(req.headers['sec-fetch-site']))) {
+          throw fail(403, 'Use the robot control page on this server.');
+        }
+        if (!robotPassword || !samePassword(req.headers['x-robot-password'] || '', robotPassword)) {
+          throw fail(401, 'Enter the separate robot password.');
+        }
+        const action = pathname.slice('/api/robot/'.length);
+        if (action === 'status' && method === 'GET') return json(motors.status());
+        if (!['forward', 'backward', 'left', 'right', 'stop', 'test-left', 'test-right'].includes(action)) throw fail(404, 'Unknown robot command.');
+        if (method !== 'POST') return reply(405, 'Use POST.', undefined, { Allow: 'POST' });
+        if (req.headers['content-type']?.split(';')[0].trim() !== 'application/json') throw fail(415, 'Send application/json.');
+        // Bind lease identity to this tab; a separate secret still authorizes every request.
+        const controller = req.headers['x-robot-controller'];
+        if (typeof controller !== 'string' || !/^[a-f0-9-]{36}$/.test(controller)) throw fail(400, 'Missing controller ID.');
+        let body;
+        try { body = JSON.parse((await readBody(req, 1024)).toString('utf8')); }
+        catch (error) { throw error.status ? error : fail(400, 'Invalid JSON.'); }
+        if (!body || typeof body !== 'object' || Array.isArray(body)) throw fail(400, 'Send a JSON object.');
+        return json(await motors.command(action, body.speed, controller));
+      }
+
+      if (pathname === '/robot' && method === 'GET') {
+        return reply(200, await fs.readFile(path.join(ROOT, 'public/robot.html')), 'text/html; charset=utf-8', {
+          'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self'; frame-ancestors 'none'; form-action 'none'; base-uri 'none'",
+          'X-Frame-Options': 'DENY'
+        });
+      }
+
       if (pathname === "/api/webcam/capture") {
         if (method !== "POST") return reply(405, "Use POST to take a webcam photo.", undefined, { Allow: "POST" });
         authorize(req);
@@ -126,6 +162,8 @@ function createServer(options = {}) {
       }
 
       const assets = {
+        "/assets/robot.js": ["robot.js", "text/javascript; charset=utf-8"],
+        "/assets/robot.css": ["robot.css", "text/css; charset=utf-8"],
         "/assets/editor.js": ["editor.js", "text/javascript; charset=utf-8"],
         "/assets/editor.css": ["editor.css", "text/css; charset=utf-8"]
       };
@@ -206,14 +244,25 @@ function createServer(options = {}) {
       if (!res.headersSent) reply(error.status || 500, error.status ? error.message : "Could not read or save. Please try again.");
     }
   });
+  server.on('close', () => motors.close());
+  server.stopRobot = () => motors.close();
+  return server;
 }
 
 if (require.main === module) {
   const port = process.env.PORT || 3000;
   const host = process.env.HOST || "127.0.0.1";
-  createServer().listen(port, host, () => {
+  const server = createServer().listen(port, host, () => {
     console.log(`ThinkPad Club listening on http://${host}:${port}`);
   });
+  for (const signal of ['SIGINT', 'SIGTERM']) process.once(signal, () => {
+    server.stopRobot();
+    server.close();
+    server.closeAllConnections();
+  });
+  // Stop GPIO before Node exits on an unexpected application failure.
+  process.on('uncaughtExceptionMonitor', () => server.stopRobot());
+  process.on('exit', () => server.stopRobot());
 }
 
 module.exports = { createServer };

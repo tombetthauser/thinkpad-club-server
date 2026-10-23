@@ -151,6 +151,13 @@ name, and keep private information out of your pages and pictures.
 
 ## For teachers and developers
 
+### Robot controls
+
+Optional Raspberry Pi motor controls are available at `/robot`. They are disabled
+by default and require a separate `ROBOT_PASSWORD`, explicit enablement, and a
+Python GPIO worker. See [setup, wiring, configuration, and raised-wheel tests](docs/robot-setup.md).
+The existing page editor and webcam routes keep their existing access rules.
+
 ### How a page is made
 
 The app uses Node's built-in HTTP server and the computer's filesystem.
@@ -309,7 +316,7 @@ has been replaced with the per-page API.
 ### Boundaries and deliberate simplifications
 
 - Page names are 1–64 lowercase letters, digits, and single separating hyphens.
-  `api`, `assets`, `uploads`, `health`, and `webcam` are reserved. Nested page paths, filename
+  `api`, `assets`, `uploads`, `health`, `webcam`, and `robot` are reserved. Nested page paths, filename
   extensions, and path traversal are rejected. A trailing slash redirects to the
   canonical address.
 - The HTML limit is 1 MB; the image limit is 5 MB. Images get generated filenames
