@@ -182,7 +182,12 @@ function createServer(options = {}) {
         if (method === "GET") {
           const page = await pages.read(slug);
           if (api[2]) {
-            return reply(200, page.html, "text/html; charset=utf-8", {
+            // Native links must leave the frame even before images finish loading.
+            const base = '<base target="_top">';
+            const html = /<head\b[^>]*>/i.test(page.html)
+              ? page.html.replace(/<head\b[^>]*>/i, opening => opening + base)
+              : page.html.replace(/^(\s*<!doctype[^>]*>)?/i, opening => opening + base);
+            return reply(200, html, "text/html; charset=utf-8", {
               "Content-Security-Policy": PREVIEW_POLICY,
               "X-Frame-Options": "SAMEORIGIN"
             });

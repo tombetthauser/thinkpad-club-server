@@ -76,7 +76,7 @@ test('delegated native click activates webcam and new-page buttons in the viewer
   f.doc.body = {};
   f.doc.title = 'Test';
   const original = f.doc.querySelectorAll;
-  f.doc.querySelectorAll = selector => selector === '[data-webcam-image]' ? [] : original(selector);
+  f.doc.querySelectorAll = selector => ['[data-webcam-image]', 'a[href]'].includes(selector) ? [] : original(selector);
   f.doc.addEventListener = (type, handler) => { f.doc[type] = handler; };
   f.preview.contentDocument = f.doc;
   f.preview.load();
@@ -88,4 +88,19 @@ test('delegated native click activates webcam and new-page buttons in the viewer
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(f.requests.length, 1);
   assert.equal(prevented, 2);
+});
+
+test('page links target the top window before any click handler runs', async () => {
+  const f = await fixture();
+  const links = ['/edit/index', 'other-page', '#section'].map(href => ({ getAttribute: () => href }));
+  f.preview.contentDocument = {
+    body: {}, title: 'Home', addEventListener() {},
+    querySelectorAll: selector => selector === 'a[href]' ? links : []
+  };
+  f.preview.load();
+  assert.equal(links[0].href, 'https://thinkpad.club/edit/index');
+  assert.equal(links[0].target, '_top');
+  assert.equal(links[1].href, 'https://thinkpad.club/other-page');
+  assert.equal(links[1].target, '_top');
+  assert.equal(links[2].target, undefined);
 });

@@ -72,6 +72,16 @@ preview.addEventListener("load", () => {
   const doc = preview.contentDocument;
   if (!doc?.body) return;
   document.title = doc.title || "Thinkpad Club";
+  // Configure native navigation before a tap. Some mobile browsers suppress
+  // click callbacks attached to documents whose sandbox disables scripts.
+  doc.querySelectorAll("a[href]").forEach(link => {
+    const href = link.getAttribute("href");
+    if (href.startsWith("#")) return;
+    const address = new URL(href, location.href);
+    if (!["http:", "https:", "mailto:", "tel:"].includes(address.protocol)) return;
+    link.href = address.href;
+    link.target = "_top";
+  });
   doc.querySelectorAll("[data-webcam-image]").forEach(image => {
     const unavailable = () => {
       image.hidden = true;

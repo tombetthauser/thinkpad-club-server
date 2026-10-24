@@ -74,7 +74,9 @@ test("HTML renders with scripts disabled and the trusted editor remains separate
   const html = '<body><h1>Hi</h1><script>parent.document.body.remove()</script><img src="x" onerror="alert(1)"></body>';
   await put(base, "demo", html);
   const preview = await fetch(`${base}/api/pages/demo/preview`);
-  assert.equal(await preview.text(), html);
+  const rendered = await preview.text();
+  assert.match(rendered, /<base target="_top">/);
+  assert.equal(rendered.replace('<base target="_top">', ''), html);
   assert.match(preview.headers.get("content-security-policy"), /script-src 'none'/);
   assert.match(preview.headers.get("content-security-policy"), /sandbox allow-same-origin/);
   assert.match(preview.headers.get("content-security-policy"), /form-action 'none'/);
