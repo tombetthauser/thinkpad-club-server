@@ -84,7 +84,7 @@ function createServer(options = {}) {
       throw fail(403, "Use these controls from the ThinkPad Club page itself.");
     }
     if (editPassword && !samePassword(req.headers["x-edit-password"] || "", editPassword)) {
-      throw fail(401, "Open Edit this page and enter the class password to save, upload, or update the webcam.");
+      throw fail(401, "Enter the class password to save, upload, or update the webcam.");
     }
   }
 
@@ -159,6 +159,8 @@ function createServer(options = {}) {
       const assets = {
         "/assets/robot.js": ["robot.js", "text/javascript; charset=utf-8"],
         "/assets/robot.css": ["robot.css", "text/css; charset=utf-8"],
+        "/assets/viewer.js": ["viewer.js", "text/javascript; charset=utf-8"],
+        "/assets/viewer.css": ["viewer.css", "text/css; charset=utf-8"],
         "/assets/editor.js": ["editor.js", "text/javascript; charset=utf-8"],
         "/assets/editor.css": ["editor.css", "text/css; charset=utf-8"]
       };
@@ -220,6 +222,14 @@ function createServer(options = {}) {
       }
 
       if (method === "GET") {
+        const edit = /^\/edit\/([a-z0-9-]+)(\/)?$/.exec(pathname);
+        if (edit && validSlug(edit[1])) {
+          if (edit[2]) return reply(308, "Use this editor address.", undefined, { Location: `/edit/${edit[1]}` });
+          return reply(200, await fs.readFile(path.join(ROOT, "public", "editor.html")), "text/html; charset=utf-8", {
+            "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+            "X-Frame-Options": "DENY"
+          });
+        }
         if (["/index", "/index.html"].includes(pathname)) {
           return reply(308, "Go to /", undefined, { Location: "/" });
         }
@@ -227,7 +237,7 @@ function createServer(options = {}) {
         if (validSlug(slug)) {
           const canonical = slug === "index" ? "/" : `/${slug}`;
           if (pathname !== canonical) return reply(308, "Use this page address.", undefined, { Location: canonical });
-          return reply(200, await fs.readFile(path.join(ROOT, "public", "editor.html")), "text/html; charset=utf-8", {
+          return reply(200, await fs.readFile(path.join(ROOT, "public", "viewer.html")), "text/html; charset=utf-8", {
             "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
             "X-Frame-Options": "DENY"
           });

@@ -3,61 +3,49 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ThinkPad Club</title>
+  <title>Edit · Thinkpad Club</title>
   <link rel="stylesheet" href="/assets/editor.css">
   <script src="/assets/editor.js" defer></script>
 </head>
-
 <body>
-  <iframe id="page-preview" title="Your page" sandbox="allow-same-origin"></iframe>
-
-  <details id="page-editor">
-    <summary>Edit this page</summary>
-
-    <p id="page-info">Loading your page…</p>
-    <p>Edit the code, then click Update to save. Reset saves a fresh starter page.</p>
-
+  <main id="page-editor">
+    <nav aria-label="Editor controls">
+      <button id="update-page" type="button" disabled>Save</button>
+      <button id="preview-page" type="button" disabled>Preview</button>
+      <button id="random-html" type="button" disabled>Random HTML</button>
+      <a id="view-page" href="/">View</a>
+      <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content" target="_blank" rel="noopener">MDN</a>
+      <a href="https://www.w3schools.com/html/" target="_blank" rel="noopener">W3Schools HTML</a>
+    </nav>
+    <p id="page-info">Loading…</p>
     <div id="password-area" hidden>
       <label for="edit-password">Class password</label>
       <input id="edit-password" type="password" autocomplete="off">
     </div>
-
-    <div role="group" aria-label="Save or reset this page">
-      <button id="update-page" type="button" disabled>Update</button>
-      <button id="reset-page" type="button" disabled>Reset</button>
-    </div>
-
-    <p>
-      <label><input id="show-all-code" type="checkbox" disabled> Show all code</label>
-      <br>
-      The simple view shows styles and body content. The full view includes the document head.
-      The editor is added separately, and page JavaScript does not run.
-    </p>
-
-    <label for="page-source">Page HTML</label>
-    <br>
-    <textarea id="page-source" rows="25" cols="80" spellcheck="false" disabled></textarea>
-
-    <div role="group" aria-label="Add page elements">
-      <button type="button" data-add="paragraph" disabled>Add a paragraph</button>
-      <button type="button" data-add="title" disabled>Add a title</button>
-      <button type="button" data-add="list" disabled>Add a list</button>
-      <button type="button" data-add="link" disabled>Add a link</button>
-      <button id="add-style" type="button" disabled>Add style</button>
-      <button type="button" data-add="webcam" disabled>Add live webcam image</button>
-      <button id="upload-image" type="button" disabled>Upload image</button>
-      <input id="image-file" type="file" accept="image/png,image/jpeg,image/gif,image/webp" aria-label="Choose an image to upload" hidden>
-    </div>
-
-    <p>Added elements go at the top of your code. Upload an image up to 5 MB, then Update to save its place on the page.</p>
-
-    <div id="image-result" hidden>
-      <label for="image-code">Uploaded image HTML (also added to your code)</label>
-      <br>
-      <textarea id="image-code" rows="2" cols="80" readonly></textarea>
-    </div>
-
     <p id="update-status" role="status" aria-live="polite"></p>
-  </details>
+    <section id="draft-preview" hidden aria-label="Unsaved preview">
+      <p>Unsaved preview · <button id="close-preview" type="button">Close preview</button></p>
+      <iframe id="draft-frame" title="Preview of unsaved HTML" sandbox="" referrerpolicy="no-referrer"></iframe>
+    </section>
+    <label class="sr-only" for="page-source">Page HTML</label>
+    <textarea id="page-source" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" disabled></textarea>
+    <details>
+      <summary>Tools</summary>
+      <p><label><input id="show-all-code" type="checkbox" checked disabled> Show all code</label></p>
+      <button id="reset-page" type="button" disabled>Reset page</button>
+      <button type="button" data-add="paragraph" disabled>Add paragraph</button>
+      <button type="button" data-add="title" disabled>Add title</button>
+      <button type="button" data-add="list" disabled>Add list</button>
+      <button type="button" data-add="link" disabled>Add link</button>
+      <button id="add-style" type="button" disabled>Add style</button>
+      <button type="button" data-add="webcam" disabled>Add webcam</button>
+      <button id="upload-image" type="button" disabled>Upload image</button>
+      <input id="image-file" type="file" accept="image/png,image/jpeg,image/gif,image/webp" aria-label="Upload image" hidden>
+      <div id="image-result" hidden>
+        <label for="image-code">Uploaded image HTML</label>
+        <textarea id="image-code" rows="2" readonly></textarea>
+      </div>
+    </details>
+  </main>
 </body>
 </html>

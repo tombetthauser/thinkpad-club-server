@@ -25,79 +25,39 @@ name on its cover. The server is the computer that keeps the notebooks safe.
 
 ### Make your first page
 
-1. Choose a name, such as `dannys-page` or `robot-club`.
-2. Type the address into your browser. On a local computer, try
-   **http://127.0.0.1:3000/dannys-page**. On the live club server, the same page would
-   be **https://thinkpad.club/dannys-page**.
-3. If the page does not exist yet, you will see a starter page saying hello.
-4. Open **Edit this page** below the page.
-5. Change some words in the code box.
-6. Click **Update**. If there is a class password box, enter the password your
-   teacher gave you first.
-7. Come back to the same address later to see your saved page.
+Click **Make a new page** on the homepage and enter a name, such as
+`chocolate-dolphin`. Spaces become hyphens and letters become lowercase. The
+site opens `/edit/chocolate-dolphin`, where you can edit the full HTML document.
+Click **Save**, then **View** to see your page at `/chocolate-dolphin`.
+Visiting an editor does not create a file; the first Save does.
 
-Use lowercase letters, numbers, and hyphens for page names, up to 64 characters.
-Start and end with a letter or number. For example, use `dannys-page`, not
-`Danny's Page`. Names are shared: if someone already saved that address, you will
-see their page. Ask before changing somebody else's work.
+Pages are shared. Choosing an existing name opens that page's existing code;
+ask before changing someone else's work. Names contain lowercase letters,
+numbers, and single hyphens, up to 64 characters. System route names are reserved.
 
-Just visiting an address does **not** save a page. Its first Update creates it.
+### View and edit separately
 
-### What do the code words mean?
+Public pages show only page content. Open `/edit/<page-name>` to edit a page, or
+`/edit/index` for the homepage. The editor has a black background, a code area,
+and Save, View, MDN, and W3Schools HTML links at the top. It starts in full HTML
+mode. Save keeps the editor open and reports success without reloading.
 
-**HTML** tells the browser what belongs on a page:
+**Preview** displays your current unsaved HTML in a sandboxed frame in the editor.
+Click Preview again to refresh it after edits, or Close preview to hide it. Preview
+does not save or upload your draft. Scripts and interactive webcam controls do not
+run inside this draft preview.
 
-```html
-<h1>My robot club</h1>
+**Random HTML** asks for confirmation before replacing the entire draft with a
+random science or math page and deliberately odd CSS. Cancel keeps your work.
+The saved page changes only when you click Save.
 
-<p>We build robots and learn together.</p>
-
-<ul>
-  <li>Draw an idea</li>
-  <li>Build it</li>
-  <li>Try it out</li>
-</ul>
-```
-
-- `<h1>` makes a big heading.
-- `<p>` makes a paragraph.
-- `<ul>` makes a bullet list; each `<li>` is one item.
-- `<a href="/robot-club">Visit our club</a>` makes a link to another page.
-
-**CSS** changes how things look. It goes inside the `<style>` area:
-
-```html
-<style>
-  h1 {
-    color: blue;
-  }
-
-  body {
-    background-color: lightyellow;
-  }
-</style>
-```
-
-Try changing `blue` to `purple`, then click Update.
-
-### What do the buttons do?
-
-| Control | What it does |
-| --- | --- |
-| **Update** | Saves this page on the server and reloads it. Your editor stays open. |
-| **Reset** | Immediately replaces this page with its starter page and saves it. It does not reset anyone else's page. |
-| **Show all code** | Switches between the simple styles-and-body view and the full HTML document. Switching keeps your edits but does not save them. |
-| **Add a paragraph / title / list / link** | Adds example HTML at the top of the body in your code box. Change the example words, then Update. |
-| **Add style** | Adds a short CSS example for a modern look. Change its values to make it your own, then Update. |
-| **Add live webcam image** | Adds the club webcam picture and an Update webcam image button to your page. Click Update to save the block. |
-| **Upload image** | Uploads a picture and adds its image tag to the top of your code. Update to save the tag on your page. |
-
-The editor is supplied by the server. You do not need to include it in your HTML,
-and deleting your page's content will not delete the editor.
+Expand **Tools** for element insertion, styles, webcam markup, image uploads,
+simple code view, and Reset. Reset immediately saves a starter document and has
+no undo history. Editing source or adding elements is not saved until Save.
 
 ### Put a picture on your page
 
-1. Click **Upload image** below the code box.
+1. Open **Tools** below the code box and click **Upload image**.
 2. Choose a PNG, JPEG, GIF, or WebP picture no bigger than 5 MB.
 3. The site uploads it and adds code like this:
 
@@ -108,24 +68,24 @@ and deleting your page's content will not delete the editor.
 4. Replace `Describe your image` with a helpful description, such as
    `Our cardboard robot with blue wheels`. This helps people who cannot see the image.
 5. Move the image code somewhere else in the body if you want.
-6. Click **Update**.
+6. Click **Save**.
 
 The uploaded image's code also appears in a separate box so you can copy it.
 The picture itself is uploaded right away; the page's image tag is saved when you
-click Update. Use the URL the site gives you. Images on other websites are not
+click Save. Use the URL the site gives you. Images on other websites are not
 loaded in this version.
 
 ### Add the club webcam
 
-1. Click **Add live webcam image** below the code box.
-2. Click **Update** to save the webcam block on your page.
+1. Open **Tools** below the code box and click **Add webcam**.
+2. Click **Save** to save the webcam block on your page.
 3. Use the block's **Update webcam image** button to take a fresh photo.
 
 This uses the USB webcam connected to the **club server**, not the camera on your
 computer. It shows the latest still photo, not a streaming video. Photos are taken
 only when someone clicks the webcam update button; visiting a page does not turn
-on the camera. If the server has a class password, open the editor and enter it
-before taking a photo.
+on the camera. If the server has a class password, the webcam update button prompts for it.
+The password stays only in memory for the current page load.
 
 You can change the heading, description, image size, or button text in your code.
 Keep the `data-webcam`, `data-webcam-image`, `data-webcam-update`, and
@@ -139,11 +99,11 @@ what went wrong and the last successful photo stays available.
 
 ### Where does my work go?
 
-Clicking Update is like putting your notebook back on the shelf. The server saves
+Clicking Save is like putting your notebook back on the shelf. The server saves
 a file, so your page stays there when you close your browser or restart the server.
 Someone using another computer can see it if they connect to the same server.
 
-The code you are still typing is **not saved yet**. Click Update before leaving.
+The code you are still typing is **not saved yet**. Click Save before leaving.
 Reset saves right away and replaces what was there; there is no undo history.
 
 Pages are visible to anyone who can reach this server. Use a nickname or a project
@@ -161,26 +121,25 @@ The existing page editor and webcam routes keep their existing access rules.
 
 ### How a page is made
 
-The app uses Node's built-in HTTP server and the computer's filesystem.
+The app uses Node's built-in HTTP server and the filesystem. `/chocolate-dolphin`
+loads a lightweight viewer with a full-window sandboxed iframe. The iframe reads
+`GET /api/pages/chocolate-dolphin/preview`; its content comes from
+`data/pages/chocolate-dolphin.html`, or a starter document if no saved file exists.
+The trusted viewer handles webcam updates, the new-page prompt, and navigation.
+Student scripts remain disabled. Native click activation supports mouse, keyboard,
+and touch. The iframe has its own normal scrolling rather than measured heights.
 
-For `/dannys-page`:
+`/edit/chocolate-dolphin` loads the separate shared editor and fetches the HTML
+from `GET /api/pages/chocolate-dolphin`. Save sends that HTML to the existing PUT
+endpoint. Each page is still an independent HTML file; no database or build step
+is required.
 
-1. The server sends the shared page shell from `public/editor.html`.
-2. The editor requests `GET /api/pages/dannys-page`.
-3. The server reads `data/pages/dannys-page.html`. If the file does not exist, it
-   generates a starter document in memory. No file or page directory is created by a visit.
-4. The student's HTML is displayed in a sandboxed iframe above the shared editor.
-5. Update sends the HTML to `PUT /api/pages/dannys-page`.
-6. The server writes the file, then the browser reloads the saved page.
-
-Every page uses the same editor HTML, JavaScript, and editor CSS. These files are
-separate from student content. Editing their shared implementation updates the
-controls for every page without rewriting saved pages.
-
-The home page `/` uses the storage name `index`. Until it has a saved override,
-it uses `public/index.html`, which retains the homepage from before this change.
-`/index` and `/index.html` redirect to `/`. Reset uses a generic starter, including
-for the homepage; it does not restore the legacy homepage.
+The homepage uses storage name `index`. If there is no saved override it reads
+`public/index.html`. **A saved `data/pages/index.html` still takes precedence.**
+To use the new default homepage on an existing deployment, back up that saved
+file and move it out of the pages directory, or paste the new `public/index.html`
+into `/edit/index` and Save. Deployments never overwrite student pages automatically.
+`/index` and `/index.html` redirect to `/`.
 
 ### Files and responsibilities
 
@@ -189,7 +148,10 @@ server.js             HTTP routes, write access, uploads, response policies
 lib/pages.js          Page naming, starter documents, file reads and atomic saves
 lib/webcam.js         USB webcam capture, latest photo, and photo archive
 public/index.html     Default home content, without editor controls
-public/editor.html    Shared page preview and editor controls
+public/viewer.html    Standalone public page viewer
+public/viewer.js      Webcam updates, new-page prompt, and link navigation
+public/viewer.css     Full-window page frame
+public/editor.html    Separate code editor controls
 public/editor.js      Editing, code views, buttons, saves, and uploads
 public/editor.css     Small layout rules for the shared editor
 
@@ -222,9 +184,7 @@ change the shared editor's code. Use the same Add buttons in either view.
   renames it over the destination. Readers do not receive a half-written page.
 - **No page content or password is stored in localStorage or sessionStorage.**
 - Unsaved edits live in browser memory. They are lost if the tab is discarded.
-- sessionStorage remembers only whether this page's editor was open and which
-  code view was selected when a save reloads the page. Saving still works if
-  browser storage is unavailable.
+- The editor starts in full HTML mode on each visit and uses no browser storage.
 - The class password is kept in the password input for the current page load;
   re-enter it after a reload.
 
@@ -283,9 +243,9 @@ The app runs `fswebcam` directly with argument arrays, not a shell. It skips 20
 frames, waits at most 20 seconds, and allows only one capture at a time per server
 process. A capture goes into a temporary JPEG first. Only a successful capture
 replaces `current.jpg`; the previous photo is copied into `archive/`. Images are
-served without browser caching. No background capture loop runs.
+served without browser caching. No background capture loop runs. Captures may take several seconds with the uncompressed mode.
 
-The shared parent editor handles the webcam button inside the sandboxed student
+The shared parent viewer handles the webcam button inside the sandboxed student
 page. This supplies one predefined interactive behavior without enabling arbitrary
 student scripts. Capture requires the same password and origin checks as saving.
 The latest photo is readable by anyone who can reach the site, like the other
@@ -299,7 +259,8 @@ browser camera permissions and is not a Mac-camera implementation.
 
 | Request | Behavior |
 | --- | --- |
-| `GET /` or `GET /<page-name>` | Shared shell and editor. |
+| `GET /` or `GET /<page-name>` | Public page viewer without editor controls. |
+| `GET /edit/<page-name>` | Separate code editor; use `/edit/index` for home. |
 | `GET /api/pages/<page-name>` | JSON: `html`, `saved`, `starter`, `passwordRequired`. |
 | `PUT /api/pages/<page-name>` | Saves the raw HTML request body; requires `Content-Type: text/html`. |
 | `GET /api/pages/<page-name>/preview` | Renders the student's HTML with restrictive browser policies. |
@@ -318,7 +279,7 @@ has been replaced with the per-page API.
 ### Boundaries and deliberate simplifications
 
 - Page names are 1–64 lowercase letters, digits, and single separating hyphens.
-  `api`, `assets`, `uploads`, `health`, `webcam`, and `robot` are reserved. Nested page paths, filename
+  `api`, `assets`, `uploads`, `health`, `webcam`, `robot`, and `edit` are reserved. Nested page paths, filename
   extensions, and path traversal are rejected. A trailing slash redirects to the
   canonical address.
 - The HTML limit is 1 MB; the image limit is 5 MB. Images get generated filenames
@@ -328,11 +289,11 @@ has been replaced with the per-page API.
 - Student HTML is displayed inside an iframe sandbox. Preview responses also set
   Content Security Policy to disable JavaScript, inline event handlers, forms,
   external assets, nested frames, and plugins. Inline CSS and same-server or data
-  images are allowed. The shared editor runs outside this sandbox, so student CSS
+  images are allowed. The shared viewer runs outside this sandbox, so student CSS
   and scripts cannot remove its controls. This version teaches HTML and CSS, not
   student-authored JavaScript.
 - Regular HTTP(S) links are handled by the parent page so visiting another club
-  page opens its editor instead of nesting another editor in the preview.
+  page opens in the main window instead of nesting another viewer.
 - Uploaded images are public by URL. Uploads are stored immediately and are not
   deleted by resetting a page or removing its image tag. There is no image cleanup
   interface or total-storage quota yet.

@@ -29,13 +29,13 @@ function put(base, slug, html, headers = {}) {
   });
 }
 
-test("visiting a new page shows a starter and shared editor without creating a file", async t => {
+test("visiting a new page shows a standalone viewer and starter without creating a file", async t => {
   const { base, dataDirectory } = await fixture(t);
   const response = await fetch(`${base}/dannys-page`);
   assert.equal(response.status, 200);
   const shell = await response.text();
-  assert.match(shell, /id="page-editor"/);
-  assert.match(shell, /id="upload-image"/);
+  assert.doesNotMatch(shell, /id="page-editor"|id="upload-image"/);
+  assert.match(shell, /assets\/viewer.js/);
   assert.match(shell, /sandbox="allow-same-origin"/);
   const page = await (await fetch(`${base}/api/pages/dannys-page`)).json();
   assert.equal(page.saved, false);
@@ -55,7 +55,7 @@ test("save creates only that page, survives a server restart, and preserves edit
   assert.equal(loaded.html, html);
   assert.equal(loaded.saved, true);
   assert.equal((await (await fetch(`${base}/api/pages/other-page`)).json()).saved, false);
-  assert.match(await (await fetch(`${base}/dannys-page`)).text(), /id="page-editor"/);
+  assert.doesNotMatch(await (await fetch(`${base}/dannys-page`)).text(), /id="page-editor"/);
 
   await new Promise(resolve => server.close(resolve));
   server.listen(0, "127.0.0.1");
@@ -80,7 +80,7 @@ test("HTML renders with scripts disabled and the trusted editor remains separate
   assert.match(preview.headers.get("content-security-policy"), /form-action 'none'/);
   const shell = await (await fetch(`${base}/demo`)).text();
   assert.doesNotMatch(shell, /parent\.document/);
-  assert.match(shell, /\/assets\/editor.js/);
+  assert.match(shell, /\/assets\/viewer.js/);
   assert.equal((await fetch(`${base}/assets/editor.js`)).status, 200);
   assert.equal((await fetch(`${base}/assets/editor.css`)).status, 200);
 });
@@ -132,7 +132,7 @@ test("invalid paths cannot escape storage or create pages for reserved routes", 
     const response = await fetch(base + route);
     assert.ok([400, 404].includes(response.status), route);
   }
-  for (const slug of ["health", "assets", "uploads", "a".repeat(65), "-bad", "bad--name"]) {
+  for (const slug of ["health", "assets", "uploads", "edit", "a".repeat(65), "-bad", "bad--name"]) {
     assert.equal((await put(base, slug, "<body>No</body>")).status, 404);
   }
   const redirect = await fetch(`${base}/demo/`, { redirect: "manual" });
@@ -187,4 +187,30 @@ test("webcam hardware failures return readable errors without crashing the serve
   assert.equal(response.status, 503);
   assert.match(await response.text(), /not connected/);
   assert.equal((await fetch(`${base}/health`)).status, 200);
+});
+
+test("edit routes load the separate editor, including index, without creating pages", async t => {
+  const { base, dataDirectory } = await fixture(t);
+  for (const slug of ["index", "chocolate-dolphin"]) {
+    const response = await fetch(`${base}/edit/${slug}`);
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.match(html, /id="page-editor"/);
+    assert.match(html, /id="view-page"/);
+    assert.match(html, /developer.mozilla.org/);
+    assert.match(html, /w3schools.com\/html/);
+    assert.doesNotMatch(html, /id="page-preview"/);
+    assert.match(html, /id="draft-frame"[^>]*sandbox=""/);
+    assert.match(response.headers.get("content-security-policy"), /script-src 'self'/);
+  }
+  for (const route of ["/edit", "/edit/robot", "/edit/a/b", "/edit/bad_name"]) {
+    assert.equal((await fetch(base + route)).status, 404);
+  }
+  assert.equal((await fetch(`${base}/edit/index/`, { redirect: "manual" })).headers.get("location"), "/edit/index");
+  const home = await (await fetch(`${base}/api/pages/index`)).json();
+  assert.match(home.html, /max-width: 750px/);
+  assert.match(home.html, /<h1>Thinkpad Club<\/h1>/);
+  assert.match(home.html, /data-new-page/);
+  assert.match(home.html, /data-webcam-update/);
+  assert.deepEqual(await fs.readdir(dataDirectory), []);
 });

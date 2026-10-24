@@ -6,7 +6,7 @@ const vm = require("node:vm");
 
 // Test browser-side save/upload handlers without adding a browser dependency.
 // These tests exercise full-code mode; real layout and DOM parsing need a browser.
-async function editorFixture({ failSave = false, failCapture = false } = {}) {
+async function editorFixture({ failSave = false, failCapture = false, confirmRandom = false } = {}) {
   function element() {
     return {
       value: "", disabled: false, hidden: false, open: false,
@@ -15,9 +15,9 @@ async function editorFixture({ failSave = false, failCapture = false } = {}) {
       setAttribute() {}, focus() {}, setSelectionRange() {}, click() {}
     };
   }
-  const ids = ["page-editor", "page-preview", "page-source", "update-status", "show-all-code",
+  const ids = ["page-editor", "view-page", "page-source", "update-status", "show-all-code",
     "edit-password", "image-file", "add-style", "update-page", "reset-page", "upload-image",
-    "image-result", "image-code", "password-area", "page-info"];
+    "image-result", "image-code", "password-area", "page-info", "preview-page", "random-html", "close-preview", "draft-frame", "draft-preview"];
   const nodes = Object.fromEntries(ids.map(id => [id, element()]));
   const addButtons = ["paragraph", "title", "list", "link", "webcam"].map(kind => ({ ...element(), dataset: { add: kind } }));
   const controls = [nodes["update-page"], nodes["reset-page"], nodes["page-source"], nodes["show-all-code"], ...addButtons];
@@ -29,9 +29,9 @@ async function editorFixture({ failSave = false, failCapture = false } = {}) {
   let reloads = 0;
   const context = vm.createContext({
     URL,
-    location: { pathname: "/dannys-page", href: "http://localhost/dannys-page", reload() { reloads++; } },
+    location: { pathname: "/edit/dannys-page", href: "http://localhost/edit/dannys-page", reload() { reloads++; } },
     document: { getElementById: id => nodes[id], querySelectorAll: () => addButtons },
-    window: { addEventListener() {} },
+    window: { addEventListener() {}, confirm: () => confirmRandom },
     sessionStorage: { getItem: key => storage.get(key), setItem: (key, value) => storage.set(key, value) },
     fetch: async (url, options = {}) => {
       requests.push({ url, ...options });
@@ -51,7 +51,7 @@ async function editorFixture({ failSave = false, failCapture = false } = {}) {
   return { context, nodes, addButtons, requests, storage, html, starter, reloads: () => reloads };
 }
 
-test("Add buttons preserve full source and Update sends changes with the class password", async () => {
+test("Add buttons preserve full source and Save sends changes with the class password", async () => {
   const f = await editorFixture();
   const source = f.nodes["page-source"];
   await f.addButtons[0].listeners.click();
@@ -68,17 +68,17 @@ test("Add buttons preserve full source and Update sends changes with the class p
   assert.equal(save.url, "/api/pages/dannys-page");
   assert.equal(save.body, source.value);
   assert.equal(save.headers["X-Edit-Password"], "class-secret");
-  assert.equal(f.reloads(), 1);
-  const state = JSON.parse(f.storage.get("thinkpad-editor:dannys-page"));
-  assert.equal(state.open, true);
-  assert.deepEqual(Object.keys(state).sort(), ["fullView", "open"]);
+  assert.equal(f.reloads(), 0);
+  assert.match(f.nodes["update-status"].textContent, /Saved/);
+  assert.equal(f.nodes["view-page"].href, "/dannys-page");
 });
 
-test("Reset immediately saves the starter and reloads", async () => {
+test("Reset saves the starter without leaving the editor", async () => {
   const f = await editorFixture();
   await f.nodes["reset-page"].listeners.click();
   assert.equal(f.requests.find(request => request.method === "PUT").body, f.starter);
-  assert.equal(f.reloads(), 1);
+  assert.equal(f.reloads(), 0);
+  assert.match(f.nodes["update-status"].textContent, /Saved/);
 });
 
 test("Upload inserts usable image HTML but does not save the page until Update", async () => {
@@ -119,31 +119,36 @@ test("Add webcam inserts a persistent image and update button without student Ja
   assert.match(f.requests.find(request => request.method === "PUT").body, /data-webcam/);
 });
 
-test("webcam update refreshes the image without saving page content; errors keep the previous image", async () => {
-  for (const failCapture of [false, true]) {
-    const f = await editorFixture({ failCapture });
-    const button = { disabled: false };
-    const image = { src: "/webcam/current.jpg?t=old", hidden: true };
-    const label = { textContent: "" };
-    const doc = { querySelectorAll: selector => ({
-      "[data-webcam-update]": [button],
-      "[data-webcam-image]": [image],
-      "[data-webcam-status]": [label]
-    })[selector] };
-    f.nodes["edit-password"].value = "class-secret";
-    await f.context.updateWebcam(doc, { querySelector: () => label });
-    const request = f.requests.find(item => item.url === "/api/webcam/capture");
-    assert.equal(request.method, "POST");
-    assert.equal(request.headers["X-Edit-Password"], "class-secret");
-    assert.equal(f.requests.some(item => item.method === "PUT"), false);
-    assert.equal(button.disabled, false);
-    if (failCapture) {
-      assert.equal(image.src, "/webcam/current.jpg?t=old");
-      assert.match(label.textContent, /not connected/);
-    } else {
-      assert.equal(image.src, "/webcam/current.jpg?t=new");
-      assert.equal(image.hidden, false);
-      assert.match(label.textContent, /just now/);
-    }
-  }
+test("random HTML requires confirmation and replaces only the draft until Save", async () => {
+  const cancelled = await editorFixture();
+  await cancelled.nodes["random-html"].listeners.click();
+  assert.equal(cancelled.nodes["page-source"].value, cancelled.html);
+  assert.equal(cancelled.requests.length, 1);
+  const f = await editorFixture({ confirmRandom: true });
+  await f.nodes["random-html"].listeners.click();
+  const generated = f.nodes["page-source"].value;
+  assert.match(generated, /<!doctype html>/);
+  assert.match(generated, /<style>/);
+  assert.match(generated, /Department of Extremely Serious Noodles/);
+  assert.notEqual(generated, f.html);
+  assert.equal(f.requests.length, 1);
+  await f.nodes["update-page"].listeners.click();
+  assert.equal(f.requests.find(request => request.method === "PUT").body, generated);
+});
+
+test("preview uses current unsaved code, refreshes on demand, and never saves", async () => {
+  const f = await editorFixture();
+  const draft = '<h1>Unsaved jellyfish</h1><script>alert(1)</script>';
+  f.nodes["page-source"].value = draft;
+  await f.nodes["preview-page"].listeners.click();
+  assert.equal(f.nodes["draft-preview"].hidden, false);
+  assert.match(f.nodes["draft-frame"].srcdoc, /default-src 'none'/);
+  assert.ok(f.nodes["draft-frame"].srcdoc.endsWith(draft));
+  assert.equal(f.requests.length, 1);
+  await f.nodes["close-preview"].listeners.click();
+  assert.equal(f.nodes["draft-preview"].hidden, true);
+  f.nodes["page-source"].value = '<h1>Another draft</h1>';
+  await f.nodes["preview-page"].listeners.click();
+  assert.match(f.nodes["draft-frame"].srcdoc, /Another draft/);
+  assert.equal(f.requests.length, 1);
 });

@@ -3,25 +3,26 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ThinkPad Club</title>
-
+  <title>Thinkpad Club</title>
   <style>
-    .intro {
-      background-color: yellow;
-      color: red;
-    }
+    body { margin: 0; background: white; color: black; font-family: 'Times New Roman', serif; }
+    main { box-sizing: border-box; max-width: 750px; margin: 40px auto; padding: 0 16px; }
+    h1 { font-weight: 100; font-size: 50px; }
+    img { display: block; width: 100%; height: auto; }
+    /* button { min-height: 44px; cursor: pointer; } */
+    a { color: inherit; }
   </style>
 </head>
-
 <body>
-  <h1>Hello</h1>
-  <p>Welcome to ThinkPad Club.</p>
-
-  <div class="intro">
-    <h2>About the club</h2>
-    <p>A place to learn, experiment, and make things together.</p>
-  </div>
-
-  <hr>
+  <main>
+    <h1>Thinkpad Club</h1>
+    <section data-webcam>
+      <img data-webcam-image src="/webcam/current.jpg" alt="The latest view from the Thinkpad Club studio webcam">
+      <p><button type="button" data-webcam-update>webcam</button></p>
+      <p data-webcam-status role="status" aria-live="polite"></p>
+    </section>
+    <p><button type="button" data-new-page>new page</button></p>
+    <p><a href="/edit/index">edit page</a></p>
+  </main>
 </body>
 </html>
