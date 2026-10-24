@@ -115,6 +115,13 @@ function createServer(options = {}) {
 
       if (pathname === "/health" && method === "GET") return reply(200, "ok");
 
+      if (pathname === "/reset") {
+        if (method !== "GET") return reply(405, "Use GET to reset the homepage.", undefined, { Allow: "GET" });
+        authorize(req);
+        await pages.save("index", await fs.readFile(path.join(ROOT, "public", "index.html"), "utf8"));
+        return reply(303, "Homepage reset.", undefined, { Location: "/" });
+      }
+
       if (pathname.startsWith('/api/robot/')) {
         // Motor controls are password-free; retain cross-origin protections.
         const origin = req.headers.origin;

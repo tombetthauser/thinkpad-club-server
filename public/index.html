@@ -9,20 +9,24 @@
     main { box-sizing: border-box; max-width: 750px; margin: 40px auto; padding: 0 16px; }
     h1 { font-weight: 100; font-size: 50px; }
     img { display: block; width: 100%; height: auto; }
-    /* button { min-height: 44px; cursor: pointer; } */
-    a { color: inherit; }
+    a, button { color: blue; font: inherit; text-decoration: none; }
+    button { background: none; border: 0; padding: 0; cursor: pointer; }
+    a:hover, button:hover { text-decoration: underline; }
+    button:disabled { opacity: 0.5; cursor: wait; }
   </style>
 </head>
 <body>
   <main>
     <h1>Thinkpad Club</h1>
     <section data-webcam>
-      <img data-webcam-image src="/webcam/current.jpg" alt="The latest view from the Thinkpad Club studio webcam">
-      <p><button type="button" data-webcam-update>update webcam</button> <span data-webcam-spinner aria-hidden="true"></span></p>
-      <p data-webcam-status role="status" aria-live="polite"></p>
+      <img data-webcam-image src="/webcam/current.jpg" alt="">
+      <br>
+      <button type="button" data-webcam-update>/update-webcam</button> <span data-webcam-spinner aria-hidden="true"></span><br>
+      <a href="/edit/index">/edit-page</a><br>
+      <button type="button" data-new-page>/new-page</button><br>
+      <a href="/edit/server-bot">/server</a><br>
+      <div data-webcam-status role="status" aria-live="polite"></div>
     </section>
-    <p><button type="button" data-new-page>new page</button> <a href="/our-server">our server</a></p>
-    <p><a href="/edit/index">edit page</a></p>
   </main>
 </body>
 </html>

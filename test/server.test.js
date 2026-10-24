@@ -214,3 +214,27 @@ test("edit routes load the separate editor, including index, without creating pa
   assert.match(home.html, /data-webcam-update/);
   assert.deepEqual(await fs.readdir(dataDirectory), []);
 });
+
+test("unlinked reset restores the default homepage, redirects, and preserves other pages", async t => {
+  const { base } = await fixture(t);
+  await put(base, 'index', '<h1>Changed home</h1>');
+  await put(base, 'keep-me', '<h1>Keep me</h1>');
+  const response = await fetch(`${base}/reset`, { redirect: 'manual' });
+  assert.equal(response.status, 303);
+  assert.equal(response.headers.get('location'), '/');
+  const home = await (await fetch(`${base}/api/pages/index`)).json();
+  assert.equal(home.html, await fs.readFile(path.join(__dirname, '../public/index.html'), 'utf8'));
+  assert.doesNotMatch(home.html, /href="\/reset"/);
+  assert.equal((await (await fetch(`${base}/api/pages/keep-me`)).json()).html, '<h1>Keep me</h1>');
+  assert.equal((await put(base, 'reset', '<h1>No</h1>')).status, 404);
+  assert.equal((await fetch(`${base}/edit/reset`)).status, 404);
+  assert.equal((await fetch(`${base}/reset`, { method: 'POST' })).status, 405);
+});
+
+test("reset retains password and cross-origin protections", async t => {
+  const { base } = await fixture(t, { editPassword: 'secret' });
+  assert.equal((await fetch(`${base}/reset`)).status, 401);
+  const headers = { 'X-Edit-Password': 'secret' };
+  assert.equal((await fetch(`${base}/reset`, { headers: { ...headers, 'Sec-Fetch-Site': 'cross-site' } })).status, 403);
+  assert.equal((await fetch(`${base}/reset`, { headers, redirect: 'manual' })).status, 303);
+});
