@@ -10,7 +10,7 @@ async function fixture({ failCapture = false, requiresPassword = false, prompts 
   const alerts = [];
   const preview = { addEventListener(type, fn) { this[type] = fn; } };
   const context = vm.createContext({
-    URL,
+    URL, setInterval, clearInterval,
     location: { pathname: '/', href: 'https://thinkpad.club/', assign: url => routes.push(url) },
     document: { getElementById: () => preview },
     window: { prompt: () => prompts.shift() ?? null, alert: message => alerts.push(message) },
@@ -29,10 +29,11 @@ async function fixture({ failCapture = false, requiresPassword = false, prompts 
   const button = { disabled: false };
   const image = { src: '/webcam/current.jpg?t=old', hidden: false };
   const label = { textContent: '' };
+  const spinner = { textContent: '' };
   const doc = { querySelectorAll: selector => ({
     '[data-webcam-update]': [button], '[data-webcam-image]': [image], '[data-webcam-status]': [label]
   })[selector] };
-  return { context, preview, requests, routes, alerts, button, image, label, doc, widget: { querySelector: () => label } };
+  return { context, preview, requests, routes, alerts, button, image, label, doc, widget: { querySelector: selector => selector === "[data-webcam-spinner]" ? spinner : label } };
 }
 
 test('standalone webcam updates keep the old image on failure and reenable the button', async () => {
@@ -42,7 +43,8 @@ test('standalone webcam updates keep the old image on failure and reenable the b
     assert.equal(f.requests[0].method, 'POST');
     assert.equal(f.button.disabled, false);
     assert.equal(f.image.src, failCapture ? '/webcam/current.jpg?t=old' : '/webcam/current.jpg?t=new');
-    assert.match(f.label.textContent, failCapture ? /Camera disconnected/ : /just now/);
+    if (failCapture) assert.match(f.label.textContent, /Camera disconnected/);
+    else assert.equal(f.label.textContent, "");
   }
 });
 

@@ -11,7 +11,14 @@ async function updateWebcam(doc, widget) {
   const buttons = doc.querySelectorAll("[data-webcam-update]");
   const message = widget.querySelector("[data-webcam-status]");
   buttons.forEach(button => { button.disabled = true; });
-  if (message) message.textContent = "Taking a new photo…";
+  if (message) message.textContent = "";
+  const spinner = widget.querySelector("[data-webcam-spinner]");
+  const frames = ["|", "/", "-", "\\"];
+  let frame = 0;
+  if (spinner) spinner.textContent = frames[0];
+  const animation = spinner ? setInterval(() => {
+    spinner.textContent = frames[++frame % frames.length];
+  }, 120) : null;
   try {
     const capture = () => fetch("/api/webcam/capture", {
       method: "POST", headers: { "X-Edit-Password": password }
@@ -33,11 +40,13 @@ async function updateWebcam(doc, widget) {
       image.src = photo.url;
     });
     doc.querySelectorAll("[data-webcam-status]").forEach(label => {
-      label.textContent = "New photo taken just now.";
+      label.textContent = "";
     });
   } catch (error) {
     if (message) message.textContent = "Could not update webcam: " + error.message;
   } finally {
+    if (animation !== null) clearInterval(animation);
+    if (spinner) spinner.textContent = "";
     buttons.forEach(button => { button.disabled = false; });
     webcamBusy = false;
   }

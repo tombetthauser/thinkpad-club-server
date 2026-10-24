@@ -92,7 +92,7 @@ const elements = {
   webcam: `  <section data-webcam>
     <h2>Live webcam image</h2>
     <img data-webcam-image src="/webcam/current.jpg" alt="Latest photo from the club webcam" width="640" style="max-width: 100%; height: auto;">
-    <p><button type="button" data-webcam-update>Update webcam image</button></p>
+    <p><button type="button" data-webcam-update>Update webcam image</button> <span data-webcam-spinner aria-hidden="true"></span></p>
     <p data-webcam-status role="status">Click Update webcam image to take a new photo from the club's webcam.</p>
   </section>`
 };
