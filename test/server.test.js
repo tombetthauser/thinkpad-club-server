@@ -36,7 +36,7 @@ test("visiting a new page shows a standalone viewer and starter without creating
   const shell = await response.text();
   assert.doesNotMatch(shell, /id="page-editor"|id="upload-image"/);
   assert.match(shell, /assets\/viewer.js/);
-  assert.match(shell, /sandbox="allow-same-origin"/);
+  assert.match(shell, /sandbox="allow-same-origin allow-top-navigation-by-user-activation"/);
   const page = await (await fetch(`${base}/api/pages/dannys-page`)).json();
   assert.equal(page.saved, false);
   assert.match(page.html, /<h1>Hello, dannys-page!<\/h1>/);

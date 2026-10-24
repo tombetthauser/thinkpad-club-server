@@ -17,7 +17,7 @@ const PREVIEW_POLICY = [
   "form-action 'none'",
   "base-uri 'none'",
   "object-src 'none'",
-  "sandbox allow-same-origin"
+  "sandbox allow-same-origin allow-top-navigation-by-user-activation"
 ].join("; ");
 
 function fail(status, message) {

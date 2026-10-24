@@ -101,8 +101,14 @@ preview.addEventListener("load", () => {
     const href = link.getAttribute("href");
     if (href.startsWith("#")) return;
     const address = new URL(href, location.href);
-    event.preventDefault();
-    if (["http:", "https:", "mailto:", "tel:"].includes(address.protocol)) location.assign(address.href);
+    if (!["http:", "https:", "mailto:", "tel:"].includes(address.protocol)) {
+      event.preventDefault();
+      return;
+    }
+    // Let the browser follow the user's tap directly, including in mobile Safari.
+    // Resolve relative links against the public page, not the preview API URL.
+    link.href = address.href;
+    link.target = "_top";
   });
 });
 preview.src = `/api/pages/${encodeURIComponent(slug)}/preview`;
