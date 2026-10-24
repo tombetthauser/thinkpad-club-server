@@ -14,7 +14,7 @@ async function folder(t) {
   return directory;
 }
 
-test("webcam uses the original capture settings, serves the latest JPEG, and archives the old one", async t => {
+test("webcam captures full-HD YUYV at high JPEG quality, serves the latest JPEG, and archives the old one", async t => {
   const directory = await folder(t);
   const calls = [];
   const camera = webcam({ directory, device: "/dev/video-test", run: async (command, args, options) => {
@@ -31,7 +31,7 @@ test("webcam uses the original capture settings, serves the latest JPEG, and arc
   const archives = await fs.readdir(path.join(directory, "archive"));
   assert.equal(archives.length, 1);
   assert.deepEqual(await fs.readFile(path.join(directory, "archive", archives[0])), FIRST);
-  assert.deepEqual(calls[0].args.slice(0, -1), ["-d", "/dev/video-test", "-r", "1280x720", "--no-banner", "-S", "2"]);
+  assert.deepEqual(calls[0].args.slice(0, -1), ["-d", "/dev/video-test", "-p", "YUYV", "-r", "1920x1080", "--no-banner", "-S", "20", "--jpeg", "95"]);
   assert.equal(calls[0].command, "fswebcam");
   assert.equal(calls[0].options.timeout, 20000);
   assert.equal((await fs.readdir(directory)).some(name => name.startsWith(".capture-")), false);

@@ -1,12 +1,12 @@
-/* Credentials and controller identity live only in this page's memory. */
+/* Controller identity lives only in this page's memory. */
 const $ = id => document.getElementById(id);
 const controller = crypto.randomUUID();
-let password = '', active = null, timer, inFlight = false, generation = 0;
+let active = null, timer, inFlight = false, generation = 0;
 
 async function request(action, body) {
   const response = await fetch(`/api/robot/${action}`, {
     method: body ? 'POST' : 'GET', cache: 'no-store',
-    headers: { 'X-Robot-Password': password, 'X-Robot-Controller': controller, 'Content-Type': 'application/json' },
+    headers: { 'X-Robot-Controller': controller, 'Content-Type': 'application/json' },
     ...(body ? { body: JSON.stringify(body) } : {}),
     signal: AbortSignal.timeout(450), keepalive: Boolean(body)
   });
@@ -20,7 +20,7 @@ function stop() {
   clearTimeout(timer);
   $('status').textContent = 'Stopping…';
   // If a move is pending, tick sends stop after it completes to preserve ordering.
-  if (!inFlight && password) sendStop();
+  if (!inFlight && !$('controls').disabled) sendStop();
 }
 
 async function sendStop() {
@@ -62,7 +62,6 @@ function start(action, source) {
 
 $('connect').onclick = async () => {
   stop();
-  password = $('password').value;
   try {
     const state = await request('status');
     if (!state.ready) throw new Error('Robot disabled or GPIO worker unavailable.');
@@ -70,7 +69,6 @@ $('connect').onclick = async () => {
     $('status').textContent = 'Ready — hold a direction to move';
   } catch (error) { $('status').textContent = error.message; }
 };
-$('password').addEventListener('input', () => { stop(); $('controls').disabled = true; });
 $('stop').onclick = stop;
 $('speed').oninput = () => { $('speed-value').textContent = `${Math.round($('speed').value * 100)}%`; };
 for (const button of document.querySelectorAll('[data-direction]')) {

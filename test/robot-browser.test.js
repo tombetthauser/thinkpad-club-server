@@ -10,9 +10,7 @@ function browser() {
       setPointerCapture() {}, matches() { return this.tagName === 'INPUT'; }
     }, properties);
   }
-  const elements = Object.fromEntries(['password', 'status', 'connect', 'stop', 'controls', 'speed', 'speed-value'].map(id => [id, element()]));
-  elements.password.value = 'secret';
-  elements.password.tagName = 'INPUT';
+  const elements = Object.fromEntries(['status', 'connect', 'stop', 'controls', 'speed', 'speed-value'].map(id => [id, element()]));
   elements.controls.disabled = true;
   elements.speed.value = '.3';
   const forward = element({ dataset: { direction: 'forward' } });
@@ -36,7 +34,7 @@ function browser() {
   return { elements, forward, document, window, calls, timers, settle, pointer, key };
 }
 
-test('browser requires unlock, refreshes held movement, and sends stop on pointer release', async () => {
+test('browser enables without a password, refreshes held movement, and sends stop on pointer release', async () => {
   const b = browser();
   b.forward.handlers.pointerdown(b.pointer);
   assert.equal(b.calls.length, 0);
@@ -45,7 +43,7 @@ test('browser requires unlock, refreshes held movement, and sends stop on pointe
   await b.settle();
   assert.equal(b.calls.at(-1).url, '/api/robot/forward');
   assert.equal(JSON.parse(b.calls.at(-1).options.body).speed, .3);
-  assert.equal(b.calls.at(-1).options.headers['X-Robot-Password'], 'secret');
+  assert.equal(b.calls.at(-1).options.headers['X-Robot-Password'], undefined);
   const refresh = [...b.timers.values()][0];
   b.timers.clear();
   await refresh();

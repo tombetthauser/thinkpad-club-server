@@ -66,9 +66,7 @@ function createServer(options = {}) {
   const pages = pageStore(path.join(dataDirectory, "pages"));
   const uploads = path.join(dataDirectory, "uploads");
   const camera = options.webcam || webcam();
-  const robotPassword = options.robotPassword ?? process.env.ROBOT_PASSWORD ?? "";
-  // No GPIO process is started unless both enablement and a separate secret exist.
-  const motors = options.robot || robot({ enabled: process.env.ROBOT_ENABLED === '1' && Boolean(robotPassword) });
+  const motors = options.robot || robot({ enabled: process.env.ROBOT_ENABLED === '1' });
 
   function authorize(req) {
     const origin = req.headers.origin;
@@ -118,21 +116,18 @@ function createServer(options = {}) {
       if (pathname === "/health" && method === "GET") return reply(200, "ok");
 
       if (pathname.startsWith('/api/robot/')) {
-        // Reuse origin rules, but do not grant motor access with the class password.
+        // Motor controls are password-free; retain cross-origin protections.
         const origin = req.headers.origin;
         if ((origin && origin !== (publicOrigin || `http://${req.headers.host}`)) ||
             (req.headers['sec-fetch-site'] && !['same-origin', 'none'].includes(req.headers['sec-fetch-site']))) {
           throw fail(403, 'Use the robot control page on this server.');
-        }
-        if (!robotPassword || !samePassword(req.headers['x-robot-password'] || '', robotPassword)) {
-          throw fail(401, 'Enter the separate robot password.');
         }
         const action = pathname.slice('/api/robot/'.length);
         if (action === 'status' && method === 'GET') return json(motors.status());
         if (!['forward', 'backward', 'left', 'right', 'stop', 'test-left', 'test-right'].includes(action)) throw fail(404, 'Unknown robot command.');
         if (method !== 'POST') return reply(405, 'Use POST.', undefined, { Allow: 'POST' });
         if (req.headers['content-type']?.split(';')[0].trim() !== 'application/json') throw fail(415, 'Send application/json.');
-        // Bind lease identity to this tab; a separate secret still authorizes every request.
+        // Bind the movement lease to this tab.
         const controller = req.headers['x-robot-controller'];
         if (typeof controller !== 'string' || !/^[a-f0-9-]{36}$/.test(controller)) throw fail(400, 'Missing controller ID.');
         let body;

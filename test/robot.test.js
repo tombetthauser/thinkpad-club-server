@@ -62,7 +62,7 @@ test('emergency stop is written immediately even with a movement pending', async
   assert.equal(service.status().state, 'stop');
 });
 
-test('motor routes require separate password, same origin, explicit JSON and controller identity', async t => {
+test('motor routes work without passwords and require same origin, explicit JSON and controller identity', async t => {
   const calls = [];
   let closed = false;
   const motors = {
@@ -70,14 +70,14 @@ test('motor routes require separate password, same origin, explicit JSON and con
     command: async (...args) => { calls.push(args); return { state: args[0] }; },
     close: () => { closed = true; }
   };
-  const server = createServer({ robot: motors, editPassword: 'class', robotPassword: 'secret', publicOrigin: '' });
+  const server = createServer({ robot: motors, editPassword: 'class', publicOrigin: '' });
   server.listen(0, '127.0.0.1');
   await once(server, 'listening');
   t.after(() => server.close());
   const base = `http://127.0.0.1:${server.address().port}`;
-  const headers = { 'Content-Type': 'application/json', 'X-Robot-Password': 'secret', 'X-Robot-Controller': '12345678-1234-1234-1234-123456789012' };
+  const headers = { 'Content-Type': 'application/json', 'X-Robot-Controller': '12345678-1234-1234-1234-123456789012' };
   const send = (extra = {}, body = '{"speed":0.3}', action = 'forward') => fetch(`${base}/api/robot/${action}`, { method: 'POST', headers: { ...headers, ...extra }, body });
-  assert.equal((await send({ 'X-Robot-Password': '', 'X-Edit-Password': 'class' })).status, 401);
+  assert.equal((await fetch(`${base}/api/robot/status`)).status, 200);
   assert.equal((await send({ Origin: 'https://elsewhere.test' })).status, 403);
   assert.equal((await send({ Origin: 'null' })).status, 403);
   assert.equal((await send({ 'Sec-Fetch-Site': 'cross-site' })).status, 403);
@@ -90,7 +90,9 @@ test('motor routes require separate password, same origin, explicit JSON and con
   assert.equal((await send({ Origin: base })).status, 200);
   assert.deepEqual(calls[0], ['forward', .3, headers['X-Robot-Controller']]);
   const page = await fetch(`${base}/robot`);
-  assert.match(await page.text(), /Hold to move/);
+  const html = await page.text();
+  assert.match(html, /Hold to move/);
+  assert.doesNotMatch(html, /type="password"/);
   assert.match(page.headers.get('content-security-policy'), /frame-ancestors 'none'/);
   assert.equal((await fetch(`${base}/assets/robot.js`)).status, 200);
   await new Promise(resolve => server.close(resolve));

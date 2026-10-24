@@ -154,8 +154,9 @@ name, and keep private information out of your pages and pictures.
 ### Robot controls
 
 Optional Raspberry Pi motor controls are available at `/robot`. They are disabled
-by default and require a separate `ROBOT_PASSWORD`, explicit enablement, and a
-Python GPIO worker. See [setup, wiring, configuration, and raised-wheel tests](docs/robot-setup.md).
+by default and require explicit enablement and a Python GPIO worker. No robot
+password is required; anyone who can reach the server can operate the enabled robot.
+See [setup, wiring, configuration, and raised-wheel tests](docs/robot-setup.md).
 The existing page editor and webcam routes keep their existing access rules.
 
 ### How a page is made
@@ -267,8 +268,9 @@ HTTPS-hosted version for internet access.
 
 ### Webcam setup on the Pi
 
-The webcam integration reuses the old app's `fswebcam` tool and 1280×720 capture
-settings. On the Pi, install `fswebcam` if it is not already installed, connect
+The webcam integration uses `fswebcam` with 1920×1080 YUYV (uncompressed) input
+and JPEG quality 95. The camera must support that capture mode. On the Pi,
+install `fswebcam` if it is not already installed, connect
 the USB webcam, and make sure the Node service user has permission to access
 `/dev/video0` (normally through the Linux `video` group).
 
@@ -277,7 +279,7 @@ directory. If the old app ran as a different user, set `WEBCAM_DIR` to that old
 photo directory or choose a new writable directory. Environment variables belong
 in the service configuration when running through systemd.
 
-The app runs `fswebcam` directly with argument arrays, not a shell. It skips two
+The app runs `fswebcam` directly with argument arrays, not a shell. It skips 20
 frames, waits at most 20 seconds, and allows only one capture at a time per server
 process. A capture goes into a temporary JPEG first. Only a successful capture
 replaces `current.jpg`; the previous photo is copied into `archive/`. Images are

@@ -1,10 +1,10 @@
 # Robot setup and wheels-raised checks
 
 The existing Node HTTP server starts one Python GPIO worker; there is no second
-web server. GPIO control is disabled unless `ROBOT_ENABLED=1` and a nonempty
-`ROBOT_PASSWORD` are set. The class editing password does not grant motor access.
-Visit `/robot` to unlock controls with the separate robot password. Neither
-password nor controller identity is stored in browser storage.
+web server. GPIO control is disabled unless `ROBOT_ENABLED=1` is set.
+Visit `/robot` and click **Enable controls**; no password is required.
+Anyone who can reach this server can operate the robot when enabled.
+Controller identity lives only in browser memory.
 
 ## Wiring
 
@@ -49,7 +49,7 @@ the USB cable free of tension. Reconnect motor power only when ready to test.
 For a local Pi session:
 
 ```sh
-ROBOT_ENABLED=1 ROBOT_PYTHON=/usr/bin/python3 ROBOT_PASSWORD='choose-a-separate-robot-secret' node server.js
+ROBOT_ENABLED=1 ROBOT_PYTHON=/usr/bin/python3 node server.js
 ```
 
 For systemd, put these environment variables in the existing Node service's
@@ -58,17 +58,15 @@ service. Use a single Node process for this robot; do not run replicas sharing G
 Never run another GPIO test utility while the worker owns the pins.
 
 Use the existing HTTPS reverse proxy and set `PUBLIC_ORIGIN` to the exact browser
-origin (no trailing slash) for remote use. Keep the robot secret separate from
-the class secret, and restrict access to trusted operators. Do not enable motor
-access over a publicly reachable unencrypted HTTP connection. The local default
+origin (no trailing slash) for remote use. Motor routes have no password or account
+authorization. The local default
 bind address remains `127.0.0.1`; use an SSH tunnel for private access if desired.
 
 ## Configuration
 
 | Variable | Default | Meaning |
 | --- | --- | --- |
-| `ROBOT_ENABLED` | off | Only `1` opts into GPIO. A separate robot password is also mandatory. |
-| `ROBOT_PASSWORD` | empty | Required `X-Robot-Password` for every robot API request. |
+| `ROBOT_ENABLED` | off | Only `1` opts into GPIO. No password is required. |
 | `ROBOT_PYTHON` | `python3` | Python executable with gpiozero and GPIO device access. |
 | `ROBOT_LEFT_FORWARD` / `ROBOT_LEFT_BACKWARD` | `17` / `27` | Left motor BCM pins. |
 | `ROBOT_RIGHT_FORWARD` / `ROBOT_RIGHT_BACKWARD` | `22` / `23` | Right motor BCM pins. |
@@ -80,7 +78,7 @@ configuration must use four distinct BCM pins in 0–27 excluding UART pins 14/1
 
 ## Minimal manual verification
 
-1. Open `/robot`, enter the robot password, and click **Enable controls**. A GPIO
+1. Open `/robot` and click **Enable controls**. A GPIO
    startup failure keeps controls locked; check the server log.
 2. Expand calibration. Briefly hold **Test left wheel**, then release. Only the
    left wheel should spin and stop. Repeat for the right. Increase speed gradually
@@ -95,8 +93,8 @@ configuration must use four distinct BCM pins in 0–27 excluding UART pins 14/1
    execution in developer tools. Both outputs should stop within 500 ms of the
    last accepted refresh (plus small OS scheduling latency). Closing the tab alone
    exercises browser stop too; blocking the network tests the server watchdog.
-6. Unlock a second tab. While the first is driving, the second must receive a
-   controller conflict for movement. STOP remains available to any authenticated
+6. Enable controls in a second tab. While the first is driving, the second must receive a
+   controller conflict for movement. STOP remains available to any
    operator, including while a movement acknowledgement is pending. After release
    or timeout another tab may drive.
 7. While holding a direction, stop Node with Ctrl+C or stop its systemd service.
@@ -114,13 +112,13 @@ has been confirmed by the automated tests.
 
 `GET /api/robot/status` returns enabled/ready, command state, `maxSpeed: 0.6`, and
 `timeoutMs: 500`. `POST /api/robot/{forward,backward,left,right,stop,test-left,test-right}`
-requires JSON (`{"speed":0.3}`, or `{}` for stop), `X-Robot-Password`, and
+requires JSON (`{"speed":0.3}`, or `{}` for stop) and
 `X-Robot-Controller` (a per-tab UUID). Existing cross-origin protections apply;
-the class password is not required for these separate robot routes.
+neither a robot password nor the class password is required for these routes.
 Unknown commands, malformed JSON, invalid speeds, missing identity, and
-unauthorized requests never drive motors. Rejected requests do not refresh the
+cross-origin requests never drive motors. Rejected requests do not refresh the
 watchdog. Non-owner movement returns 409. A controller owns movement until stop
-or expiry; requests are serialized, and authenticated stop can interrupt the lease.
+or expiry; requests are serialized, and stop can interrupt the lease from any tab.
 
 Each worker command has an absolute expiry to reject queued stale movement and a
 monotonic deadline capped at 500 ms. A dedicated Python thread checks every 10 ms
