@@ -68,8 +68,7 @@ function newPage() {
   location.assign(`/edit/${name}`);
 }
 
-preview.addEventListener("load", () => {
-  const doc = preview.contentDocument;
+function connectPage(doc) {
   if (!doc?.body) return;
   document.title = doc.title || "Thinkpad Club";
   // Configure native navigation before a tap. Some mobile browsers suppress
@@ -120,5 +119,10 @@ preview.addEventListener("load", () => {
     link.href = address.href;
     link.target = "_top";
   });
-});
-preview.src = `/api/pages/${encodeURIComponent(slug)}/preview`;
+}
+if (preview) {
+  preview.addEventListener("load", () => connectPage(preview.contentDocument));
+  preview.src = `/api/pages/${encodeURIComponent(slug)}/preview`;
+} else {
+  connectPage(document);
+}

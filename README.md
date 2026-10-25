@@ -129,6 +129,13 @@ The trusted viewer handles webcam updates, the new-page prompt, and navigation.
 Student scripts remain disabled. Native click activation supports mouse, keyboard,
 and touch. The iframe has its own normal scrolling rather than measured heights.
 
+The homepage `/` renders directly in the browser rather than inside that frame.
+Its trusted controls attach directly to the document, avoiding mobile browsers'
+restrictions on handlers and dialogs in script-disabled frames. Each response
+gets a fresh Content Security Policy nonce that permits only the injected
+`/assets/viewer.js` script; scripts and inline event handlers in saved homepage
+HTML remain blocked. No new dependencies are required.
+
 `/edit/chocolate-dolphin` loads the separate shared editor and fetches the HTML
 from `GET /api/pages/chocolate-dolphin`. Save sends that HTML to the existing PUT
 endpoint. Each page is still an independent HTML file; no database or build step

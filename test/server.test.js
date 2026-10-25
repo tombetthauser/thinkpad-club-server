@@ -240,3 +240,19 @@ test("reset retains password and cross-origin protections", async t => {
   assert.equal((await fetch(`${base}/reset`, { headers: { ...headers, 'Sec-Fetch-Site': 'cross-site' } })).status, 403);
   assert.equal((await fetch(`${base}/reset`, { headers, redirect: 'manual' })).status, 303);
 });
+
+test('homepage controls run outside the sandbox with a fresh script nonce', async t => {
+  const { base } = await fixture(t);
+  await put(base, 'index', '<!doctype html><html><body><h1>Saved home</h1><script>alert("untrusted")</script></body></html>');
+  const first = await fetch(base + '/');
+  const html = await first.text();
+  const nonce = /<script nonce="([^"]+)" src="\/assets\/viewer.js" defer><\/script>/.exec(html)?.[1];
+  assert.ok(nonce);
+  assert.match(html, /Saved home/);
+  assert.doesNotMatch(html, /<iframe/);
+  const policy = first.headers.get('content-security-policy');
+  assert.ok(policy.includes(`script-src 'nonce-${nonce}'`));
+  assert.match(policy, /frame-src 'none'/);
+  assert.doesNotMatch(policy, /script-src 'self'/);
+  assert.doesNotMatch((await fetch(base + '/')).headers.get('content-security-policy'), new RegExp(nonce));
+});

@@ -249,6 +249,17 @@ function createServer(options = {}) {
         if (validSlug(slug)) {
           const canonical = slug === "index" ? "/" : `/${slug}`;
           if (pathname !== canonical) return reply(308, "Use this page address.", undefined, { Location: canonical });
+          if (slug === "index") {
+            const page = await pages.read("index");
+            const nonce = randomUUID();
+            const script = `<script nonce="${nonce}" src="/assets/viewer.js" defer></script>`;
+            // Load only the trusted controls, outside a script-disabled frame.
+            const html = page.html.replace(/^(\s*<!doctype[^>]*>)?/i, opening => opening + script);
+            return reply(200, html, "text/html; charset=utf-8", {
+              "Content-Security-Policy": `default-src 'none'; script-src 'nonce-${nonce}'; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'`,
+              "X-Frame-Options": "DENY"
+            });
+          }
           return reply(200, await fs.readFile(path.join(ROOT, "public", "viewer.html")), "text/html; charset=utf-8", {
             "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
             "X-Frame-Options": "DENY"
