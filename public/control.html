@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Robot controls</title>
+<h1>Robot controls</h1>
+<p>Hold to move. Release to stop.</p>
+<button data-direction="forward">Forward</button>
+<button data-direction="backward">Backward</button>
+<button data-direction="left">Rotate left</button>
+<button data-direction="right">Rotate right</button>
+<button id="stop">Stop</button>
+<p><label>Speed <input id="speed" type="range" min="0" max="0.6" step="0.05" value="0.3"></label></p>
+<button id="dance">Dance</button>
+<p id="status" role="status">Stopped</p>
+<script>
+const controller = crypto.randomUUID();
+const speed = document.getElementById('speed');
+const status = document.getElementById('status');
+let running = false;
+let sequence = 0;
+let pointer = null;
+
+async function command(action) {
+  const response = await fetch(`/api/robot/${action}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Robot-Controller': controller },
+    body: JSON.stringify({ speed: Number(speed.value) }),
+    signal: AbortSignal.timeout(450),
+    keepalive: true
+  });
+  if (!response.ok) throw new Error(await response.text());
+  status.textContent = action === 'stop' ? 'Stopped' : action;
+}
+
+async function move(direction) {
+  if (running) return;
+  running = true;
+  const current = ++sequence;
+  let error = '';
+  try {
+    for (let step = 0; current === sequence; step++) {
+      let action = direction;
+      let delay = 120;
+      if (direction === 'dance') {
+        action = ['left', 'stop', 'right', 'stop'][step % 4];
+        delay = action === 'stop' ? 100 : 150;
+      }
+      await command(action);
+      if (current !== sequence || (direction === 'dance' && step === 11)) break;
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  } catch (failure) {
+    error = failure.message;
+  } finally {
+    try { await command('stop'); }
+    catch (failure) { error = failure.message; }
+    running = false;
+    if (error) status.textContent = error;
+  }
+}
+
+function stop() {
+  sequence++;
+  pointer = null;
+  if (running) command('stop').catch(error => { status.textContent = error.message; });
+}
+
+for (const button of document.querySelectorAll('[data-direction]')) {
+  button.onpointerdown = event => {
+    if (event.button !== 0 || running) return;
+    event.preventDefault();
+    pointer = event.pointerId;
+    button.setPointerCapture(pointer);
+    move(button.dataset.direction);
+  };
+  button.onpointerup = button.onpointercancel = button.onlostpointercapture = event => {
+    if (event.pointerId === pointer) stop();
+  };
+}
+document.getElementById('stop').onclick = stop;
+document.getElementById('dance').onclick = () => move('dance');
+window.addEventListener('blur', stop);
+window.addEventListener('pagehide', stop);
+document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });
+</script>
+</html>

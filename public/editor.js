@@ -35,7 +35,6 @@ function serialize(doc) {
 
 function simplified(html) {
   const doc = parse(html);
-  doc.querySelectorAll("script").forEach(node => node.remove());
   const styles = [...doc.head.querySelectorAll("style")]
     .map(node => node.outerHTML)
     .join("\n\n");
@@ -50,11 +49,9 @@ function captureEdits() {
 
   const doc = parse(draft);
   const edited = parse(source.value);
-  const scripts = [...doc.body.querySelectorAll("script")];
   doc.head.querySelectorAll("style").forEach(node => node.remove());
   doc.head.append(...edited.head.querySelectorAll("style"));
   doc.body.replaceChildren(...edited.body.childNodes);
-  doc.body.append(...scripts);
   draft = serialize(doc);
 }
 
@@ -273,9 +270,7 @@ window.addEventListener("beforeunload", event => {
 document.getElementById("preview-page").addEventListener("click", () => {
   if (busy) return;
   captureEdits();
-  const policy = "default-src 'none'; style-src 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'none'";
-  document.getElementById("draft-frame").srcdoc =
-    `<meta http-equiv="Content-Security-Policy" content="${policy}">\n` + draft;
+  document.getElementById("draft-frame").srcdoc = draft;
   document.getElementById("draft-preview").hidden = false;
   status.textContent = "Preview refreshed. Your changes have not been saved.";
 });

@@ -142,7 +142,7 @@ test("preview uses current unsaved code, refreshes on demand, and never saves", 
   f.nodes["page-source"].value = draft;
   await f.nodes["preview-page"].listeners.click();
   assert.equal(f.nodes["draft-preview"].hidden, false);
-  assert.match(f.nodes["draft-frame"].srcdoc, /default-src 'none'/);
+  assert.equal(f.nodes["draft-frame"].srcdoc, draft);
   assert.ok(f.nodes["draft-frame"].srcdoc.endsWith(draft));
   assert.equal(f.requests.length, 1);
   await f.nodes["close-preview"].listeners.click();

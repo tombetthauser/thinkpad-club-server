@@ -42,10 +42,10 @@ Public pages show only page content. Open `/edit/<page-name>` to edit a page, or
 and Save, View, MDN, and W3Schools HTML links at the top. It starts in full HTML
 mode. Save keeps the editor open and reports success without reloading.
 
-**Preview** displays your current unsaved HTML in a sandboxed frame in the editor.
+**Preview** displays your current unsaved HTML in a frame in the editor.
 Click Preview again to refresh it after edits, or Close preview to hide it. Preview
-does not save or upload your draft. Scripts and interactive webcam controls do not
-run inside this draft preview.
+does not save or upload your draft. Student JavaScript runs in this draft preview. Shared webcam controls are attached
+when you view the saved page.
 
 **Random HTML** asks for confirmation before replacing the entire draft with a
 random science or math page and deliberately odd CSS. Cancel keeps your work.
@@ -113,28 +113,70 @@ name, and keep private information out of your pages and pictures.
 
 ### Robot controls
 
-Optional Raspberry Pi motor controls are available at `/robot`. They are disabled
+Optional Raspberry Pi motor controls are available at `/control`.
+Hold Forward, Backward, Rotate left, or Rotate right; release to stop. The speed
+slider starts at 30% and allows up to 60%. Dance makes three pairs of short
+left/right turns, with stopped pauses; STOP cancels it. Motor controls are disabled
 by default and require explicit enablement and a Python GPIO worker. No robot
 password is required; anyone who can reach the server can operate the enabled robot.
-See [setup, wiring, configuration, and raised-wheel tests](docs/robot-setup.md).
 The existing page editor and webcam routes keep their existing access rules.
+
+Three files implement the controls: `public/control.html` contains the plain HTML
+and browser script, `lib/robot.js` connects Node to Python, and `lib/motors.py`
+owns the GPIO pins and independent 500 ms watchdog. There is no robot stylesheet,
+separate browser script, keyboard control, calibration interface, or second page.
+
+On Raspberry Pi OS, install `python3-gpiozero` and give the service user GPIO
+device access (normally membership in the `gpio` group). Use the Pi's system
+Python rather than a copied Mac virtual environment. For this chassis:
+
+```bash
+ROBOT_ENABLED=1 ROBOT_PYTHON=/usr/bin/python3 ROBOT_INVERT_RIGHT=1 node server.js
+```
+
+When using systemd, set those variables in `thinkpad-server.service` and restart
+the service. Run only one GPIO controller at a time. The default Node bind address
+is still `127.0.0.1`; for the HTTPS reverse proxy, set `PUBLIC_ORIGIN` to the exact
+website origin. No password is required for motor commands.
+
+BCM17/27 (physical pins 11/13) connect to IN1/IN2 for the left motor;
+BCM22/23 (physical pins 15/16) connect to IN3/IN4 for the right motor.
+Pi ground, driver ground, and motor battery negative share ground. Motor battery
+positive connects only to driver VCC; Pi USB power stays separate. GPIO14/15 are
+reserved for UART. The owner confirmed this board needed J2 bridged and solder
+repairs before both motors worked; that does not establish other boards' jumper
+configuration. The right motor requires `ROBOT_INVERT_RIGHT=1` on this chassis.
+
+Optional pin variables are `ROBOT_LEFT_FORWARD`, `ROBOT_LEFT_BACKWARD`,
+`ROBOT_RIGHT_FORWARD`, and `ROBOT_RIGHT_BACKWARD`. Set `ROBOT_INVERT_LEFT=1`
+if the left motor's polarity needs reversing. Restart after configuration changes.
+
+Test with wheels raised and USB cable slack. Check each direction, release-to-stop,
+Stop, and Dance at a low speed. Dance makes six nominal 150 ms turns separated by
+100 ms stopped pauses; network latency affects timing and angle. Stop, changing
+tabs, losing focus, or leaving the page cancels movement. Disconnect the browser
+network while moving to verify that outputs stop within 500 ms of the last
+accepted command, plus scheduling latency. Stop the service while moving to
+verify shutdown cleanup. State text describes commands, not measured wheel motion.
+Stop removes drive power; the wheels may coast. Disconnect the motor battery to
+physically remove motor power.
+
+Movement uses `POST /api/robot/{forward,backward,left,right,stop}`, JSON speed from
+0 to 0.6, and a per-tab `X-Robot-Controller` UUID. Cross-origin requests are
+rejected and only one tab can drive at a time; any tab can stop it. Python stops
+on expiry, EOF, signals, or command errors. Worker failure requires a server
+restart; movement is never replayed automatically.
+
+Run `node --test` and `python3 -B -m unittest discover -s test -p 'test_*.py'`
+for software checks without GPIO hardware.
 
 ### How a page is made
 
-The app uses Node's built-in HTTP server and the filesystem. `/chocolate-dolphin`
-loads a lightweight viewer with a full-window sandboxed iframe. The iframe reads
-`GET /api/pages/chocolate-dolphin/preview`; its content comes from
-`data/pages/chocolate-dolphin.html`, or a starter document if no saved file exists.
-The trusted viewer handles webcam updates, the new-page prompt, and navigation.
-Student scripts remain disabled. Native click activation supports mouse, keyboard,
-and touch. The iframe has its own normal scrolling rather than measured heights.
-
-The homepage `/` renders directly in the browser rather than inside that frame.
-Its trusted controls attach directly to the document, avoiding mobile browsers'
-restrictions on handlers and dialogs in script-disabled frames. Each response
-gets a fresh Content Security Policy nonce that permits only the injected
-`/assets/viewer.js` script; scripts and inline event handlers in saved homepage
-HTML remain blocked. No new dependencies are required.
+The app uses Node's built-in HTTP server and the filesystem. Public pages render
+directly from their HTML files, with a shared script for webcam controls and the
+new-page prompt. Student JavaScript, inline event handlers, and external scripts
+are allowed. No sandbox or script-blocking policy is applied to student pages or
+the editor's unsaved preview. The editor remains at a separate `/edit/...` URL.
 
 `/edit/chocolate-dolphin` loads the separate shared editor and fetches the HTML
 from `GET /api/pages/chocolate-dolphin`. Save sends that HTML to the existing PUT
@@ -252,15 +294,9 @@ process. A capture goes into a temporary JPEG first. Only a successful capture
 replaces `current.jpg`; the previous photo is copied into `archive/`. Images are
 served without browser caching. No background capture loop runs. Captures may take several seconds with the uncompressed mode.
 
-The shared parent viewer handles the webcam button inside the sandboxed student
-page. This supplies one predefined interactive behavior without enabling arbitrary
-student scripts. Capture requires the same password and origin checks as saving.
-The latest photo is readable by anyone who can reach the site, like the other
-public images. Webcam photo archives are not served by the app and are not pruned
-automatically; back them up or clear old photos as appropriate for the club.
-
-This feature needs the Linux USB webcam setup on the server. It does not use
-browser camera permissions and is not a Mac-camera implementation.
+The shared page script handles webcam controls without requiring students to
+write their own capture code. Capture keeps the password and origin checks used
+for saving. Webcam archives are not served or automatically pruned.
 
 ### API routes
 
@@ -286,21 +322,16 @@ has been replaced with the per-page API.
 ### Boundaries and deliberate simplifications
 
 - Page names are 1–64 lowercase letters, digits, and single separating hyphens.
-  `api`, `assets`, `uploads`, `health`, `webcam`, `robot`, and `edit` are reserved. Nested page paths, filename
+  `api`, `assets`, `uploads`, `health`, `webcam`, `robot`, `control`, and `edit` are reserved. Nested page paths, filename
   extensions, and path traversal are rejected. A trailing slash redirects to the
   canonical address.
 - The HTML limit is 1 MB; the image limit is 5 MB. Images get generated filenames
   rather than trusting the original name. File signatures select PNG, JPEG, GIF,
   or WebP; this is a format check, not full image decoding or malware scanning.
   SVG and arbitrary file uploads are unsupported.
-- Student HTML is displayed inside an iframe sandbox. Preview responses also set
-  Content Security Policy to disable JavaScript, inline event handlers, forms,
-  external assets, nested frames, and plugins. Inline CSS and same-server or data
-  images are allowed. The shared viewer runs outside this sandbox, so student CSS
-  and scripts cannot remove its controls. This version teaches HTML and CSS, not
-  student-authored JavaScript.
-- Regular HTTP(S) links are handled by the parent page so visiting another club
-  page opens in the main window instead of nesting another viewer.
+- Student JavaScript runs as ordinary same-origin website code, including in
+  unsaved previews. Pages can load external scripts and resources. The editor's
+  full HTML mode allows editing scripts directly.
 - Uploaded images are public by URL. Uploads are stored immediately and are not
   deleted by resetting a page or removing its image tag. There is no image cleanup
   interface or total-storage quota yet.

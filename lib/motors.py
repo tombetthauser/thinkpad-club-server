@@ -1,4 +1,3 @@
-"""GPIO owner. JSON lines on stdin/stdout; no network listener."""
 import json
 import math
 import os
@@ -50,8 +49,7 @@ class Motors:
                     self.stop()
                     return
                 directions = {'forward': (1, 1), 'backward': (-1, -1),
-                              'left': (-1, 1), 'right': (1, -1),
-                              'test-left': (1, 0), 'test-right': (0, 1)}
+                              'left': (-1, 1), 'right': (1, -1)}
                 if isinstance(speed, bool) or not isinstance(speed, (float, int)) or not math.isfinite(speed) or not 0 <= speed <= .6:
                     raise ValueError('Speed must be between 0 and 0.6')
                 remaining = min(.5, expires - time.time())
@@ -66,18 +64,6 @@ class Motors:
                 self.stop()
                 raise
 
-    def forward(self, speed):
-        self.drive('forward', speed, time.time() + .5)
-
-    def backward(self, speed):
-        self.drive('backward', speed, time.time() + .5)
-
-    def turn_left(self, speed):
-        self.drive('left', speed, time.time() + .5)
-
-    def turn_right(self, speed):
-        self.drive('right', speed, time.time() + .5)
-
     def _watch(self):
         while not self.done.wait(.01):
             with self.lock:
@@ -85,7 +71,6 @@ class Motors:
                     try:
                         self.stop()
                     except BaseException:
-                        # GPIO failures must take the service out of operation.
                         os._exit(1)
 
     def close(self):

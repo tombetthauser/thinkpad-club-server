@@ -9,17 +9,6 @@ const { robot } = require("./lib/robot");
 
 const PAGE_LIMIT = 1024 * 1024;
 const IMAGE_LIMIT = 5 * 1024 * 1024;
-const PREVIEW_POLICY = [
-  "default-src 'none'",
-  "script-src 'none'",
-  "style-src 'unsafe-inline'",
-  "img-src 'self' data:",
-  "form-action 'none'",
-  "base-uri 'none'",
-  "object-src 'none'",
-  "sandbox allow-same-origin allow-top-navigation-by-user-activation"
-].join("; ");
-
 function fail(status, message) {
   return Object.assign(new Error(message), { status });
 }
@@ -123,18 +112,15 @@ function createServer(options = {}) {
       }
 
       if (pathname.startsWith('/api/robot/')) {
-        // Motor controls are password-free; retain cross-origin protections.
         const origin = req.headers.origin;
         if ((origin && origin !== (publicOrigin || `http://${req.headers.host}`)) ||
             (req.headers['sec-fetch-site'] && !['same-origin', 'none'].includes(req.headers['sec-fetch-site']))) {
           throw fail(403, 'Use the robot control page on this server.');
         }
         const action = pathname.slice('/api/robot/'.length);
-        if (action === 'status' && method === 'GET') return json(motors.status());
-        if (!['forward', 'backward', 'left', 'right', 'stop', 'test-left', 'test-right'].includes(action)) throw fail(404, 'Unknown robot command.');
+        if (!['forward', 'backward', 'left', 'right', 'stop'].includes(action)) throw fail(404, 'Unknown robot command.');
         if (method !== 'POST') return reply(405, 'Use POST.', undefined, { Allow: 'POST' });
         if (req.headers['content-type']?.split(';')[0].trim() !== 'application/json') throw fail(415, 'Send application/json.');
-        // Bind the movement lease to this tab.
         const controller = req.headers['x-robot-controller'];
         if (typeof controller !== 'string' || !/^[a-f0-9-]{36}$/.test(controller)) throw fail(400, 'Missing controller ID.');
         let body;
@@ -144,9 +130,12 @@ function createServer(options = {}) {
         return json(await motors.command(action, body.speed, controller));
       }
 
-      if (pathname === '/robot' && method === 'GET') {
-        return reply(200, await fs.readFile(path.join(ROOT, 'public/robot.html')), 'text/html; charset=utf-8', {
-          'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self'; frame-ancestors 'none'; form-action 'none'; base-uri 'none'",
+      if (pathname === '/control' && method === 'GET') {
+        const html = await fs.readFile(path.join(ROOT, 'public/control.html'), 'utf8');
+        const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
+        const hash = createHash('sha256').update(script).digest('base64');
+        return reply(200, html, 'text/html; charset=utf-8', {
+          'Content-Security-Policy': `default-src 'none'; script-src 'sha256-${hash}'; connect-src 'self'; frame-ancestors 'none'; form-action 'none'; base-uri 'none'`,
           'X-Frame-Options': 'DENY'
         });
       }
@@ -164,8 +153,6 @@ function createServer(options = {}) {
       }
 
       const assets = {
-        "/assets/robot.js": ["robot.js", "text/javascript; charset=utf-8"],
-        "/assets/robot.css": ["robot.css", "text/css; charset=utf-8"],
         "/assets/viewer.js": ["viewer.js", "text/javascript; charset=utf-8"],
         "/assets/viewer.css": ["viewer.css", "text/css; charset=utf-8"],
         "/assets/editor.js": ["editor.js", "text/javascript; charset=utf-8"],
@@ -188,7 +175,6 @@ function createServer(options = {}) {
               ? page.html.replace(/<head\b[^>]*>/i, opening => opening + base)
               : page.html.replace(/^(\s*<!doctype[^>]*>)?/i, opening => opening + base);
             return reply(200, html, "text/html; charset=utf-8", {
-              "Content-Security-Policy": PREVIEW_POLICY,
               "X-Frame-Options": "SAMEORIGIN"
             });
           }
@@ -238,7 +224,6 @@ function createServer(options = {}) {
         if (edit && validSlug(edit[1])) {
           if (edit[2]) return reply(308, "Use this editor address.", undefined, { Location: `/edit/${edit[1]}` });
           return reply(200, await fs.readFile(path.join(ROOT, "public", "editor.html")), "text/html; charset=utf-8", {
-            "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
             "X-Frame-Options": "DENY"
           });
         }
@@ -249,19 +234,10 @@ function createServer(options = {}) {
         if (validSlug(slug)) {
           const canonical = slug === "index" ? "/" : `/${slug}`;
           if (pathname !== canonical) return reply(308, "Use this page address.", undefined, { Location: canonical });
-          if (slug === "index") {
-            const page = await pages.read("index");
-            const nonce = randomUUID();
-            const script = `<script nonce="${nonce}" src="/assets/viewer.js" defer></script>`;
-            // Load only the trusted controls, outside a script-disabled frame.
-            const html = page.html.replace(/^(\s*<!doctype[^>]*>)?/i, opening => opening + script);
-            return reply(200, html, "text/html; charset=utf-8", {
-              "Content-Security-Policy": `default-src 'none'; script-src 'nonce-${nonce}'; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'`,
-              "X-Frame-Options": "DENY"
-            });
-          }
-          return reply(200, await fs.readFile(path.join(ROOT, "public", "viewer.html")), "text/html; charset=utf-8", {
-            "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+          const page = await pages.read(slug);
+          const script = '<script src="/assets/viewer.js" defer></script>';
+          const html = page.html.replace(/^(\s*<!doctype[^>]*>)?/i, opening => opening + script);
+          return reply(200, html, "text/html; charset=utf-8", {
             "X-Frame-Options": "DENY"
           });
         }

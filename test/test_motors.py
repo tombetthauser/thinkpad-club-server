@@ -5,7 +5,7 @@ import time
 import unittest
 from unittest.mock import patch
 
-spec = importlib.util.spec_from_file_location('motors', os.path.join(os.path.dirname(__file__), '../robot/motors.py'))
+spec = importlib.util.spec_from_file_location('motors', os.path.join(os.path.dirname(__file__), '../lib/motors.py'))
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 
@@ -37,15 +37,14 @@ class MotorTests(unittest.TestCase):
         self.assertEqual(self.motors.left.pins, {'forward': 17, 'backward': 27})
         self.assertEqual(self.motors.right.pins, {'forward': 22, 'backward': 23})
         for action, expected in [('forward', (.3, .3)), ('backward', (-.3, -.3)),
-                                 ('left', (-.3, .3)), ('right', (.3, -.3)),
-                                 ('test-left', (.3, 0)), ('test-right', (0, .3))]:
+                                 ('left', (-.3, .3)), ('right', (.3, -.3))]:
             self.motors.drive(action, .3, time.time() + .5)
             self.assertEqual((self.motors.left.value, self.motors.right.value), expected)
         self.motors.stop()
         self.assertEqual((self.motors.left.value, self.motors.right.value), (0, 0))
 
     def test_independent_watchdog_and_expired_commands(self):
-        self.motors.forward(.3)
+        self.motors.drive('forward', .3, time.time() + .5)
         time.sleep(.56)
         self.assertEqual((self.motors.left.value, self.motors.right.value), (0, 0))
         with self.assertRaises(ValueError):
@@ -54,9 +53,9 @@ class MotorTests(unittest.TestCase):
 
     def test_errors_stop_and_shutdown_closes_both(self):
         for speed in [-1, .61, float('nan'), True, '0.3']:
-            self.motors.forward(.3)
+            self.motors.drive('forward', .3, time.time() + .5)
             with self.assertRaises(ValueError):
-                self.motors.forward(speed)
+                self.motors.drive('forward', speed, time.time() + .5)
             self.assertEqual((self.motors.left.value, self.motors.right.value), (0, 0))
         self.motors.close()
         self.assertTrue(self.motors.left.closed and self.motors.right.closed)
@@ -65,7 +64,7 @@ class MotorTests(unittest.TestCase):
         with patch.dict(os.environ, {'ROBOT_INVERT_LEFT': '1'}):
             other = module.Motors(FakeMotor)
         try:
-            other.forward(.4)
+            other.drive('forward', .4, time.time() + .5)
             self.assertEqual((other.left.value, other.right.value), (-.4, .4))
         finally:
             other.close()
@@ -94,7 +93,7 @@ class MotorTests(unittest.TestCase):
                 self._value = value
         self.motors.right = BrokenMotor()
         with self.assertRaises(RuntimeError):
-            self.motors.forward(.3)
+            self.motors.drive('forward', .3, time.time() + .5)
         self.assertEqual((self.motors.left.value, self.motors.right.value), (0, 0))
 
 

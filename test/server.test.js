@@ -36,7 +36,7 @@ test("visiting a new page shows a standalone viewer and starter without creating
   const shell = await response.text();
   assert.doesNotMatch(shell, /id="page-editor"|id="upload-image"/);
   assert.match(shell, /assets\/viewer.js/);
-  assert.match(shell, /sandbox="allow-same-origin allow-top-navigation-by-user-activation"/);
+  assert.doesNotMatch(shell, /<iframe|sandbox=/);
   const page = await (await fetch(`${base}/api/pages/dannys-page`)).json();
   assert.equal(page.saved, false);
   assert.match(page.html, /<h1>Hello, dannys-page!<\/h1>/);
@@ -69,7 +69,7 @@ test("save creates only that page, survives a server restart, and preserves edit
   assert.equal((await (await fetch(`${restarted}/api/pages/dannys-page`)).json()).html, loaded.starter);
 });
 
-test("HTML renders with scripts disabled and the trusted editor remains separate", async t => {
+test("HTML preserves executable scripts and the editor remains separate", async t => {
   const { base } = await fixture(t);
   const html = '<body><h1>Hi</h1><script>parent.document.body.remove()</script><img src="x" onerror="alert(1)"></body>';
   await put(base, "demo", html);
@@ -77,11 +77,9 @@ test("HTML renders with scripts disabled and the trusted editor remains separate
   const rendered = await preview.text();
   assert.match(rendered, /<base target="_top">/);
   assert.equal(rendered.replace('<base target="_top">', ''), html);
-  assert.match(preview.headers.get("content-security-policy"), /script-src 'none'/);
-  assert.match(preview.headers.get("content-security-policy"), /sandbox allow-same-origin/);
-  assert.match(preview.headers.get("content-security-policy"), /form-action 'none'/);
+  assert.equal(preview.headers.get("content-security-policy"), null);
   const shell = await (await fetch(`${base}/demo`)).text();
-  assert.doesNotMatch(shell, /parent\.document/);
+  assert.match(shell, /parent\.document/);
   assert.match(shell, /\/assets\/viewer.js/);
   assert.equal((await fetch(`${base}/assets/editor.js`)).status, 200);
   assert.equal((await fetch(`${base}/assets/editor.css`)).status, 200);
@@ -202,8 +200,9 @@ test("edit routes load the separate editor, including index, without creating pa
     assert.match(html, /developer.mozilla.org/);
     assert.match(html, /w3schools.com\/html/);
     assert.doesNotMatch(html, /id="page-preview"/);
-    assert.match(html, /id="draft-frame"[^>]*sandbox=""/);
-    assert.match(response.headers.get("content-security-policy"), /script-src 'self'/);
+    assert.match(html, /id="draft-frame"/);
+    assert.doesNotMatch(html, /sandbox=/);
+    assert.equal(response.headers.get("content-security-policy"), null);
   }
   for (const route of ["/edit", "/edit/robot", "/edit/a/b", "/edit/bad_name"]) {
     assert.equal((await fetch(base + route)).status, 404);
@@ -241,18 +240,13 @@ test("reset retains password and cross-origin protections", async t => {
   assert.equal((await fetch(`${base}/reset`, { headers, redirect: 'manual' })).status, 303);
 });
 
-test('homepage controls run outside the sandbox with a fresh script nonce', async t => {
+test('homepage preserves student scripts without a sandbox or script policy', async t => {
   const { base } = await fixture(t);
-  await put(base, 'index', '<!doctype html><html><body><h1>Saved home</h1><script>alert("untrusted")</script></body></html>');
-  const first = await fetch(base + '/');
-  const html = await first.text();
-  const nonce = /<script nonce="([^"]+)" src="\/assets\/viewer.js" defer><\/script>/.exec(html)?.[1];
-  assert.ok(nonce);
-  assert.match(html, /Saved home/);
-  assert.doesNotMatch(html, /<iframe/);
-  const policy = first.headers.get('content-security-policy');
-  assert.ok(policy.includes(`script-src 'nonce-${nonce}'`));
-  assert.match(policy, /frame-src 'none'/);
-  assert.doesNotMatch(policy, /script-src 'self'/);
-  assert.doesNotMatch((await fetch(base + '/')).headers.get('content-security-policy'), new RegExp(nonce));
+  await put(base, 'index', '<h1>Saved home</h1><script>window.studentCode = true;</script>');
+  const response = await fetch(base + '/');
+  const html = await response.text();
+  assert.match(html, /src="\/assets\/viewer.js"/);
+  assert.match(html, /window.studentCode = true/);
+  assert.doesNotMatch(html, /<iframe|sandbox=/);
+  assert.equal(response.headers.get('content-security-policy'), null);
 });

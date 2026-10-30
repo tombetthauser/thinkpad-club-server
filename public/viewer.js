@@ -61,7 +61,7 @@ function newPage() {
   if (entered === null) return;
   const name = entered.trim().toLowerCase().replace(/\s+/g, "-");
   if (name.length > 64 || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(name)
-      || ["index", "api", "assets", "uploads", "health", "webcam", "robot", "edit", "reset"].includes(name)) {
+      || ["index", "api", "assets", "uploads", "health", "webcam", "robot", "control", "edit", "reset"].includes(name)) {
     window.alert("Choose a name up to 64 characters, using letters, numbers, and single hyphens. That name may be reserved.");
     return;
   }
