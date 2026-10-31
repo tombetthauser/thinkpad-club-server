@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Robot controls</title>
 <h1>Robot controls</h1>
-<p>Hold to move. Release to stop.</p>
+<p>Click a direction to move for half a second.</p>
 <button data-direction="forward">Forward</button>
 <button data-direction="backward">Backward</button>
 <button data-direction="left">Rotate left</button>
@@ -19,7 +19,6 @@ const speed = document.getElementById('speed');
 const status = document.getElementById('status');
 let running = false;
 let sequence = 0;
-let pointer = null;
 
 async function command(action) {
   const response = await fetch(`/api/robot/${action}`, {
@@ -39,9 +38,10 @@ async function move(direction) {
   const current = ++sequence;
   let error = '';
   try {
-    for (let step = 0; current === sequence; step++) {
+    const steps = direction === 'dance' ? 12 : 1;
+    for (let step = 0; step < steps && current === sequence; step++) {
       let action = direction;
-      let delay = 120;
+      let delay = 500;
       if (direction === 'dance') {
         action = ['left', 'stop', 'right', 'stop'][step % 4];
         delay = action === 'stop' ? 100 : 150;
@@ -62,21 +62,11 @@ async function move(direction) {
 
 function stop() {
   sequence++;
-  pointer = null;
-  if (running) command('stop').catch(error => { status.textContent = error.message; });
+  command('stop').catch(error => { status.textContent = error.message; });
 }
 
 for (const button of document.querySelectorAll('[data-direction]')) {
-  button.onpointerdown = event => {
-    if (event.button !== 0 || running) return;
-    event.preventDefault();
-    pointer = event.pointerId;
-    button.setPointerCapture(pointer);
-    move(button.dataset.direction);
-  };
-  button.onpointerup = button.onpointercancel = button.onlostpointercapture = event => {
-    if (event.pointerId === pointer) stop();
-  };
+  button.onclick = () => move(button.dataset.direction);
 }
 document.getElementById('stop').onclick = stop;
 document.getElementById('dance').onclick = () => move('dance');

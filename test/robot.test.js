@@ -97,7 +97,7 @@ test('motor routes work without passwords and require same origin, explicit JSON
   assert.deepEqual(calls[0], ['forward', .3, headers['X-Robot-Controller']]);
   const page = await fetch(`${base}/control`);
   const html = await page.text();
-  assert.match(html, /Hold to move/);
+  assert.match(html, /move for half a second/);
   assert.match(html, /Rotate left/);
   assert.match(html, /Rotate right/);
   assert.match(html, /id="dance"/);
@@ -120,7 +120,7 @@ function browser() {
   const elements = {
     speed: { value: '.3' }, status: { textContent: 'Stopped' }, stop: {}, dance: {}
   };
-  const button = { dataset: { direction: 'forward' }, setPointerCapture() {} };
+  const button = { dataset: { direction: 'forward' } };
   const document = {
     hidden: false, handlers: {},
     getElementById: id => elements[id], querySelectorAll: () => [button],
@@ -142,24 +142,39 @@ function browser() {
   });
   return { elements, button, document, window, calls, timers, delays,
     fail: () => { fail = true; },
-    settle: () => new Promise(resolve => setImmediate(resolve)),
-    pointer: { button: 0, pointerId: 1, preventDefault() {} } };
+    settle: () => new Promise(resolve => setImmediate(resolve)) };
 }
 
-test('plain controls refresh while held and stop on release', async () => {
+test('a direction click sends one movement command and stops after 500 ms', async () => {
   const page = browser();
-  page.button.onpointerdown(page.pointer);
+  const move = page.button.onclick();
   await page.settle();
   assert.deepEqual(page.calls[0], { action: 'forward', speed: .3 });
+  assert.deepEqual(page.delays, [500]);
+  page.button.onclick();
+  assert.equal(page.calls.length, 1);
   page.timers.shift()();
-  await page.settle();
-  assert.equal(page.calls.filter(call => call.action === 'forward').length, 2);
-  page.button.onpointerup(page.pointer);
-  await page.settle();
-  page.timers.shift()();
-  await page.settle();
+  await move;
+  assert.equal(page.calls.filter(call => call.action === 'forward').length, 1);
   assert.equal(page.calls.at(-1).action, 'stop');
   assert.equal(page.timers.length, 0);
+  assert.equal(page.elements.status.textContent, 'Stopped');
+  assert.equal(page.button.onpointerdown, undefined);
+});
+
+test('each direction uses the slider and accepts a new click after stopping', async () => {
+  const page = browser();
+  page.elements.speed.value = '.5';
+  for (const action of ['forward', 'backward', 'left', 'right']) {
+    page.button.dataset.direction = action;
+    const move = page.button.onclick();
+    await page.settle();
+    assert.deepEqual(page.calls.at(-1), { action, speed: .5 });
+    page.timers.shift()();
+    await move;
+    assert.equal(page.calls.at(-1).action, 'stop');
+  }
+  assert.deepEqual(page.delays, [500, 500, 500, 500]);
 });
 
 test('dance uses the slider, alternates six short turns, and finishes stopped', async () => {
@@ -184,13 +199,12 @@ test('dance uses the slider, alternates six short turns, and finishes stopped', 
   assert.equal(page.elements.status.textContent, 'Stopped');
 });
 
-test('stop, touch cancellation, lost capture, blur, page exit, and hidden tabs cancel movement', async () => {
-  for (const reason of ['stop', 'pointercancel', 'lostpointercapture', 'blur', 'pagehide', 'hidden']) {
+test('stop, blur, page exit, and hidden tabs cancel movement', async () => {
+  for (const reason of ['stop', 'blur', 'pagehide', 'hidden']) {
     const page = browser();
-    page.button.onpointerdown(page.pointer);
+    page.button.onclick();
     await page.settle();
     if (reason === 'stop') page.elements.stop.onclick();
-    else if (reason === 'pointercancel' || reason === 'lostpointercapture') page.button[`on${reason}`](page.pointer);
     else if (reason === 'hidden') { page.document.hidden = true; page.document.handlers.visibilitychange(); }
     else page.window.handlers[reason]();
     await page.settle();

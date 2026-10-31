@@ -114,7 +114,7 @@ name, and keep private information out of your pages and pictures.
 ### Robot controls
 
 Optional Raspberry Pi motor controls are available at `/control`.
-Hold Forward, Backward, Rotate left, or Rotate right; release to stop. The speed
+Click Forward, Backward, Rotate left, or Rotate right for a half-second run. The speed
 slider starts at 30% and allows up to 60%. Dance makes three pairs of short
 left/right turns, with stopped pauses; STOP cancels it. Motor controls are disabled
 by default and require explicit enablement and a Python GPIO worker. No robot
@@ -151,7 +151,7 @@ Optional pin variables are `ROBOT_LEFT_FORWARD`, `ROBOT_LEFT_BACKWARD`,
 `ROBOT_RIGHT_FORWARD`, and `ROBOT_RIGHT_BACKWARD`. Set `ROBOT_INVERT_LEFT=1`
 if the left motor's polarity needs reversing. Restart after configuration changes.
 
-Test with wheels raised and USB cable slack. Check each direction, release-to-stop,
+Test with wheels raised and USB cable slack. Check each direction's half-second run,
 Stop, and Dance at a low speed. Dance makes six nominal 150 ms turns separated by
 100 ms stopped pauses; network latency affects timing and angle. Stop, changing
 tabs, losing focus, or leaving the page cancels movement. Disconnect the browser
