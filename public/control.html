@@ -12,19 +12,83 @@
 <button id="stop">Stop</button>
 <p><label>Speed <input id="speed" type="range" min="0" max="0.6" step="0.05" value="0.3"></label></p>
 <button id="dance">Dance</button>
+<h2>Python motor program</h2>
+<button id="easy">Easy</button>
+<button id="hard">Hard</button>
+<p id="program-help">Easy uses half-second motor commands. Hard includes pins, motor objects, functions, and timing. Switching replaces your code. Speeds are limited to 0.6 and programs to 10 seconds. Supported Python includes these examples, arithmetic, if, and for loops using range(n), where n is 0–20. Pins must match the configured motor pairs; other imports and system access are unavailable.</p>
+<label for="code">Code</label><br>
+<textarea id="code" rows="24" cols="60" spellcheck="false" aria-describedby="program-help">from gpiozero import Motor
+from time import sleep
+
+LEFT_FORWARD = 17
+LEFT_BACKWARD = 27
+RIGHT_FORWARD = 22
+RIGHT_BACKWARD = 23
+
+left_motor = Motor(
+    forward=LEFT_FORWARD,
+    backward=LEFT_BACKWARD
+)
+
+right_motor = Motor(
+    forward=RIGHT_FORWARD,
+    backward=RIGHT_BACKWARD
+)
+
+def stop():
+    left_motor.stop()
+    right_motor.stop()
+
+def move(left_speed, right_speed, seconds):
+    try:
+        left_motor.value = left_speed
+        right_motor.value = -right_speed
+        sleep(seconds)
+    finally:
+        stop()
+
+def forward(speed, seconds):
+    move(speed, speed, seconds)
+
+def backward(speed, seconds):
+    move(-speed, -speed, seconds)
+
+def turn_left(speed, seconds):
+    move(-speed, speed, seconds)
+
+def turn_right(speed, seconds):
+    move(speed, -speed, seconds)
+
+try:
+    turn_left(0.5, 0.5)
+    turn_right(0.5, 0.5)
+    forward(0.5, 0.5)
+    backward(0.5, 0.5)
+finally:
+    try:
+        stop()
+    finally:
+        try:
+            left_motor.close()
+        finally:
+            right_motor.close()</textarea><br>
+<button id="execute">Execute</button>
 <p id="status" role="status">Stopped</p>
 <script>
 const controller = crypto.randomUUID();
 const speed = document.getElementById('speed');
 const status = document.getElementById('status');
+const code = document.getElementById('code');
+const hardCode = code.value;
+const easyCode = 'left(0.5)\nright(0.5)\nforward(0.5)\nbackward(0.5)';
 let running = false;
 let sequence = 0;
 
-async function command(action) {
+async function command(action, power = Number(speed.value)) {
   const response = await fetch(`/api/robot/${action}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'X-Robot-Controller': controller },
-    body: JSON.stringify({ speed: Number(speed.value) }),
+    body: JSON.stringify({ speed: power }),
     signal: AbortSignal.timeout(450),
     keepalive: true
   });
@@ -38,15 +102,33 @@ async function move(direction) {
   const current = ++sequence;
   let error = '';
   try {
-    const steps = direction === 'dance' ? 12 : 1;
+    let program;
+    if (direction === 'program') {
+      status.textContent = 'Checking program…';
+      const response = await fetch('/api/robot/program', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Robot-Controller': controller },
+        body: JSON.stringify({ code: document.getElementById('code').value }),
+        signal: AbortSignal.timeout(3000)
+      });
+      if (!response.ok) throw new Error(await response.text());
+      program = (await response.json()).steps;
+    }
+    const steps = program ? program.length : direction === 'dance' ? 12 : 1;
     for (let step = 0; step < steps && current === sequence; step++) {
       let action = direction;
       let delay = 500;
+      let power = Number(speed.value);
+      if (program) {
+        action = program[step].action;
+        power = program[step].speed;
+        delay = program[step].duration ?? 500;
+      }
       if (direction === 'dance') {
         action = ['left', 'stop', 'right', 'stop'][step % 4];
         delay = action === 'stop' ? 100 : 150;
       }
-      await command(action);
+      await command(action, power);
       if (current !== sequence || (direction === 'dance' && step === 11)) break;
       await new Promise(resolve => setTimeout(resolve, delay));
     }
@@ -70,6 +152,9 @@ for (const button of document.querySelectorAll('[data-direction]')) {
 }
 document.getElementById('stop').onclick = stop;
 document.getElementById('dance').onclick = () => move('dance');
+document.getElementById('execute').onclick = () => move('program');
+document.getElementById('easy').onclick = () => { if (!running) code.value = easyCode; };
+document.getElementById('hard').onclick = () => { if (!running) code.value = hardCode; };
 window.addEventListener('blur', stop);
 window.addEventListener('pagehide', stop);
 document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });

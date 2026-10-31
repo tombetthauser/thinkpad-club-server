@@ -118,15 +118,16 @@ function createServer(options = {}) {
       if (pathname.startsWith('/api/robot/')) {
         checkOrigin(req);
         const action = pathname.slice('/api/robot/'.length);
-        if (!['forward', 'backward', 'left', 'right', 'stop'].includes(action)) throw fail(404, 'Unknown robot command.');
+        if (!['forward', 'backward', 'left', 'right', 'stop', 'wheels', 'program'].includes(action)) throw fail(404, 'Unknown robot command.');
         if (method !== 'POST') return reply(405, 'Use POST.', undefined, { Allow: 'POST' });
         if (req.headers['content-type']?.split(';')[0].trim() !== 'application/json') throw fail(415, 'Send application/json.');
         const controller = req.headers['x-robot-controller'];
         if (typeof controller !== 'string' || !/^[a-f0-9-]{36}$/.test(controller)) throw fail(400, 'Missing controller ID.');
         let body;
-        try { body = JSON.parse((await readBody(req, 1024)).toString('utf8')); }
+        try { body = JSON.parse((await readBody(req, action === 'program' ? 8192 : 1024)).toString('utf8')); }
         catch (error) { throw error.status ? error : fail(400, 'Invalid JSON.'); }
         if (!body || typeof body !== 'object' || Array.isArray(body)) throw fail(400, 'Send a JSON object.');
+        if (action === 'program') return json({ steps: await motors.program(body.code) });
         return json(await motors.command(action, body.speed, controller));
       }
 

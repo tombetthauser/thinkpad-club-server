@@ -121,6 +121,29 @@ by default and require explicit enablement and a Python GPIO worker. No robot
 password is required; anyone who can reach the server can operate the enabled robot.
 The existing page editor and webcam routes keep their existing access rules.
 
+The Python motor editor on `/control` starts in Hard mode with a full-file example:
+the two permitted imports, GPIO constants, `Motor` setup, functions, `sleep`, and
+`try/finally` cleanup. Easy replaces it with `left(0.5)`, `right(0.5)`,
+`forward(0.5)`, and `backward(0.5)`. Switching modes replaces the editor contents.
+Both versions run with Execute; Stop or leaving the page cancels the remaining
+commands. Edits remain in that browser tab and are not saved.
+
+A bounded AST interpreter evaluates the program before movement. Supported syntax
+includes variables, numeric arithmetic, plain functions, conditions, `for` with
+`range(n)` up to 20 iterations, and `try/finally`. The only imports are
+`from gpiozero import Motor` and `from time import sleep`. Motor objects are simulated
+while compiling; student text never reaches `exec`, `eval`, the filesystem, or
+the shell. Unsupported syntax produces a line-specific error. Programs are limited
+to 4096 bytes, 10 seconds, 2000 interpreter operations, and 10 nested function calls.
+
+Easy calls run for half a second. Hard records each motor's signed value during
+`sleep(seconds)` and splits longer sleeps into updates of at most 250 ms. The
+browser sends these through the existing GPIO worker with its independent 500 ms
+watchdog. Hard's explicit right-wheel reversal is applied directly, rather than
+applying `ROBOT_INVERT_RIGHT` a second time. Declared pins must match the configured
+motor pairs, optionally swapped to reverse orientation; access to other pins is
+rejected. Speeds remain limited to -0.6 through 0.6.
+
 Three files implement the controls: `public/control.html` contains the plain HTML
 and browser script, `lib/robot.js` connects Node to Python, and `lib/motors.py`
 owns the GPIO pins and independent 500 ms watchdog. There is no robot stylesheet,
@@ -166,6 +189,10 @@ Movement uses `POST /api/robot/{forward,backward,left,right,stop}`, JSON speed f
 rejected and only one tab can drive at a time; any tab can stop it. Python stops
 on expiry, EOF, signals, or command errors. Worker failure requires a server
 restart; movement is never replayed automatically.
+`POST /api/robot/program` accepts JSON containing `code` and returns validated
+`steps`; parsing a program does not itself move the motors.
+Hard steps use `POST /api/robot/wheels` with a pair of signed physical wheel
+speeds, retaining the same validation, controller lease, and timeout.
 
 Run `node --test` and `python3 -B -m unittest discover -s test -p 'test_*.py'`
 for software checks without GPIO hardware.
