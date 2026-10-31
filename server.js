@@ -57,7 +57,7 @@ function createServer(options = {}) {
   const camera = options.webcam || webcam();
   const motors = options.robot || robot({ enabled: process.env.ROBOT_ENABLED === '1' });
 
-  function authorize(req) {
+  function checkOrigin(req) {
     const origin = req.headers.origin;
     if (origin) {
       let allowed = false;
@@ -72,6 +72,10 @@ function createServer(options = {}) {
     if (req.headers["sec-fetch-site"] && !["same-origin", "none"].includes(req.headers["sec-fetch-site"])) {
       throw fail(403, "Use these controls from the ThinkPad Club page itself.");
     }
+  }
+
+  function authorize(req) {
+    checkOrigin(req);
     if (editPassword && !samePassword(req.headers["x-edit-password"] || "", editPassword)) {
       throw fail(401, "Enter the class password to save, upload, or update the webcam.");
     }
@@ -112,11 +116,7 @@ function createServer(options = {}) {
       }
 
       if (pathname.startsWith('/api/robot/')) {
-        const origin = req.headers.origin;
-        if ((origin && origin !== (publicOrigin || `http://${req.headers.host}`)) ||
-            (req.headers['sec-fetch-site'] && !['same-origin', 'none'].includes(req.headers['sec-fetch-site']))) {
-          throw fail(403, 'Use the robot control page on this server.');
-        }
+        checkOrigin(req);
         const action = pathname.slice('/api/robot/'.length);
         if (!['forward', 'backward', 'left', 'right', 'stop'].includes(action)) throw fail(404, 'Unknown robot command.');
         if (method !== 'POST') return reply(405, 'Use POST.', undefined, { Allow: 'POST' });

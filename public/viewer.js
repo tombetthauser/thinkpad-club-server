@@ -2,24 +2,51 @@
 
 const slug = location.pathname === "/" ? "index" : location.pathname.slice(1);
 const preview = document.getElementById("page-preview");
-let webcamBusy = false;
+let actionBusy = false;
 let password = "";
+let robotController;
 
-async function updateWebcam(doc, widget) {
-  if (webcamBusy) return;
-  webcamBusy = true;
-  const buttons = doc.querySelectorAll("[data-webcam-update]");
-  const message = widget.querySelector("[data-webcam-status]");
-  buttons.forEach(button => { button.disabled = true; });
-  if (message) message.textContent = "";
-  const spinner = widget.querySelector("[data-webcam-spinner]");
+async function updateWebcam(doc, widget, direction) {
+  if (actionBusy) return;
+  actionBusy = true;
+  const buttons = doc.querySelectorAll("[data-webcam-update], [data-robot-direction]");
+  const message = direction
+    ? doc.querySelector("[data-robot-status]")
+    : widget.querySelector("[data-webcam-status]");
+  const spinner = direction
+    ? doc.querySelector(`[data-robot-spinner="${direction}"]`)
+    : widget.querySelector("[data-webcam-spinner]");
   const frames = ["|", "/", "-", "\\"];
   let frame = 0;
+  buttons.forEach(button => { button.disabled = true; });
+  if (message) message.textContent = "";
   if (spinner) spinner.textContent = frames[0];
   const animation = spinner ? setInterval(() => {
     spinner.textContent = frames[++frame % frames.length];
   }, 120) : null;
   try {
+    if (direction) {
+      if (!["left", "right"].includes(direction)) throw new Error("Unknown direction");
+      robotController ||= crypto.randomUUID();
+      const command = action => fetch(`/api/robot/${action}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Robot-Controller": robotController },
+        body: JSON.stringify({ speed: 0.5 }),
+        signal: AbortSignal.timeout(450)
+      });
+      let started = false;
+      try {
+        const response = await command(direction);
+        if (!response.ok) throw new Error(await response.text());
+        started = true;
+        await new Promise(resolve => setTimeout(resolve, 500));
+      } finally {
+        if (started) {
+          const response = await command("stop");
+          if (!response.ok) throw new Error(await response.text());
+        }
+      }
+    }
     const capture = () => fetch("/api/webcam/capture", {
       method: "POST", headers: { "X-Edit-Password": password }
     });
@@ -43,12 +70,12 @@ async function updateWebcam(doc, widget) {
       label.textContent = "";
     });
   } catch (error) {
-    if (message) message.textContent = "Could not update webcam: " + error.message;
+    if (message) message.textContent = error.message;
   } finally {
     if (animation !== null) clearInterval(animation);
     if (spinner) spinner.textContent = "";
     buttons.forEach(button => { button.disabled = false; });
-    webcamBusy = false;
+    actionBusy = false;
   }
 }
 
@@ -93,6 +120,12 @@ function connectPage(doc) {
   // Native click handles mouse, keyboard, and touch activation without duplicate captures.
   doc.addEventListener("click", event => {
     const target = event.target;
+    const rotation = target.closest?.("[data-robot-direction]");
+    if (rotation) {
+      event.preventDefault();
+      updateWebcam(doc, rotation.closest("[data-webcam]") || doc, rotation.dataset.robotDirection);
+      return;
+    }
     if (target.closest?.("[data-new-page]")) {
       event.preventDefault();
       newPage();

@@ -95,6 +95,7 @@ test('motor routes work without passwords and require same origin, explicit JSON
   assert.equal(calls.length, 0);
   assert.equal((await send({ Origin: base })).status, 200);
   assert.deepEqual(calls[0], ['forward', .3, headers['X-Robot-Controller']]);
+  assert.equal((await send({ Origin: base.replace('http:', 'https:') })).status, 200);
   const page = await fetch(`${base}/control`);
   const html = await page.text();
   assert.match(html, /move for half a second/);
@@ -114,6 +115,29 @@ test('motor routes work without passwords and require same origin, explicit JSON
   assert.equal((await fetch(`${base}/api/pages/control`)).status, 404);
   await new Promise(resolve => server.close(resolve));
   assert.equal(closed, true);
+});
+
+test('robot controls honor the configured HTTPS public origin behind a proxy', async t => {
+  const calls = [];
+  const server = createServer({
+    editPassword: 'class', publicOrigin: 'https://thinkpad.club',
+    robot: { command: async (...args) => { calls.push(args); return { state: args[0] }; }, close() {} }
+  });
+  server.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  t.after(() => server.close());
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const send = origin => fetch(`${base}/api/robot/forward`, {
+    method: 'POST',
+    headers: { Origin: origin, 'Sec-Fetch-Site': 'same-origin', 'Content-Type': 'application/json',
+      'X-Robot-Controller': '12345678-1234-1234-1234-123456789012' },
+    body: '{"speed":0.3}'
+  });
+  assert.equal((await send('http://thinkpad.club')).status, 403);
+  assert.equal((await send('https://elsewhere.test')).status, 403);
+  assert.equal(calls.length, 0);
+  assert.equal((await send('https://thinkpad.club')).status, 200);
+  assert.equal(calls.length, 1);
 });
 
 function browser() {
