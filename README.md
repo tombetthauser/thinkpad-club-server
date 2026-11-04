@@ -111,6 +111,37 @@ name, and keep private information out of your pages and pictures.
 
 ## For teachers and developers
 
+### Webcam capture sound
+
+`lib/beep.py` plays 0.1 seconds at 1000 Hz followed immediately by 0.1 seconds
+at 1500 Hz. It needs Python 3 and `aplay` from `alsa-utils`, with no Python packages.
+Test it from the repo directory on the Pi:
+
+```bash
+python3 lib/beep.py plughw:1,0
+```
+
+Enable the cue by setting `WEBCAM_SOUND_DEVICE=plughw:1,0` in the server's
+environment (substitute the USB card/device that worked in `aplay -l`). For the
+Pi service, run `sudo systemctl edit thinkpad-server` and add:
+
+```ini
+[Service]
+Environment="WEBCAM_SOUND_DEVICE=plughw:1,0"
+```
+
+Then run `sudo systemctl restart thinkpad-server`. The service user needs access
+to the audio device; if playback works over SSH but fails in the service, check
+`journalctl -u thinkpad-server -n 50` for sound errors and the service user's audio
+permissions.
+
+Each capture plays the cue before starting `fswebcam` and again after it returns
+a valid JPEG, including captures triggered by robot rotation. The first cue
+precedes camera startup and exposure settling, rather than the exact shutter
+instant. Failed captures omit the closing cue. Sound failures are logged but
+do not prevent photos. Unset `WEBCAM_SOUND_DEVICE` (or set it to an empty string)
+and restart to disable sound.
+
 ### Robot controls
 
 Optional Raspberry Pi motor controls are available at `/control`.

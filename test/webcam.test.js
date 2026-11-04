@@ -8,6 +8,36 @@ const { webcam } = require("../lib/webcam");
 const FIRST = Buffer.from([255, 216, 255, 1]);
 const SECOND = Buffer.from([255, 216, 255, 2]);
 
+test("capture awaits its opening cue and only plays a closing cue for a valid photo", async t => {
+  const directory = await folder(t);
+  for (const valid of [true, false]) {
+    const events = [];
+    const camera = webcam({ directory, soundDevice: "plughw:1,0",
+      playSound: async () => { events.push("beep"); },
+      run: async (_command, args) => {
+        assert.deepEqual(events, ["beep"]);
+        events.push("capture");
+        await fs.writeFile(args.at(-1), valid ? FIRST : "invalid");
+      }
+    });
+    if (valid) await camera.capture();
+    else await assert.rejects(camera.capture(), { status: 503 });
+    assert.deepEqual(events, valid ? ["beep", "capture", "beep"] : ["beep", "capture"]);
+  }
+});
+
+test("speaker failure still allows capture and publication", async t => {
+  const directory = await folder(t);
+  let attempts = 0;
+  const camera = webcam({ directory, soundDevice: "plughw:1,0",
+    playSound: async () => { attempts++; throw new Error("speaker disconnected"); },
+    run: async (_command, args) => fs.writeFile(args.at(-1), FIRST)
+  });
+  await camera.capture();
+  assert.equal(attempts, 2);
+  assert.deepEqual(await camera.image(), FIRST);
+});
+
 async function folder(t) {
   const directory = await fs.mkdtemp(path.join(os.tmpdir(), "thinkpad-webcam-"));
   t.after(() => fs.rm(directory, { recursive: true, force: true }));
