@@ -59,7 +59,7 @@ class ProgramTests(unittest.TestCase):
         self.assertIn('Line 1:', replies[1]['error'])
         self.assertEqual(replies[2]['steps'], [
             {'action': 'left', 'speed': .5}, {'action': 'right', 'speed': .5}])
-        self.assertEqual(replies[3]['steps'][0], {'action': 'wheels', 'speed': [-.5, -.5], 'duration': 250})
+        self.assertEqual(replies[3]['steps'][0], {'action': 'wheels', 'speed': [.5, .5], 'duration': 250})
         self.assertEqual(replies[4], {'id': 4})
 
     def test_program_preserves_order_and_speeds(self):
@@ -83,7 +83,7 @@ class ProgramTests(unittest.TestCase):
         with patch.dict(os.environ, {'ROBOT_INVERT_RIGHT': '1'}):
             steps = module.parse_program(code)
         self.assertEqual([step['speed'] for step in steps], [
-            [-.5, -.5], [-.5, -.5], [.5, .5], [.5, .5],
+            [.5, .5], [.5, .5], [-.5, -.5], [-.5, -.5],
             [.5, -.5], [.5, -.5], [-.5, .5], [-.5, .5]])
         self.assertTrue(all(step['action'] == 'wheels' and step['duration'] == 250 for step in steps))
         self.assertEqual(sum(step['duration'] for step in steps), 2000)
@@ -156,7 +156,7 @@ class MotorTests(unittest.TestCase):
         self.assertEqual(self.motors.left.pins, {'forward': 17, 'backward': 27})
         self.assertEqual(self.motors.right.pins, {'forward': 22, 'backward': 23})
         for action, expected in [('forward', (.3, .3)), ('backward', (-.3, -.3)),
-                                 ('left', (-.3, .3)), ('right', (.3, -.3))]:
+                                 ('left', (.3, -.3)), ('right', (-.3, .3))]:
             self.motors.drive(action, .3, time.time() + .5)
             self.assertEqual((self.motors.left.value, self.motors.right.value), expected)
         self.motors.stop()

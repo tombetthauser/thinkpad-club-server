@@ -8,12 +8,14 @@ function fixture({ motor = true, statuses = [200], prompt = 'secret' } = {}) {
   const image = element({ src: '/webcam/current.jpg' });
   const update = element({ disabled: false });
   const cameraStatus = {}, motorStatus = {};
+  const beepStatus = {};
+  const beep = element({ disabled: false, parentElement: { querySelector: () => beepStatus } });
   const directions = ['left', 'right', 'backward', 'forward', 'dance'].map(move => element({ dataset: { move } }));
   const stop = element({});
   const speed = { value: '0.6' };
   const camera = { querySelector: selector => ({ img: image, button: update, '[role="status"]': cameraStatus })[selector] };
   const robot = { querySelector: selector => selector === '[data-stop]' ? stop : selector === '[data-device-speed]' ? speed : motorStatus, querySelectorAll: () => directions };
-  const document = element({ hidden: false, querySelector: selector => selector === '[data-device-webcam]' ? camera : motor ? robot : null });
+  const document = element({ hidden: false, querySelectorAll: () => [beep], querySelector: selector => selector === '[data-device-webcam]' ? camera : motor ? robot : null });
   const window = element({ prompt: () => prompt });
   const requests = [], timers = [], delays = [];
   let fail = false;
@@ -27,7 +29,7 @@ function fixture({ motor = true, statuses = [200], prompt = 'secret' } = {}) {
       return { ok: status === 200, status, text: async () => 'Camera unavailable', json: async () => ({ url: '/webcam/current.jpg?t=new' }) };
     }
   });
-  return { image, update, cameraStatus, motorStatus, directions, stop, speed, document, window, requests, timers, delays,
+  return { image, update, cameraStatus, motorStatus, beep, beepStatus, directions, stop, speed, document, window, requests, timers, delays,
     fail: () => { fail = true; }, settle: () => new Promise(resolve => setImmediate(resolve)) };
 }
 
@@ -95,4 +97,17 @@ test('webcam works without movement controls, retries passwords, and unlocks aft
     assert.equal(g.image.src, '/webcam/current.jpg');
     assert.match(g.cameraStatus.textContent, /unavailable|cancelled/);
   }
+});
+
+test('student beep button only calls the server and unlocks after success or failure', async () => {
+  const f = fixture({ motor: false });
+  await f.beep.click();
+  assert.equal(f.requests[0].url, '/api/beep');
+  assert.equal(f.requests[0].options.method, 'POST');
+  assert.match(f.beepStatus.textContent, /Beep played on server/);
+  assert.equal(f.beep.disabled, false);
+  f.fail();
+  await f.beep.click();
+  assert.match(f.beepStatus.textContent, /Connection lost/);
+  assert.equal(f.beep.disabled, false);
 });

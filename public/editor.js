@@ -15,6 +15,7 @@ let starter = "";
 let fullView = true;
 let busy = true;
 let dirty = false;
+let uploadForPreview = false;
 
 function setBusy(value) {
   busy = value;
@@ -91,7 +92,18 @@ const elements = {
     <img data-webcam-image src="/webcam/current.jpg" alt="Latest photo from the club webcam" width="640" style="max-width: 100%; height: auto;">
     <p><button type="button" data-webcam-update>Update webcam image</button> <span data-webcam-spinner aria-hidden="true"></span></p>
     <p data-webcam-status role="status">Click Update webcam image to take a new photo from the club's webcam.</p>
-  </section>`
+  </section>`,
+  motors: `  <section data-device-robot>
+    <p><label>Speed <input data-device-speed type="range" min="0" max="1" step="0.05" value="0.6"></label></p>
+    <button type="button" data-move="left">Left</button>
+    <button type="button" data-move="right">Right</button>
+    <button type="button" data-move="backward">Back</button>
+    <button type="button" data-move="forward">Forward</button>
+    <button type="button" data-move="dance">Dance</button>
+    <button type="button" data-stop>Stop</button>
+    <p role="status">Stopped</p>
+  </section>`,
+  beep: `  <p><button type="button" data-device-beep>Beep on server</button> <span data-beep-status role="status"></span></p>`
 };
 
 document.querySelectorAll("[data-add]").forEach(button => {
@@ -204,7 +216,31 @@ async function savePage(reset = false) {
 
 document.getElementById("update-page").addEventListener("click", () => savePage());
 document.getElementById("reset-page").addEventListener("click", () => savePage(true));
-document.getElementById("upload-image").addEventListener("click", () => fileInput.click());
+document.getElementById("upload-image").addEventListener("click", () => { uploadForPreview = false; fileInput.click(); });
+document.getElementById("upload-preview-image").addEventListener("click", () => { uploadForPreview = true; fileInput.click(); });
+
+function setPreviewImage(url) {
+  if (!/^(https?:\/\/|\/(?!\/))/i.test(url)) throw new Error('Use an https:// image URL or a path beginning with /.');
+  captureEdits();
+  const escaped = url.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const tag = `<meta property="og:image" content="${escaped}">`;
+  const existing = /<meta\b(?=[^>]*\b(?:property|name)\s*=\s*["']og:image["'])[^>]*>/gi;
+  if (!/<head\b[^>]*>/i.test(draft)) throw new Error('Add a <head> section before adding a text preview image.');
+  draft = draft.replace(existing, '').replace(/<head\b[^>]*>/i, opening => opening + '\n  ' + tag);
+  dirty = true;
+  fullView = true;
+  showAll.checked = true;
+  renderSource();
+  source.focus();
+  status.textContent = 'Text preview image added in the head. Click Save to apply it.';
+}
+
+document.getElementById("add-preview-image").addEventListener("click", () => {
+  const url = window.prompt('Image URL for the text preview (https://… or /uploads/…):');
+  if (!url?.trim()) return;
+  try { setPreviewImage(url.trim()); }
+  catch (error) { status.textContent = error.message; }
+});
 
 fileInput.addEventListener("change", async () => {
   const file = fileInput.files[0];
@@ -224,6 +260,10 @@ fileInput.addEventListener("change", async () => {
     });
     if (!response.ok) throw new Error(await response.text());
     const uploaded = await response.json();
+    if (uploadForPreview) {
+      setPreviewImage(uploaded.url);
+      return;
+    }
     document.getElementById("image-result").hidden = false;
     document.getElementById("image-code").value = uploaded.html;
     addElement("  " + uploaded.html);

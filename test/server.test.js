@@ -29,6 +29,43 @@ function put(base, slug, html, headers = {}) {
   });
 }
 
+test('built-in link previews advertise only saved webcam photos; student pages opt in', async t => {
+  let captures = 0;
+  let photo = Buffer.from([255, 216, 255, 1]);
+  const { base } = await fixture(t, { publicOrigin: 'https://thinkpad.club', webcam: {
+    image: async () => { if (!photo) throw Object.assign(new Error('No image'), { status: 404 }); return photo; },
+    capture: async () => { captures++; }
+  } });
+  for (const route of ['/', '/our-server', '/control', '/arnold', '/edit/index']) {
+    const response = await fetch(base + route);
+    assert.equal(response.status, 200);
+    assert.match(await response.text(), /og:image" content="https:\/\/thinkpad.club\/webcam\/current.jpg\?v=/);
+  }
+  assert.equal(captures, 0);
+  photo = null;
+  assert.doesNotMatch(await (await fetch(base + '/control')).text(), /og:image|twitter:image/);
+  const headers = { Origin: 'https://thinkpad.club' };
+  await put(base, 'student', '<head><title>Custom title</title></head><body><img src="/webcam/current.jpg"></body>', headers);
+  const student = await (await fetch(base + '/student')).text();
+  assert.match(student, /og:title" content="student"/);
+  assert.doesNotMatch(student, /og:image|twitter:image/);
+  assert.match(student, /assets\/device-widgets.js/);
+  await put(base, 'student', '<head><meta property="og:image" content="/uploads/test.jpg"></head><body>Hello</body>', headers);
+  assert.match(await (await fetch(base + '/student')).text(), /og:image" content="https:\/\/thinkpad.club\/uploads\/test.jpg"/);
+});
+
+test('beep endpoint uses the speaker helper, rejects cross-origin requests, and reports failures', async t => {
+  let played = 0;
+  const { base } = await fixture(t, { beep: { async play() { played++; } } });
+  assert.equal((await fetch(base + '/api/beep')).status, 405);
+  assert.equal((await fetch(base + '/api/beep', { method: 'POST', headers: { Origin: 'https://other.example' } })).status, 403);
+  assert.equal(played, 0);
+  assert.equal((await fetch(base + '/api/beep', { method: 'POST', headers: { Origin: base } })).status, 200);
+  assert.equal(played, 1);
+  const failing = await fixture(t, { beep: { async play() { throw Object.assign(new Error('Speaker unavailable'), { status: 503 }); } } });
+  assert.equal((await fetch(failing.base + '/api/beep', { method: 'POST' })).status, 503);
+});
+
 test("Arnold lists the sorted Realm collection and serves and plays its categorized filenames", async t => {
   const { EventEmitter } = require("node:events");
   const { arnold } = require("../lib/arnold");

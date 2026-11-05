@@ -1,4 +1,21 @@
 (() => {
+  for (const button of document.querySelectorAll('[data-device-beep]')) {
+    button.addEventListener('click', async () => {
+      if (button.disabled) return;
+      button.disabled = true;
+      const message = button.parentElement.querySelector('[data-beep-status]');
+      if (message) message.textContent = '';
+      try {
+        const response = await fetch('/api/beep', { method: 'POST' });
+        if (!response.ok) throw new Error(await response.text());
+        if (message) message.textContent = 'Beep played on server.';
+      } catch (error) {
+        if (message) message.textContent = error.message;
+      } finally {
+        button.disabled = false;
+      }
+    });
+  }
   const webcam = document.querySelector('[data-device-webcam]');
   if (webcam) {
     const image = webcam.querySelector('img');

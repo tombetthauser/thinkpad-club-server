@@ -6,7 +6,7 @@ const vm = require("node:vm");
 
 // Test browser-side save/upload handlers without adding a browser dependency.
 // These tests exercise full-code mode; real layout and DOM parsing need a browser.
-async function editorFixture({ failSave = false, failCapture = false, confirmRandom = false } = {}) {
+async function editorFixture({ failSave = false, failCapture = false, confirmRandom = false, previewURL = '/uploads/example.png' } = {}) {
   function element() {
     return {
       value: "", disabled: false, hidden: false, open: false,
@@ -17,9 +17,9 @@ async function editorFixture({ failSave = false, failCapture = false, confirmRan
   }
   const ids = ["page-editor", "view-page", "page-source", "update-status", "show-all-code",
     "edit-password", "image-file", "add-style", "update-page", "reset-page", "upload-image",
-    "image-result", "image-code", "password-area", "page-info", "preview-page", "random-html", "close-preview", "draft-frame", "draft-preview"];
+    "image-result", "image-code", "password-area", "page-info", "preview-page", "random-html", "close-preview", "draft-frame", "draft-preview", "add-preview-image", "upload-preview-image"];
   const nodes = Object.fromEntries(ids.map(id => [id, element()]));
-  const addButtons = ["paragraph", "title", "list", "link", "webcam"].map(kind => ({ ...element(), dataset: { add: kind } }));
+  const addButtons = ["paragraph", "title", "list", "link", "webcam", "motors", "beep"].map(kind => ({ ...element(), dataset: { add: kind } }));
   const controls = [nodes["update-page"], nodes["reset-page"], nodes["page-source"], nodes["show-all-code"], ...addButtons];
   nodes["page-editor"].querySelectorAll = () => controls;
   const html = '<!doctype html>\n<html><head><style>p { color: red; }</style></head><body>\n  <p>Existing work</p>\n</body></html>';
@@ -31,7 +31,7 @@ async function editorFixture({ failSave = false, failCapture = false, confirmRan
     URL,
     location: { pathname: "/edit/dannys-page", href: "http://localhost/edit/dannys-page", reload() { reloads++; } },
     document: { getElementById: id => nodes[id], querySelectorAll: () => addButtons },
-    window: { addEventListener() {}, confirm: () => confirmRandom },
+    window: { addEventListener() {}, confirm: () => confirmRandom, prompt: () => previewURL },
     sessionStorage: { getItem: key => storage.get(key), setItem: (key, value) => storage.set(key, value) },
     fetch: async (url, options = {}) => {
       requests.push({ url, ...options });
@@ -41,7 +41,7 @@ async function editorFixture({ failSave = false, failCapture = false, confirmRan
         text: async () => "USB webcam is not connected.",
         json: async () => ({ url: "/webcam/current.jpg?t=new" })
       };
-      if (options.method === "POST") return { ok: true, json: async () => ({ html: '<img src="/uploads/example.png" alt="Describe your image">' }) };
+      if (options.method === "POST") return { ok: true, json: async () => ({ url: '/uploads/example.png', html: '<img src="/uploads/example.png" alt="Describe your image">' }) };
       return { ok: true, json: async () => ({ html, starter, saved: true, passwordRequired: true }) };
     }
   });
@@ -117,6 +117,30 @@ test("Add webcam inserts a persistent image and update button without student Ja
   assert.doesNotMatch(f.nodes["page-source"].value, /<script|onclick=/);
   await f.nodes["update-page"].listeners.click();
   assert.match(f.requests.find(request => request.method === "PUT").body, /data-webcam/);
+});
+
+test('preview URL tool edits head metadata, replaces prior image, and requires Save', async () => {
+  const f = await editorFixture({ previewURL: 'https://example.com/picture.png?a=1&b=2' });
+  await f.nodes['add-preview-image'].listeners.click();
+  await f.nodes['add-preview-image'].listeners.click();
+  assert.equal((f.nodes['page-source'].value.match(/property="og:image"/g) || []).length, 1);
+  assert.match(f.nodes['page-source'].value, /<head>\n  <meta property="og:image" content="https:\/\/example.com\/picture.png\?a=1&amp;b=2">/);
+  assert.equal(f.requests.some(r => r.method === 'PUT'), false);
+  await f.nodes['update-page'].listeners.click();
+  assert.match(f.requests.find(r => r.method === 'PUT').body, /og:image/);
+});
+
+test('upload preview image only adds metadata and motor/beep tools add working widget markup', async () => {
+  const f = await editorFixture();
+  await f.nodes['upload-preview-image'].listeners.click();
+  f.nodes['image-file'].files = [{ size: 10, type: 'image/png' }];
+  await f.nodes['image-file'].listeners.change();
+  assert.match(f.nodes['page-source'].value, /property="og:image" content="\/uploads\/example.png"/);
+  assert.doesNotMatch(f.nodes['page-source'].value, /<img/);
+  for (const kind of ['motors', 'beep']) await f.addButtons.find(b => b.dataset.add === kind).listeners.click();
+  assert.match(f.nodes['page-source'].value, /data-device-robot/);
+  assert.match(f.nodes['page-source'].value, /data-device-speed/);
+  assert.match(f.nodes['page-source'].value, /data-device-beep/);
 });
 
 test("random HTML requires confirmation and replaces only the draft until Save", async () => {

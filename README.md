@@ -97,6 +97,36 @@ shared photo. Other open pages show the new picture when reloaded or when their
 webcam update button is clicked. If the camera is unplugged, the button explains
 what went wrong and the last successful photo stays available.
 
+### Text previews and more Tools
+
+Built-in pages (`/`, `/our-server`, `/control`, `/arnold`, and the editors) advertise
+the latest saved webcam image when shared in Messages or another app. Reading a
+page never takes a new photo. If no photo is available, no preview image is advertised.
+Image URLs change with the saved photo, but messaging apps may cache previews and
+choose their own layout or fallback images; the server cannot force an image-only
+card or suppress every app's fallback.
+
+Student pages advertise their page name and have no preview image by default.
+In Tools, choose **Add text preview image URL** for an existing image, or
+**Upload text preview image** for a new one. Both add editable code in the head;
+click Save to publish it. You can also write the code yourself:
+
+```html
+<meta property="og:image" content="/uploads/your-image.jpg">
+```
+
+Delete that tag to remove the requested preview image. An uploaded preview image
+does not automatically appear in the page body. Use the normal Upload image tool
+if you also want a visible image. Set `PUBLIC_ORIGIN=https://thinkpad.club` in the
+deployed service so preview image URLs use the public HTTPS address.
+
+**Add motor controls** inserts directions, Dance, Stop, and a speed slider (60%
+initially, up to 100%). **Add server beep button** inserts a button that plays the
+existing upward beep through the server speaker. These work on saved pages using
+the shared device script. Robot controls still require `ROBOT_ENABLED=1`; beeps
+use the same speaker configuration as webcam captures. The same-origin
+`POST /api/beep` endpoint rejects overlapping beeps and reports hardware errors.
+
 ### Where does my work go?
 
 Clicking Save is like putting your notebook back on the shelf. The server saves

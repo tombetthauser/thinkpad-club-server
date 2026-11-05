@@ -289,7 +289,7 @@ class Motors:
                     self.stop()
                     return
                 directions = {'forward': (1, 1), 'backward': (-1, -1),
-                              'left': (-1, 1), 'right': (1, -1)}
+                              'left': (1, -1), 'right': (-1, 1)}
                 if action == 'wheels':
                     if (not isinstance(speed, list) or len(speed) != 2 or
                             any(type(value) not in (int, float) or not math.isfinite(value) or abs(value) > 1 for value in speed)):

@@ -60,10 +60,10 @@ def backward(speed, seconds):
     move(-speed, -speed, seconds)
 
 def turn_left(speed, seconds):
-    move(-speed, speed, seconds)
+    move(speed, -speed, seconds)
 
 def turn_right(speed, seconds):
-    move(speed, -speed, seconds)
+    move(-speed, speed, seconds)
 
 try:
     turn_left(0.5, 0.5)

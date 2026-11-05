@@ -7,6 +7,8 @@ const { ROOT, validSlug, starterPage, pageStore } = require("./lib/pages");
 const { webcam } = require("./lib/webcam");
 const { robot } = require("./lib/robot");
 const { arnold } = require("./lib/arnold");
+const { beep } = require("./lib/beep");
+const { linkPreview } = require("./lib/link-preview");
 
 const PAGE_LIMIT = 1024 * 1024;
 const IMAGE_LIMIT = 5 * 1024 * 1024;
@@ -57,6 +59,7 @@ function createServer(options = {}) {
   const uploads = path.join(dataDirectory, "uploads");
   const camera = options.webcam || webcam();
   const sounds = options.arnold || arnold();
+  const speaker = options.beep || beep();
   const motors = options.robot || robot({ enabled: process.env.ROBOT_ENABLED === '1' });
 
   function checkOrigin(req) {
@@ -84,6 +87,10 @@ function createServer(options = {}) {
   }
 
   const server = http.createServer(async (req, res) => {
+    const previewHTML = (html, pathname, title, custom = false) => linkPreview(html, {
+      origin: publicOrigin || `${req.socket.encrypted || req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http'}://${req.headers.host}`,
+      pathname, title, custom, webcam: camera
+    });
     function reply(status, contents, type = "text/plain; charset=utf-8", extra = {}) {
       res.writeHead(status, {
         "Content-Type": type,
@@ -110,6 +117,13 @@ function createServer(options = {}) {
 
       if (pathname === "/health" && method === "GET") return reply(200, "ok");
 
+      if (pathname === '/api/beep') {
+        if (method !== 'POST') return reply(405, 'Use POST.', undefined, { Allow: 'POST' });
+        checkOrigin(req);
+        await speaker.play();
+        return json({ played: true });
+      }
+
       if (pathname === "/reset") {
         if (method !== "GET") return reply(405, "Use GET to reset the homepage.", undefined, { Allow: "GET" });
         authorize(req);
@@ -134,7 +148,7 @@ function createServer(options = {}) {
       }
 
       if (pathname === '/control' && method === 'GET') {
-        const html = await fs.readFile(path.join(ROOT, 'public/control.html'), 'utf8');
+        const html = await previewHTML(await fs.readFile(path.join(ROOT, 'public/control.html'), 'utf8'), '/control', 'Robot controls');
         const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
         const hash = createHash('sha256').update(script).digest('base64');
         return reply(200, html, 'text/html; charset=utf-8', {
@@ -156,7 +170,7 @@ function createServer(options = {}) {
       }
 
       if (pathname === "/arnold" && method === "GET") {
-        const html = await fs.readFile(path.join(ROOT, "public/arnold.html"), "utf8");
+        const html = await previewHTML(await fs.readFile(path.join(ROOT, "public/arnold.html"), "utf8"), '/arnold', 'Arnold');
         const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
         const hash = createHash("sha256").update(script).digest("base64");
         return reply(200, html, "text/html; charset=utf-8", {
@@ -263,7 +277,7 @@ function createServer(options = {}) {
         const edit = /^\/edit\/([a-z0-9-]+)(\/)?$/.exec(pathname);
         if (edit && validSlug(edit[1])) {
           if (edit[2]) return reply(308, "Use this editor address.", undefined, { Location: `/edit/${edit[1]}` });
-          return reply(200, await fs.readFile(path.join(ROOT, "public", "editor.html")), "text/html; charset=utf-8", {
+          return reply(200, await previewHTML(await fs.readFile(path.join(ROOT, "public", "editor.html"), "utf8"), pathname, `Edit ${edit[1]}`), "text/html; charset=utf-8", {
             "X-Frame-Options": "DENY"
           });
         }
@@ -275,8 +289,9 @@ function createServer(options = {}) {
           const canonical = slug === "index" ? "/" : `/${slug}`;
           if (pathname !== canonical) return reply(308, "Use this page address.", undefined, { Location: canonical });
           const page = await pages.read(slug);
-          const script = '<script src="/assets/viewer.js" defer></script>';
-          const html = page.html.replace(/^(\s*<!doctype[^>]*>)?/i, opening => opening + script);
+          const script = '<script src="/assets/viewer.js" defer></script><script src="/assets/device-widgets.js" defer></script>';
+          const prepared = await previewHTML(page.html, canonical, slug === 'index' ? 'Thinkpad Club' : slug, !['index', 'our-server'].includes(slug));
+          const html = prepared.replace(/^(\s*<!doctype[^>]*>)?/i, opening => opening + script);
           return reply(200, html, "text/html; charset=utf-8", {
             "X-Frame-Options": "DENY"
           });
