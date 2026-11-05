@@ -9,6 +9,8 @@ const { robot } = require("./lib/robot");
 const { arnold } = require("./lib/arnold");
 const { beep } = require("./lib/beep");
 const { linkPreview } = require("./lib/link-preview");
+const { audioControl } = require('./lib/audio-control');
+const { youtube } = require('./lib/youtube');
 
 const PAGE_LIMIT = 1024 * 1024;
 const IMAGE_LIMIT = 5 * 1024 * 1024;
@@ -57,10 +59,14 @@ function createServer(options = {}) {
   const publicOrigin = options.publicOrigin ?? process.env.PUBLIC_ORIGIN ?? "";
   const pages = pageStore(path.join(dataDirectory, "pages"));
   const uploads = path.join(dataDirectory, "uploads");
-  const camera = options.webcam || webcam();
-  const sounds = options.arnold || arnold();
-  const speaker = options.beep || beep();
+  const audio = audioControl();
+  const camera = options.webcam || webcam({ audio });
+  const sounds = options.arnold || arnold({ audio });
+  const speaker = options.beep || beep({ audio });
+  const videos = options.youtube || youtube({ audio });
   const motors = options.robot || robot({ enabled: process.env.ROBOT_ENABLED === '1' });
+  let movementEnabled = true;
+  const hardwareStatus = () => ({ audio: audio.status(), movement: { enabled: movementEnabled }, youtube: videos.status() });
 
   function checkOrigin(req) {
     const origin = req.headers.origin;
@@ -117,9 +123,57 @@ function createServer(options = {}) {
 
       if (pathname === "/health" && method === "GET") return reply(200, "ok");
 
+      if (pathname === '/api/hardware/status' && method === 'GET') return json(hardwareStatus());
+
+      if (pathname === '/api/admin/hardware') {
+        if (method !== 'POST') return reply(405, 'Use POST.', undefined, { Allow: 'POST' });
+        checkOrigin(req);
+        if (req.headers['content-type']?.split(';')[0].trim() !== 'application/json') throw fail(415, 'Send application/json.');
+        let body;
+        try { body = JSON.parse((await readBody(req, 1024)).toString()); } catch { throw fail(400, 'Invalid JSON.'); }
+        if (!body || !['audio', 'movement'].includes(body.control) || typeof body.enabled !== 'boolean') throw fail(400, 'Choose audio or movement and an enabled boolean.');
+        let warning = '';
+        if (body.control === 'audio') {
+          audio.setEnabled(body.enabled);
+          if (!body.enabled) { videos.stop(null, true); sounds.stop(); }
+        } else {
+          movementEnabled = body.enabled;
+          if (!body.enabled) {
+            try { await motors.command('stop', 0, randomUUID()); }
+            catch (error) { warning = error.message; }
+          }
+        }
+        return json({ ...hardwareStatus(), warning });
+      }
+
+      if (pathname === '/admin' && method === 'GET') {
+        const html = await previewHTML(await fs.readFile(path.join(ROOT, 'public/admin.html'), 'utf8'), '/admin', 'Server controls');
+        const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
+        const hash = createHash('sha256').update(script).digest('base64');
+        return reply(200, html, 'text/html; charset=utf-8', {
+          'Content-Security-Policy': `default-src 'none'; script-src 'sha256-${hash}'; connect-src 'self'; frame-ancestors 'none'; form-action 'none'; base-uri 'none'`,
+          'X-Frame-Options': 'DENY'
+        });
+      }
+
+      if (pathname === '/api/youtube/play' || pathname === '/api/youtube/stop') {
+        if (method !== 'POST') return reply(405, 'Use POST.', undefined, { Allow: 'POST' });
+        checkOrigin(req);
+        const controller = req.headers['x-audio-controller'];
+        if (typeof controller !== 'string' || !/^[a-f0-9-]{36}$/.test(controller)) throw fail(400, 'Missing audio controller ID.');
+        if (pathname.endsWith('/stop')) { videos.stop(controller); return json({ stopped: true }); }
+        audio.assertAvailable();
+        if (req.headers['content-type']?.split(';')[0].trim() !== 'application/json') throw fail(415, 'Send application/json.');
+        let body;
+        try { body = JSON.parse((await readBody(req, 2048)).toString()); } catch { throw fail(400, 'Invalid JSON.'); }
+        if (!body || typeof body.url !== 'string') throw fail(400, 'Paste a YouTube video URL.');
+        return json(await videos.play(body.url, controller));
+      }
+
       if (pathname === '/api/beep') {
         if (method !== 'POST') return reply(405, 'Use POST.', undefined, { Allow: 'POST' });
         checkOrigin(req);
+        audio.assertAvailable();
         await speaker.play();
         return json({ played: true });
       }
@@ -143,6 +197,7 @@ function createServer(options = {}) {
         try { body = JSON.parse((await readBody(req, action === 'program' ? 8192 : 1024)).toString('utf8')); }
         catch (error) { throw error.status ? error : fail(400, 'Invalid JSON.'); }
         if (!body || typeof body !== 'object' || Array.isArray(body)) throw fail(400, 'Send a JSON object.');
+        if (!movementEnabled && action !== 'stop') throw fail(503, 'Movement is disabled by the administrator.');
         if (action === 'program') return json({ steps: await motors.program(body.code) });
         return json(await motors.command(action, body.speed, controller));
       }
@@ -195,6 +250,7 @@ function createServer(options = {}) {
         let body;
         try { body = JSON.parse((await readBody(req, 1024)).toString("utf8")); } catch { throw fail(400, "Invalid JSON."); }
         if (!body || typeof body.file !== "string") throw fail(400, "Send a clip filename.");
+        audio.assertAvailable();
         return json({ playing: (await sounds.play(body.file)).name });
       }
 
@@ -206,6 +262,7 @@ function createServer(options = {}) {
       }
 
       const assets = {
+        "/assets/youtube-player.js": ["youtube-player.js", "text/javascript; charset=utf-8"],
         "/assets/device-widgets.js": ["device-widgets.js", "text/javascript; charset=utf-8"],
         "/assets/viewer.js": ["viewer.js", "text/javascript; charset=utf-8"],
         "/assets/viewer.css": ["viewer.css", "text/css; charset=utf-8"],
@@ -303,7 +360,8 @@ function createServer(options = {}) {
       if (!res.headersSent) reply(error.status || 500, error.status ? error.message : "Could not read or save. Please try again.");
     }
   });
-  server.on('close', () => motors.close());
+  server.on('close', () => { motors.close(); audio.setEnabled(false); videos.stop(null, true); sounds.stop(); });
+  server.stopAudio = () => { audio.setEnabled(false); videos.stop(null, true); sounds.stop(); };
   server.stopRobot = () => motors.close();
   return server;
 }
@@ -316,12 +374,13 @@ if (require.main === module) {
   });
   for (const signal of ['SIGINT', 'SIGTERM']) process.once(signal, () => {
     server.stopRobot();
+    server.stopAudio();
     server.close();
     server.closeAllConnections();
   });
   // Stop GPIO before Node exits on an unexpected application failure.
-  process.on('uncaughtExceptionMonitor', () => server.stopRobot());
-  process.on('exit', () => server.stopRobot());
+  process.on('uncaughtExceptionMonitor', () => { server.stopRobot(); server.stopAudio(); });
+  process.on('exit', () => { server.stopRobot(); server.stopAudio(); });
 }
 
 module.exports = { createServer };

@@ -174,6 +174,62 @@ and restart to disable sound.
 
 ### Arnold soundboard
 
+`/arnold` also accepts a single YouTube video URL for server-speaker playback.
+It streams bytes through `yt-dlp`, `ffmpeg`, and `aplay`; it does not create an
+audio/video file or download cache. It requests direct HTTPS media, so videos
+available only as segmented/live streams may not work. There is a 45-second
+startup timeout and a 10-minute total limit including startup. The initiating
+page can stop its stream; `/admin` can stop any stream by disabling audio.
+Reloading the initiating page loses its stop ownership, so use `/admin` if needed.
+
+Only one YouTube request can reserve the speaker at a time, including while it is
+starting. Other requests return 409 immediately; there is no server queue.
+New YouTube requests are also rejected while existing speaker processes are
+running. During a stream, Arnold server clips and beep
+buttons return a busy error; webcam captures continue with their beeps skipped.
+Natural completion, stop, startup failure, and timeout all clean up the pipeline
+and release the lock. macOS development uses `ffplay` instead of `aplay`.
+
+The Pi needs `ffmpeg`, the existing `alsa-utils`, and a current `yt-dlp` with its
+YouTube JavaScript support. It uses the server's Node executable as the runtime
+(use a currently supported Node release). For example, as the service user on the Pi:
+
+```bash
+sudo apt update
+sudo apt install ffmpeg alsa-utils python3-venv
+python3 -m venv ~/.local/share/thinkpad-audio
+~/.local/share/thinkpad-audio/bin/python -m pip install --upgrade 'yt-dlp[default]'
+```
+
+Set the executable path in `sudo systemctl edit thinkpad-server` (replace `tom`
+with the service user), then restart the service:
+
+```ini
+[Service]
+Environment="YTDLP_BIN=/home/tom/.local/share/thinkpad-audio/bin/yt-dlp"
+```
+
+YouTube uses `WEBCAM_SOUND_DEVICE` or `plughw:1,0`, matching webcam beeps.
+Update `yt-dlp[default]` in that environment when YouTube extraction changes.
+See the [yt-dlp installation and dependency documentation](https://github.com/yt-dlp/yt-dlp#installation).
+
+### Server switches
+
+`/admin` has separate Disable/Enable buttons for server audio and movement, plus
+status refreshed every two seconds. No password is required. Changes require a
+same-origin POST, as the existing movement buttons do.
+
+Disabling audio terminates registered speaker processes (including Python beep
+process groups), cancels YouTube, and blocks new Arnold, YouTube, and beep requests.
+Webcam photos still work quietly. This controls the server speaker; browser-only
+audio previews are independent. Disabling movement sends Stop and blocks all
+movement/program commands except Stop. Re-enabling allows new requests; it does
+not resume old playback or movement. These switches live in server memory and
+reset to enabled when the server restarts. `ROBOT_ENABLED=1` is still required to
+initialize the motor hardware.
+
+### Arnold speaker setup
+
 Arnold's soundboard at `/arnold` plays server audio through `aplay` on the Pi,
 using `ARNOLD_SOUND_DEVICE` if set, otherwise the webcam beep's
 `WEBCAM_SOUND_DEVICE`, then `plughw:1,0`. It needs only the same `alsa-utils`

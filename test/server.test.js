@@ -66,6 +66,56 @@ test('beep endpoint uses the speaker helper, rejects cross-origin requests, and 
   assert.equal((await fetch(failing.base + '/api/beep', { method: 'POST' })).status, 503);
 });
 
+test('admin switches need no password, report state, stop movement, and gate all server audio routes', async t => {
+  const calls = [];
+  let beeps = 0;
+  const { base } = await fixture(t, { editPassword: 'class-secret',
+    beep: { async play() { beeps++; } },
+    robot: { async command(...args) { calls.push(args); return {}; }, async program() { return []; }, close() {} }
+  });
+  const page = await fetch(base + '/admin');
+  assert.equal(page.status, 200);
+  assert.doesNotMatch(await page.text(), /type="password"/);
+  const set = (control, enabled, origin = base) => fetch(base + '/api/admin/hardware', {
+    method: 'POST', headers: { 'Content-Type': 'application/json', Origin: origin }, body: JSON.stringify({ control, enabled })
+  });
+  assert.equal((await set('audio', false, 'https://elsewhere.test')).status, 403);
+  assert.equal((await set('audio', false)).status, 200);
+  assert.equal((await (await fetch(base + '/api/hardware/status')).json()).audio.enabled, false);
+  assert.equal((await fetch(base + '/api/beep', { method: 'POST' })).status, 503);
+  assert.equal(beeps, 0);
+  assert.equal((await fetch(base + '/api/arnold/play', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ file: 'primary/choppa.mp3' }) })).status, 503);
+  await set('audio', true);
+  assert.equal((await fetch(base + '/api/beep', { method: 'POST' })).status, 200);
+  assert.equal(beeps, 1);
+  await set('movement', false);
+  assert.equal(calls[0][0], 'stop');
+  const move = action => fetch(base + '/api/robot/' + action, { method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Robot-Controller': '12345678-1234-1234-1234-123456789012' }, body: JSON.stringify({ speed: .6, code: 'left(0.5)' }) });
+  for (const action of ['forward', 'backward', 'left', 'right', 'wheels', 'program']) assert.equal((await move(action)).status, 503);
+  assert.equal((await move('stop')).status, 200);
+  await set('movement', true);
+  assert.equal((await move('forward')).status, 200);
+});
+
+test('YouTube endpoints validate requests, expose status, and permit the owner stop', async t => {
+  let playing = false;
+  const { base } = await fixture(t, { youtube: {
+    status: () => ({ playing }),
+    async play(url, controller) { assert.equal(url, 'https://youtu.be/BaW_jenozKc'); assert.ok(controller); playing = true; return { playing }; },
+    stop() { playing = false; }
+  } });
+  const headers = { 'Content-Type': 'application/json', 'X-Audio-Controller': '12345678-1234-1234-1234-123456789012' };
+  assert.equal((await fetch(base + '/api/youtube/play')).status, 405);
+  assert.equal((await fetch(base + '/api/youtube/play', { method: 'POST', headers: { ...headers, Origin: 'https://other.test' }, body: '{}' })).status, 403);
+  assert.equal((await fetch(base + '/api/youtube/play', { method: 'POST', headers, body: 'null' })).status, 400);
+  const response = await fetch(base + '/api/youtube/play', { method: 'POST', headers, body: JSON.stringify({ url: 'https://youtu.be/BaW_jenozKc' }) });
+  assert.equal(response.status, 200);
+  assert.equal((await (await fetch(base + '/api/hardware/status')).json()).youtube.playing, true);
+  assert.equal((await fetch(base + '/api/youtube/stop', { method: 'POST', headers })).status, 200);
+  assert.equal(playing, false);
+});
+
 test("Arnold lists the sorted Realm collection and serves and plays its categorized filenames", async t => {
   const { EventEmitter } = require("node:events");
   const { arnold } = require("../lib/arnold");

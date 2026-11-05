@@ -8,6 +8,17 @@ const { webcam } = require("../lib/webcam");
 const FIRST = Buffer.from([255, 216, 255, 1]);
 const SECOND = Buffer.from([255, 216, 255, 2]);
 
+test('disabled or busy speaker skips both webcam beeps while the photo still succeeds', async t => {
+  const directory = await folder(t);
+  let cues = 0;
+  const camera = webcam({ directory, soundDevice: 'plughw:1,0', audio: { canPlay: () => false },
+    playSound: async () => { cues++; }, run: async (_command, args) => fs.writeFile(args.at(-1), FIRST)
+  });
+  await camera.capture();
+  assert.equal(cues, 0);
+  assert.deepEqual(await camera.image(), FIRST);
+});
+
 test("capture awaits its opening cue and only plays a closing cue for a valid photo", async t => {
   const directory = await folder(t);
   for (const valid of [true, false]) {

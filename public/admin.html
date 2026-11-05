@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Server controls</title>
+</head>
+<body>
+<p><a href="/arnold">Arnold</a> · <a href="/control">Motor controls</a></p>
+<p id="audio-state">Loading audio status…</p>
+<button type="button" data-control="audio" data-enabled="false">Disable audio</button>
+<button type="button" data-control="audio" data-enabled="true">Enable audio</button>
+<p id="movement-state">Loading movement status…</p>
+<button type="button" data-control="movement" data-enabled="false">Disable movement</button>
+<button type="button" data-control="movement" data-enabled="true">Enable movement</button>
+<p id="message" role="status"></p>
+<p>Audio controls the server speaker, including YouTube, Arnold clips, and beeps. These switches reset to enabled when the server restarts.</p>
+<script>
+const message = document.getElementById('message');
+const buttons = document.querySelectorAll('[data-control]');
+function show(state) {
+  document.getElementById('audio-state').textContent = 'Server audio: ' + (state.audio.enabled ? 'enabled' : 'disabled') + (state.audio.busy ? ' (busy)' : '');
+  document.getElementById('movement-state').textContent = 'Movement: ' + (state.movement.enabled ? 'enabled' : 'disabled');
+}
+async function refresh() {
+  try {
+    const response = await fetch('/api/hardware/status');
+    if (!response.ok) throw new Error(await response.text());
+    show(await response.json());
+  } catch (error) { message.textContent = error.message; }
+}
+for (const button of buttons) button.addEventListener('click', async () => {
+  buttons.forEach(b => { b.disabled = true; });
+  try {
+    const response = await fetch('/api/admin/hardware', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ control: button.dataset.control, enabled: button.dataset.enabled === 'true' })
+    });
+    if (!response.ok) throw new Error(await response.text());
+    const state = await response.json();
+    show(state);
+    message.textContent = state.warning || 'Updated.';
+  } catch (error) { message.textContent = error.message; }
+  finally { buttons.forEach(b => { b.disabled = false; }); }
+});
+refresh();
+setInterval(refresh, 2000);
+</script>
+</body>
+</html>
