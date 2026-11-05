@@ -36,7 +36,9 @@ test("Arnold lists the sorted Realm collection and serves and plays its categori
   let stopped = 0;
   const sounds = arnold({ spawn: (command, args) => {
     starts.push({ command, args });
-    return Object.assign(new EventEmitter(), { kill() { stopped++; } });
+    const child = Object.assign(new EventEmitter(), { kill() { stopped++; } });
+    queueMicrotask(() => child.emit('spawn'));
+    return child;
   } });
   const { base } = await fixture(t, { arnold: sounds });
   const page = await fetch(`${base}/arnold`);
@@ -79,7 +81,7 @@ test("Arnold lists the sorted Realm collection and serves and plays its categori
   assert.equal(stopped, 0);
   assert.equal((await fetch(`${base}/api/arnold/stop`, { method: "POST", headers: { Origin: base } })).status, 200);
   assert.equal(stopped, 1);
-  assert.ok(starts[0].args.at(-1).endsWith("assets/audio/arnold-realm/primary/choppa.mp3"));
+  assert.match(starts[0].args.at(-1), /assets\/audio\/arnold-realm\/primary\/choppa\.(mp3|wav)$/);
   assert.equal((await play({ file: "../other.mp3" })).status, 404);
   assert.equal((await play(null)).status, 400);
   assert.equal(starts.length, 1);

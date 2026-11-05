@@ -181,7 +181,7 @@ function createServer(options = {}) {
         let body;
         try { body = JSON.parse((await readBody(req, 1024)).toString("utf8")); } catch { throw fail(400, "Invalid JSON."); }
         if (!body || typeof body.file !== "string") throw fail(400, "Send a clip filename.");
-        return json({ playing: sounds.play(body.file).name });
+        return json({ playing: (await sounds.play(body.file)).name });
       }
 
       const clipAudio = /^\/arnold\/audio\/((?:(?:primary|secondary)\/)?[a-zA-Z0-9_-]+\.mp3)$/.exec(pathname);

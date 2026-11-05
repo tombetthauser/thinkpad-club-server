@@ -142,6 +142,28 @@ instant. Failed captures omit the closing cue. Sound failures are logged but
 do not prevent photos. Unset `WEBCAM_SOUND_DEVICE` (or set it to an empty string)
 and restart to disable sound.
 
+### Arnold soundboard
+
+Arnold's soundboard at `/arnold` plays server audio through `aplay` on the Pi,
+using `ARNOLD_SOUND_DEVICE` if set, otherwise the webcam beep's
+`WEBCAM_SOUND_DEVICE`, then `plughw:1,0`. It needs only the same `alsa-utils`
+installation and service audio permissions as the beeps. macOS development
+continues to use `afplay`.
+
+The MP3s are used for browser playback. Deploy the accompanying `.wav` files in
+`assets/audio/arnold-realm/primary/` and `secondary/` for Pi speaker playback.
+After downloading new clips, run `python3 scripts/prepare_arnold_audio.py` on a
+development machine with `ffmpeg` installed, then deploy the generated WAVs.
+The Pi does not need `ffmpeg` or `mpg123`. To test from the repo directory on the Pi:
+
+```bash
+aplay -q -D plughw:1,0 assets/audio/arnold-realm/primary/choppa.wav
+```
+
+Use the same device that worked for the beeps. Player errors appear in
+`journalctl -u thinkpad-server -n 50`; missing player/asset errors also appear
+on the soundboard page.
+
 ### Robot controls
 
 Optional Raspberry Pi motor controls are available at `/control`.
