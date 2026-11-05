@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arnold</title>
+</head>
+<body>
+<section data-device-robot>
+  <p>Move for half a second.</p>
+  <p><label>Speed <input data-device-speed type="range" min="0" max="1" step="0.05" value="0.6"></label></p>
+  <button type="button" data-move="left">Left</button>
+  <button type="button" data-move="right">Right</button>
+  <button type="button" data-move="backward">Back</button>
+  <button type="button" data-move="forward">Forward</button>
+  <button type="button" data-move="dance">Dance</button>
+  <button type="button" data-stop>Stop</button>
+  <p role="status">Stopped</p>
+</section>
+<section data-device-webcam>
+  <img src="/webcam/current.jpg" width="640" alt="Latest photo from the server webcam"><br>
+  <button type="button">Update webcam</button>
+  <p role="status"></p>
+</section>
+<label><input type="checkbox" id="play-server" autocomplete="off" checked> Play on server</label>
+<label><input type="checkbox" id="play-browser" autocomplete="off"> Play in browser</label>
+<p><label>Find a sound <input type="search" id="search" placeholder="Search names or filenames"></label></p>
+<p id="status" role="status"></p>
+<div id="sections"></div>
+<script>
+const status = document.getElementById("status");
+const serverOutput = document.getElementById("play-server");
+const browserOutput = document.getElementById("play-browser");
+serverOutput.checked = true;
+browserOutput.checked = false;
+const search = document.getElementById("search");
+let audio = null;
+let clips = [];
+let generation = 0;
+let serverQueue = Promise.resolve();
+function stopBrowser() {
+  if (audio) audio.pause();
+  audio = null;
+}
+function queueServer(action) {
+  const pending = serverQueue.then(action);
+  serverQueue = pending.catch(() => {});
+  return pending;
+}
+async function stopServer() {
+  const res = await fetch("/api/arnold/stop", { method: "POST" });
+  if (!res.ok) throw new Error(await res.text());
+}
+async function changeOutputs() {
+  const request = ++generation;
+  stopBrowser();
+  status.textContent = "Switching playback destination…";
+  try {
+    await queueServer(stopServer);
+    if (request === generation) status.textContent = "Playback: " +
+      ([serverOutput.checked && "server", browserOutput.checked && "browser"].filter(Boolean).join(" and ") || "off");
+  } catch (error) {
+    if (request === generation) status.textContent = "Could not stop server playback: " + error.message;
+  }
+}
+serverOutput.addEventListener("change", changeOutputs);
+browserOutput.addEventListener("change", changeOutputs);
+
+async function play(clip) {
+  const request = ++generation;
+  const onServer = serverOutput.checked;
+  const inBrowser = browserOutput.checked;
+  status.textContent = "";
+  stopBrowser();
+  try {
+    if (!onServer) {
+      await queueServer(stopServer);
+    }
+    if (request !== generation) return;
+    if (!onServer && !inBrowser) {
+      status.textContent = "Select a playback destination.";
+      return;
+    }
+    const destinations = [];
+    const errors = [];
+    const jobs = [];
+    if (onServer) jobs.push(queueServer(async () => {
+        if (request !== generation) return;
+        const res = await fetch("/api/arnold/play", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ file: clip.file })
+        });
+        if (!res.ok) throw new Error(await res.text());
+        destinations.push("server");
+      }).catch(error => { errors.push("Server: " + error.message); }));
+    if (inBrowser) {
+      audio = new Audio("/arnold/audio/" + clip.file);
+      jobs.push(audio.play().then(() => { destinations.push("browser"); })
+        .catch(error => { errors.push("Browser: " + error.message); }));
+    }
+    await Promise.all(jobs);
+    if (request === generation) status.textContent = [
+      destinations.length ? "Playing on " + destinations.join(" and ") + ": " + clip.name : "",
+      ...errors
+    ].filter(Boolean).join(". ");
+  } catch (error) {
+    if (request === generation) status.textContent = "Playback failed: " + error.message;
+  }
+}
+
+function render() {
+  const container = document.getElementById("sections");
+  container.replaceChildren();
+  const grids = new Map();
+  const query = search.value.toLowerCase().trim();
+  let visible = 0;
+  for (const clip of clips) {
+    if (!(clip.name + " " + clip.file + " " + clip.section_title).toLowerCase().includes(query)) continue;
+    if (!grids.has(clip.section)) {
+      const section = document.createElement("section");
+      section.setAttribute("aria-label", clip.section_title);
+      const grid = document.createElement("div");
+      section.append(grid);
+      container.append(section);
+      grids.set(clip.section, grid);
+    }
+    const b = document.createElement("button");
+    b.textContent = clip.name;
+    b.title = clip.file;
+    b.addEventListener("click", () => play(clip));
+    grids.get(clip.section).append(b);
+    visible++;
+  }
+  status.textContent = visible + " of " + clips.length + " sounds";
+}
+search.addEventListener("input", render);
+status.textContent = "Loading sounds…";
+fetch("/api/arnold/clips").then(r => {
+  if (!r.ok) throw new Error("Could not load sounds (" + r.status + ")");
+  return r.json();
+}).then(loaded => {
+  clips = loaded;
+  render();
+}).catch(error => {
+  status.textContent = error.message;
+});
+</script>
+<script src="/assets/device-widgets.js" defer></script>
+</body>
+</html>

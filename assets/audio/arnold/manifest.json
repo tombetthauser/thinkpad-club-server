@@ -1,0 +1,2512 @@
+{
+  "board": "https://www.101soundboards.com/boards/34017-arnold-schwarzenegger-flash-soundboard",
+  "stats": {
+    "downloaded": 0,
+    "skipped": 278,
+    "failed": 0
+  },
+  "clips": [
+    {
+      "name": "Affirmative.",
+      "file": "secondary/affirmative.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/dvgpxk.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612865-affirmative",
+      "status": "skipped",
+      "bytes": 36242,
+      "tier": "secondary"
+    },
+    {
+      "name": "Amazing.",
+      "file": "secondary/amazing.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/jjpgwy.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612677-amazing",
+      "status": "skipped",
+      "bytes": 45019,
+      "tier": "secondary"
+    },
+    {
+      "name": "Anger is more useful than despair.",
+      "file": "secondary/anger-is-more-useful-than-despair.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/okxybn.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612863-anger-is-more-useful-than-despair",
+      "status": "skipped",
+      "bytes": 57715,
+      "tier": "secondary"
+    },
+    {
+      "name": "Are you out of your mind?",
+      "file": "secondary/are-you-out-of-your-mind.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/lepxon.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612708-are-you-out-of-your-mind",
+      "status": "skipped",
+      "bytes": 53378,
+      "tier": "secondary"
+    },
+    {
+      "name": "Arnold Schwarzenegger Flash Soundboard Sound",
+      "file": "secondary/arnold-schwarzenegger-flash-soundboard-sound.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/zzjkow.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612866-arnold-schwarzenegger-flash-soundboard-sound",
+      "status": "skipped",
+      "bytes": 55468,
+      "tier": "secondary"
+    },
+    {
+      "name": "Arnold Schwarzenegger Flash Soundboard Sound",
+      "file": "secondary/arnold-schwarzenegger-flash-soundboard-sound-2.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/zzjknw.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612849-arnold-schwarzenegger-flash-soundboard-sound",
+      "status": "skipped",
+      "bytes": 110221,
+      "tier": "secondary"
+    },
+    {
+      "name": "Arnold Schwarzenegger Flash Soundboard Sound",
+      "file": "secondary/arnold-schwarzenegger-flash-soundboard-sound-3.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/ezxrno.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612861-arnold-schwarzenegger-flash-soundboard-sound",
+      "status": "skipped",
+      "bytes": 24590,
+      "tier": "secondary"
+    },
+    {
+      "name": "Basic psychology is among my subroutines.",
+      "file": "secondary/basic-psychology-is-among-my-subroutines.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/jjpall.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612860-basic-psychology-is-among-my-subroutines",
+      "status": "skipped",
+      "bytes": 78874,
+      "tier": "secondary"
+    },
+    {
+      "name": "Because of you, alot of people are dead and now it's your turn.",
+      "file": "secondary/because-of-you-alot-of-people-are-dead-and-now-its-your-turn.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/kergbb.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612716-because-of-you-alot-of-people-are-dead-and-now-its-your-turn",
+      "status": "skipped",
+      "bytes": 100608,
+      "tier": "secondary"
+    },
+    {
+      "name": "Because you told me too.",
+      "file": "secondary/because-you-told-me-too.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/realdx.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612858-because-you-told-me-too",
+      "status": "skipped",
+      "bytes": 34240,
+      "tier": "secondary"
+    },
+    {
+      "name": "Brenda said everyone is trying to kill us. I just saw two cops. Why's everyone after you?",
+      "file": "secondary/brenda-said-everyone-is-trying-to-kill-us-i-just-saw-two-cops-whys-everyone-afte.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/avrndl.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612785-brenda-said-everyone-is-trying-to-kill-us-i-just-saw-two-cops-whys-everyone-after-you",
+      "status": "skipped",
+      "bytes": 118162,
+      "tier": "secondary"
+    },
+    {
+      "name": "But I hope you leave enough room for my fist because I'm going to ram it into your stomach and break you got them trying.",
+      "file": "secondary/but-i-hope-you-leave-enough-room-for-my-fist-because-im-going-to-ram-it-into-you.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/realod.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612707-but-i-hope-you-leave-enough-room-for-my-fist-because-im-going-to-ram-it-into-your-stomach",
+      "status": "skipped",
+      "bytes": 134638,
+      "tier": "secondary"
+    },
+    {
+      "name": "Capability with the boss.",
+      "file": "secondary/capability-with-the-boss.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/negwpv.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612820-capability-with-the-boss",
+      "status": "skipped",
+      "bytes": 60484,
+      "tier": "secondary"
+    },
+    {
+      "name": "Choose a man, but I need it.",
+      "file": "secondary/choose-a-man-but-i-need-it.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/wkjgbk.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612789-choose-a-man-but-i-need-it",
+      "status": "skipped",
+      "bytes": 66753,
+      "tier": "secondary"
+    },
+    {
+      "name": "Come and get me.",
+      "file": "secondary/come-and-get-me.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/xdjxzl.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612853-come-and-get-me",
+      "status": "skipped",
+      "bytes": 34152,
+      "tier": "secondary"
+    },
+    {
+      "name": "Come on baby, you need to go in my dreams.",
+      "file": "secondary/come-on-baby-you-need-to-go-in-my-dreams.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/wkjgzj.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612855-come-on-baby-you-need-to-go-in-my-dreams",
+      "status": "skipped",
+      "bytes": 57768,
+      "tier": "secondary"
+    },
+    {
+      "name": "Come on, don't ******** me.",
+      "file": "secondary/come-on-dont-me.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/okxygn.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612846-come-on-dont-me",
+      "status": "skipped",
+      "bytes": 52960,
+      "tier": "secondary"
+    },
+    {
+      "name": "Come on, kill me, I'm here.",
+      "file": "secondary/come-on-kill-me-im-here.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/penpzx.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612757-come-on-kill-me-im-here",
+      "status": "skipped",
+      "bytes": 60066,
+      "tier": "secondary"
+    },
+    {
+      "name": "Come on.",
+      "file": "secondary/come-on.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/negwbv.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612854-come-on",
+      "status": "skipped",
+      "bytes": 42487,
+      "tier": "secondary"
+    },
+    {
+      "name": "Connor",
+      "file": "secondary/connor.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/avrnjw.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612851-connor",
+      "status": "skipped",
+      "bytes": 21247,
+      "tier": "secondary"
+    },
+    {
+      "name": "Could not be having fun.",
+      "file": "secondary/could-not-be-having-fun.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/wkjgek.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612721-could-not-be-having-fun",
+      "status": "skipped",
+      "bytes": 33785,
+      "tier": "secondary"
+    },
+    {
+      "name": "Could you speak to the drug dealers the house, please?",
+      "file": "secondary/could-you-speak-to-the-drug-dealers-the-house-please.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/lepxdd.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612842-could-you-speak-to-the-drug-dealers-the-house-please",
+      "status": "skipped",
+      "bytes": 49199,
+      "tier": "secondary"
+    },
+    {
+      "name": "Crazy.",
+      "file": "secondary/crazy.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/jjpara.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612709-crazy",
+      "status": "skipped",
+      "bytes": 48363,
+      "tier": "secondary"
+    },
+    {
+      "name": "Cyberdyne Systems model 101.",
+      "file": "primary/cyberdyne-systems-model-101.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/bdrklw.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612747-cyberdyne-systems-model-101",
+      "status": "skipped",
+      "bytes": 67589,
+      "tier": "primary"
+    },
+    {
+      "name": "Dave, you're going to play a new fun game. It's called police school.",
+      "file": "secondary/dave-youre-going-to-play-a-new-fun-game-its-called-police-school.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/dvgpaj.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612714-dave-youre-going-to-play-a-new-fun-game-its-called-police-school",
+      "status": "skipped",
+      "bytes": 111475,
+      "tier": "secondary"
+    },
+    {
+      "name": "Did the ******* on TV.",
+      "file": "secondary/did-the-on-tv.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/wkjnwa.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612638-did-the-on-tv",
+      "status": "skipped",
+      "bytes": 55928,
+      "tier": "secondary"
+    },
+    {
+      "name": "Did you expect me to believe you?",
+      "file": "secondary/did-you-expect-me-to-believe-you.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/wkjgaj.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612838-did-you-expect-me-to-believe-you",
+      "status": "skipped",
+      "bytes": 57558,
+      "tier": "secondary"
+    },
+    {
+      "name": "Do you know you're lying?",
+      "file": "secondary/do-you-know-youre-lying.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/xdjwyd.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612636-do-you-know-youre-lying",
+      "status": "skipped",
+      "bytes": 42929,
+      "tier": "secondary"
+    },
+    {
+      "name": "Do you think that's funny, huh?",
+      "file": "secondary/do-you-think-thats-funny-huh.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/jjpgyy.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612643-do-you-think-thats-funny-huh",
+      "status": "skipped",
+      "bytes": 33316,
+      "tier": "secondary"
+    },
+    {
+      "name": "Do you want to **** me?",
+      "file": "secondary/do-you-want-to-me.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/lepnra.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612642-do-you-want-to-me",
+      "status": "skipped",
+      "bytes": 34152,
+      "tier": "secondary"
+    },
+    {
+      "name": "Do you want to **** with me?",
+      "file": "secondary/do-you-want-to-with-me.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/avrnzw.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612834-do-you-want-to-with-me",
+      "status": "skipped",
+      "bytes": 42929,
+      "tier": "secondary"
+    },
+    {
+      "name": "Don't do that.",
+      "file": "secondary/dont-do-that.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/vdwala.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612845-dont-do-that",
+      "status": "skipped",
+      "bytes": 39600,
+      "tier": "secondary"
+    },
+    {
+      "name": "Douglas quaid.",
+      "file": "secondary/douglas-quaid.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/jjpazl.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612843-douglas-quaid",
+      "status": "skipped",
+      "bytes": 32480,
+      "tier": "secondary"
+    },
+    {
+      "name": "Excellent.",
+      "file": "secondary/excellent.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/yzjnkv.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612839-excellent",
+      "status": "skipped",
+      "bytes": 47900,
+      "tier": "secondary"
+    },
+    {
+      "name": "Excuse me, I have a few more questions if it online.",
+      "file": "secondary/excuse-me-i-have-a-few-more-questions-if-it-online.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/ezxrlp.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612744-excuse-me-i-have-a-few-more-questions-if-it-online",
+      "status": "skipped",
+      "bytes": 58812,
+      "tier": "secondary"
+    },
+    {
+      "name": "Fans got news for you, you're mine now. You belong to me.",
+      "file": "secondary/fans-got-news-for-you-youre-mine-now-you-belong-to-me.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/gzwoxe.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612635-fans-got-news-for-you-youre-mine-now-you-belong-to-me",
+      "status": "skipped",
+      "bytes": 83889,
+      "tier": "secondary"
+    },
+    {
+      "name": "Faster.",
+      "file": "secondary/faster.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/ezxojj.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612661-faster",
+      "status": "skipped",
+      "bytes": 24590,
+      "tier": "secondary"
+    },
+    {
+      "name": "First, I would like to just get to know you.",
+      "file": "secondary/first-i-would-like-to-just-get-to-know-you.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/zzjkxw.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612832-first-i-would-like-to-just-get-to-know-you",
+      "status": "skipped",
+      "bytes": 60066,
+      "tier": "secondary"
+    },
+    {
+      "name": "Fitted new model ordering system to 680 atory but I can write up an order and immediately as soon as the customers name comes up you see what is created. Line is what is what is in the past. What d...",
+      "file": "secondary/fitted-new-model-ordering-system-to-680-atory-but-i-can-write-up-an-order-and-im.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/okxyaw.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612746-fitted-new-model-ordering-system-to-680-atory-but-i-can-write-up-an-order-and",
+      "status": "skipped",
+      "bytes": 242714,
+      "tier": "secondary"
+    },
+    {
+      "name": "Get your mother, please.",
+      "file": "secondary/get-your-mother-please.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/jjpaka.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612743-get-your-mother-please",
+      "status": "skipped",
+      "bytes": 51791,
+      "tier": "secondary"
+    },
+    {
+      "name": "Get your story straight.",
+      "file": "secondary/get-your-story-straight.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/dvgpwk.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612831-get-your-story-straight",
+      "status": "skipped",
+      "bytes": 26262,
+      "tier": "secondary"
+    },
+    {
+      "name": "Give these people air.",
+      "file": "secondary/give-these-people-air.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/okxyrn.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612829-give-these-people-air",
+      "status": "skipped",
+      "bytes": 53378,
+      "tier": "secondary"
+    },
+    {
+      "name": "Go on.",
+      "file": "secondary/go-on.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/vdwapa.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612828-go-on",
+      "status": "skipped",
+      "bytes": 44183,
+      "tier": "secondary"
+    },
+    {
+      "name": "Good for you.",
+      "file": "secondary/good-for-you.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/ezxryo.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612827-good-for-you",
+      "status": "skipped",
+      "bytes": 42511,
+      "tier": "secondary"
+    },
+    {
+      "name": "Good morning.",
+      "file": "secondary/good-morning.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/lepxwd.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612825-good-morning",
+      "status": "skipped",
+      "bytes": 33734,
+      "tier": "secondary"
+    },
+    {
+      "name": "Good.",
+      "file": "secondary/good.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/realxx.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612824-good",
+      "status": "skipped",
+      "bytes": 28719,
+      "tier": "secondary"
+    },
+    {
+      "name": "Goodbye.",
+      "file": "secondary/goodbye.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/jjpaxl.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612826-goodbye",
+      "status": "skipped",
+      "bytes": 37914,
+      "tier": "secondary"
+    },
+    {
+      "name": "Ha ha ha ha ha.",
+      "file": "secondary/ha-ha-ha-ha-ha.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/yzjngv.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612822-ha-ha-ha-ha-ha",
+      "status": "skipped",
+      "bytes": 50035,
+      "tier": "secondary"
+    },
+    {
+      "name": "Ha ha.",
+      "file": "secondary/ha-ha.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/bdrkav.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612864-ha-ha",
+      "status": "skipped",
+      "bytes": 70895,
+      "tier": "secondary"
+    },
+    {
+      "name": "Have to hand it to you. It's the best ******** yet.",
+      "file": "secondary/have-to-hand-it-to-you-its-the-best-yet.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/wkjgrj.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612821-have-to-hand-it-to-you-its-the-best-yet",
+      "status": "skipped",
+      "bytes": 76599,
+      "tier": "secondary"
+    },
+    {
+      "name": "He didn't disappear, he was still alive.",
+      "file": "secondary/he-didnt-disappear-he-was-still-alive.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/gzwjrn.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612818-he-didnt-disappear-he-was-still-alive",
+      "status": "skipped",
+      "bytes": 66753,
+      "tier": "secondary"
+    },
+    {
+      "name": "He doesn't matter.",
+      "file": "secondary/he-doesnt-matter.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/bdrkgw.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612764-he-doesnt-matter",
+      "status": "skipped",
+      "bytes": 37914,
+      "tier": "secondary"
+    },
+    {
+      "name": "He used to be somebody I could trust.",
+      "file": "secondary/he-used-to-be-somebody-i-could-trust.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/negwev.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612803-he-used-to-be-somebody-i-could-trust",
+      "status": "skipped",
+      "bytes": 52304,
+      "tier": "secondary"
+    },
+    {
+      "name": "Hello.",
+      "file": "secondary/hello.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/kergny.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612816-hello",
+      "status": "skipped",
+      "bytes": 35406,
+      "tier": "secondary"
+    },
+    {
+      "name": "Hello.",
+      "file": "secondary/hello-2.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/avrngw.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612817-hello",
+      "status": "skipped",
+      "bytes": 24919,
+      "tier": "secondary"
+    },
+    {
+      "name": "Here is no respectful logical.",
+      "file": "secondary/here-is-no-respectful-logical.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/zzjpal.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612649-here-is-no-respectful-logical",
+      "status": "skipped",
+      "bytes": 70610,
+      "tier": "secondary"
+    },
+    {
+      "name": "Here's how it works.",
+      "file": "secondary/heres-how-it-works.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/vdwada.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612811-heres-how-it-works",
+      "status": "skipped",
+      "bytes": 26262,
+      "tier": "secondary"
+    },
+    {
+      "name": "Hey, I'm a police officer.",
+      "file": "secondary/hey-im-a-police-officer.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/dvgpvk.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612814-hey-im-a-police-officer",
+      "status": "skipped",
+      "bytes": 45437,
+      "tier": "secondary"
+    },
+    {
+      "name": "Hey, wait a minute.",
+      "file": "secondary/hey-wait-a-minute.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/bdrkdv.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612813-hey-wait-a-minute",
+      "status": "skipped",
+      "bytes": 30809,
+      "tier": "secondary"
+    },
+    {
+      "name": "Hey.",
+      "file": "secondary/hey.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/ezxroo.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612878-hey",
+      "status": "skipped",
+      "bytes": 183782,
+      "tier": "secondary"
+    },
+    {
+      "name": "Hi.",
+      "file": "secondary/hi.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/okxykn.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612812-hi",
+      "status": "skipped",
+      "bytes": 19883,
+      "tier": "secondary"
+    },
+    {
+      "name": "His psychopathic *****",
+      "file": "secondary/his-psychopathic.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/okxylw.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612712-his-psychopathic",
+      "status": "skipped",
+      "bytes": 36660,
+      "tier": "secondary"
+    },
+    {
+      "name": "Home with a lie to you.",
+      "file": "secondary/home-with-a-lie-to-you.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/negywp.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612603-home-with-a-lie-to-you",
+      "status": "skipped",
+      "bytes": 30809,
+      "tier": "secondary"
+    },
+    {
+      "name": "How are you?",
+      "file": "secondary/how-are-you.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/lepxed.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612808-how-are-you",
+      "status": "skipped",
+      "bytes": 29559,
+      "tier": "secondary"
+    },
+    {
+      "name": "How much is Craig and paying you for this?",
+      "file": "secondary/how-much-is-craig-and-paying-you-for-this.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/ezxrzo.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612810-how-much-is-craig-and-paying-you-for-this",
+      "status": "skipped",
+      "bytes": 73023,
+      "tier": "secondary"
+    },
+    {
+      "name": "How much is that?",
+      "file": "secondary/how-much-is-that.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/jjpajl.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612809-how-much-is-that",
+      "status": "skipped",
+      "bytes": 35445,
+      "tier": "secondary"
+    },
+    {
+      "name": "Howdy stranger.",
+      "file": "secondary/howdy-stranger.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/penpee.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612806-howdy-stranger",
+      "status": "skipped",
+      "bytes": 43765,
+      "tier": "secondary"
+    },
+    {
+      "name": "I am quaid.",
+      "file": "secondary/i-am-quaid.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/wkjgkj.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612804-i-am-quaid",
+      "status": "skipped",
+      "bytes": 41258,
+      "tier": "secondary"
+    },
+    {
+      "name": "I am your brother, Julius.",
+      "file": "secondary/i-am-your-brother-julius.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/gzwjwb.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612769-i-am-your-brother-julius",
+      "status": "skipped",
+      "bytes": 65917,
+      "tier": "secondary"
+    },
+    {
+      "name": "I didn't lose my mind Cohagen store it.",
+      "file": "secondary/i-didnt-lose-my-mind-cohagen-store-it.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/xdjxdl.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612802-i-didnt-lose-my-mind-cohagen-store-it",
+      "status": "skipped",
+      "bytes": 47527,
+      "tier": "secondary"
+    },
+    {
+      "name": "I don't care.",
+      "file": "secondary/i-dont-care.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/gzwjzn.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612801-i-dont-care",
+      "status": "skipped",
+      "bytes": 23754,
+      "tier": "secondary"
+    },
+    {
+      "name": "I don't even want to think about it.",
+      "file": "secondary/i-dont-even-want-to-think-about-it.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/vdwazn.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612796-i-dont-even-want-to-think-about-it",
+      "status": "skipped",
+      "bytes": 62991,
+      "tier": "secondary"
+    },
+    {
+      "name": "I don't know.",
+      "file": "secondary/i-dont-know.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/bdrkew.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612798-i-dont-know",
+      "status": "skipped",
+      "bytes": 45019,
+      "tier": "secondary"
+    },
+    {
+      "name": "I don't know.",
+      "file": "secondary/i-dont-know-2.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/dvgpvj.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612799-i-dont-know",
+      "status": "skipped",
+      "bytes": 27472,
+      "tier": "secondary"
+    },
+    {
+      "name": "I don't know.",
+      "file": "secondary/i-dont-know-3.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/avrnvw.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612800-i-dont-know",
+      "status": "skipped",
+      "bytes": 53796,
+      "tier": "secondary"
+    },
+    {
+      "name": "I don't lie, I am your brother.",
+      "file": "secondary/i-dont-lie-i-am-your-brother.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/yzjnzv.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612805-i-dont-lie-i-am-your-brother",
+      "status": "skipped",
+      "bytes": 59648,
+      "tier": "secondary"
+    },
+    {
+      "name": "I don't understand.",
+      "file": "secondary/i-dont-understand.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/ezxrkp.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612795-i-dont-understand",
+      "status": "skipped",
+      "bytes": 46273,
+      "tier": "secondary"
+    },
+    {
+      "name": "I guarantee you things will change.",
+      "file": "secondary/i-guarantee-you-things-will-change.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/xdjwad.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612670-i-guarantee-you-things-will-change",
+      "status": "skipped",
+      "bytes": 56051,
+      "tier": "secondary"
+    },
+    {
+      "name": "I have an appointment.",
+      "file": "secondary/i-have-an-appointment.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/vdwaka.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612862-i-have-an-appointment",
+      "status": "skipped",
+      "bytes": 27465,
+      "tier": "secondary"
+    },
+    {
+      "name": "I have detailed files.",
+      "file": "secondary/i-have-detailed-files.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/jjpaea.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612794-i-have-detailed-files",
+      "status": "skipped",
+      "bytes": 40422,
+      "tier": "secondary"
+    },
+    {
+      "name": "I have the utmost respect for women.",
+      "file": "secondary/i-have-the-utmost-respect-for-women.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/yzjnwg.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612705-i-have-the-utmost-respect-for-women",
+      "status": "skipped",
+      "bytes": 62991,
+      "tier": "secondary"
+    },
+    {
+      "name": "I insist",
+      "file": "secondary/i-insist.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/lepxkn.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612793-i-insist",
+      "status": "skipped",
+      "bytes": 29973,
+      "tier": "secondary"
+    },
+    {
+      "name": "I know I did not.",
+      "file": "secondary/i-know-i-did-not.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/kergwb.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612733-i-know-i-did-not",
+      "status": "skipped",
+      "bytes": 31645,
+      "tier": "secondary"
+    },
+    {
+      "name": "I lied.",
+      "file": "secondary/i-lied.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/penpjx.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612791-i-lied",
+      "status": "skipped",
+      "bytes": 22918,
+      "tier": "secondary"
+    },
+    {
+      "name": "I like that.",
+      "file": "secondary/i-like-that.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/yzjnvg.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612790-i-like-that",
+      "status": "skipped",
+      "bytes": 49617,
+      "tier": "secondary"
+    },
+    {
+      "name": "I mean, I have the guy and you let him get away.",
+      "file": "secondary/i-mean-i-have-the-guy-and-you-let-him-get-away.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/xdjxkl.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612819-i-mean-i-have-the-guy-and-you-let-him-get-away",
+      "status": "skipped",
+      "bytes": 75948,
+      "tier": "secondary"
+    },
+    {
+      "name": "I need a vacation.",
+      "file": "secondary/i-need-a-vacation.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/xdjxvj.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612787-i-need-a-vacation",
+      "status": "skipped",
+      "bytes": 47991,
+      "tier": "secondary"
+    },
+    {
+      "name": "I need to speak to my wife, so could you get on the phone please?",
+      "file": "secondary/i-need-to-speak-to-my-wife-so-could-you-get-on-the-phone-please.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/negwkp.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612688-i-need-to-speak-to-my-wife-so-could-you-get-on-the-phone-please",
+      "status": "skipped",
+      "bytes": 90995,
+      "tier": "secondary"
+    },
+    {
+      "name": "I need your help.",
+      "file": "secondary/i-need-your-help.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/negwdd.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612788-i-need-your-help",
+      "status": "skipped",
+      "bytes": 51746,
+      "tier": "secondary"
+    },
+    {
+      "name": "I want to ask you a bunch of questions. They want to have them answered immediately.",
+      "file": "secondary/i-want-to-ask-you-a-bunch-of-questions-they-want-to-have-them-answered-immediate.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/vdwajn.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612711-i-want-to-ask-you-a-bunch-of-questions-they-want-to-have-them-answered-immediately",
+      "status": "skipped",
+      "bytes": 75581,
+      "tier": "secondary"
+    },
+    {
+      "name": "I want to be somebody.",
+      "file": "secondary/i-want-to-be-somebody.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/ezxopj.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612627-i-want-to-be-somebody",
+      "status": "skipped",
+      "bytes": 46691,
+      "tier": "secondary"
+    },
+    {
+      "name": "I want to know what's going on and I wasn't know right now.",
+      "file": "secondary/i-want-to-know-whats-going-on-and-i-wasnt-know-right-now.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/kerglb.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612784-i-want-to-know-whats-going-on-and-i-wasnt-know-right-now",
+      "status": "skipped",
+      "bytes": 70422,
+      "tier": "secondary"
+    },
+    {
+      "name": "I wasn't ******* there.",
+      "file": "secondary/i-wasnt-there.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/zzjkdy.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612783-i-wasnt-there",
+      "status": "skipped",
+      "bytes": 50871,
+      "tier": "secondary"
+    },
+    {
+      "name": "I'll be back.",
+      "file": "primary/ill-be-back.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/dvgpej.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612782-ill-be-back",
+      "status": "skipped",
+      "bytes": 31645,
+      "tier": "primary"
+    },
+    {
+      "name": "I'm a cop, you idiot.",
+      "file": "primary/im-a-cop-you-idiot.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/okxyxw.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612780-im-a-cop-you-idiot",
+      "status": "skipped",
+      "bytes": 60484,
+      "tier": "primary"
+    },
+    {
+      "name": "I'm a cybernetic Organism.",
+      "file": "primary/im-a-cybernetic-organism.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/vdwawn.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612779-im-a-cybernetic-organism",
+      "status": "skipped",
+      "bytes": 60066,
+      "tier": "primary"
+    },
+    {
+      "name": "I'm a friend of Sarah Connor. I was told that she's here.",
+      "file": "secondary/im-a-friend-of-sarah-connor-i-was-told-that-shes-here.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/gzwjab.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612701-im-a-friend-of-sarah-connor-i-was-told-that-shes-here",
+      "status": "skipped",
+      "bytes": 61371,
+      "tier": "secondary"
+    },
+    {
+      "name": "I'm back.",
+      "file": "primary/im-back.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/ezxrxp.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612778-im-back",
+      "status": "skipped",
+      "bytes": 49199,
+      "tier": "primary"
+    },
+    {
+      "name": "I'm Detective John Kimble.",
+      "file": "primary/im-detective-john-kimble.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/lepxpn.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612776-im-detective-john-kimble",
+      "status": "skipped",
+      "bytes": 47945,
+      "tier": "primary"
+    },
+    {
+      "name": "I'm going to be a share if you're going to be my deputy trainees.",
+      "file": "secondary/im-going-to-be-a-share-if-youre-going-to-be-my-deputy-trainees.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/reajrl.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612658-im-going-to-be-a-share-if-youre-going-to-be-my-deputy-trainees",
+      "status": "skipped",
+      "bytes": 97682,
+      "tier": "secondary"
+    },
+    {
+      "name": "I'm going to take a shower.",
+      "file": "secondary/im-going-to-take-a-shower.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/negwgd.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612771-im-going-to-take-a-shower",
+      "status": "skipped",
+      "bytes": 61008,
+      "tier": "secondary"
+    },
+    {
+      "name": "I'm John Kimble.",
+      "file": "secondary/im-john-kimble.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/realad.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612775-im-john-kimble",
+      "status": "skipped",
+      "bytes": 33345,
+      "tier": "secondary"
+    },
+    {
+      "name": "I'm not authorized to answer your question.",
+      "file": "secondary/im-not-authorized-to-answer-your-question.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/yzjnjg.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612773-im-not-authorized-to-answer-your-question",
+      "status": "skipped",
+      "bytes": 45855,
+      "tier": "secondary"
+    },
+    {
+      "name": "I'm not interested in that.",
+      "file": "secondary/im-not-interested-in-that.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/realnd.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612724-im-not-interested-in-that",
+      "status": "skipped",
+      "bytes": 50453,
+      "tier": "secondary"
+    },
+    {
+      "name": "I'm not programmed to follow your orders.",
+      "file": "secondary/im-not-programmed-to-follow-your-orders.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/jjpaoa.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612726-im-not-programmed-to-follow-your-orders",
+      "status": "skipped",
+      "bytes": 55468,
+      "tier": "secondary"
+    },
+    {
+      "name": "I'm pressing charges against you.",
+      "file": "secondary/im-pressing-charges-against-you.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/wkjgjk.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612772-im-pressing-charges-against-you",
+      "status": "skipped",
+      "bytes": 59378,
+      "tier": "secondary"
+    },
+    {
+      "name": "I'm very happy to be here.",
+      "file": "secondary/im-very-happy-to-be-here.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/okxpez.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612629-im-very-happy-to-be-here",
+      "status": "skipped",
+      "bytes": 65081,
+      "tier": "secondary"
+    },
+    {
+      "name": "I'm wasting my time.",
+      "file": "secondary/im-wasting-my-time.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/avrnrl.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612768-im-wasting-my-time",
+      "status": "skipped",
+      "bytes": 53378,
+      "tier": "secondary"
+    },
+    {
+      "name": "I'm your brother. You love you.",
+      "file": "secondary/im-your-brother-you-love-you.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/xdjxjj.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612770-im-your-brother-you-love-you",
+      "status": "skipped",
+      "bytes": 74694,
+      "tier": "secondary"
+    },
+    {
+      "name": "I've got news for you. You are mine. Now you belong to me.",
+      "file": "primary/ive-got-news-for-you-you-are-mine-now-you-belong-to-me.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/dvgoka.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612648-ive-got-news-for-you-you-are-mine-now-you-belong-to-me",
+      "status": "skipped",
+      "bytes": 95174,
+      "tier": "primary"
+    },
+    {
+      "name": "I've seen you before.",
+      "file": "secondary/ive-seen-you-before.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/gzwjeb.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612786-ive-seen-you-before",
+      "status": "skipped",
+      "bytes": 46273,
+      "tier": "secondary"
+    },
+    {
+      "name": "Impersonating an officer resisting arrest, fraud, reckless driving, and lying to the Sheriff.",
+      "file": "secondary/impersonating-an-officer-resisting-arrest-fraud-reckless-driving-and-lying-to-th.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/kergrb.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612767-impersonating-an-officer-resisting-arrest-fraud-reckless-driving-and-lying-to-the",
+      "status": "skipped",
+      "bytes": 145329,
+      "tier": "secondary"
+    },
+    {
+      "name": "In approximately one hour.",
+      "file": "secondary/in-approximately-one-hour.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/zzjkjy.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612766-in-approximately-one-hour",
+      "status": "skipped",
+      "bytes": 47109,
+      "tier": "secondary"
+    },
+    {
+      "name": "In case you forget, I will be checking back with you.",
+      "file": "secondary/in-case-you-forget-i-will-be-checking-back-with-you.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/bdrkrw.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612781-in-case-you-forget-i-will-be-checking-back-with-you",
+      "status": "skipped",
+      "bytes": 57191,
+      "tier": "secondary"
+    },
+    {
+      "name": "Is new so kinky?",
+      "file": "secondary/is-new-so-kinky.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/dvgoba.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612631-is-new-so-kinky",
+      "status": "skipped",
+      "bytes": 27934,
+      "tier": "secondary"
+    },
+    {
+      "name": "It is your destiny.",
+      "file": "secondary/it-is-your-destiny.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/dvgpgj.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612765-it-is-your-destiny",
+      "status": "skipped",
+      "bytes": 42094,
+      "tier": "secondary"
+    },
+    {
+      "name": "It would have been nice if you would have gotten off the assets and help us out there.",
+      "file": "secondary/it-would-have-been-nice-if-you-would-have-gotten-off-the-assets-and-help-us-out.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/zzjkzw.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612815-it-would-have-been-nice-if-you-would-have-gotten-off-the-assets-and-help-us-out-there",
+      "status": "skipped",
+      "bytes": 90682,
+      "tier": "secondary"
+    },
+    {
+      "name": "It's private.",
+      "file": "secondary/its-private.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/reajwl.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612675-its-private",
+      "status": "skipped",
+      "bytes": 27473,
+      "tier": "secondary"
+    },
+    {
+      "name": "It's time now to build this much into muscles.",
+      "file": "secondary/its-time-now-to-build-this-much-into-muscles.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/lepxjn.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612742-its-time-now-to-build-this-much-into-muscles",
+      "status": "skipped",
+      "bytes": 59230,
+      "tier": "secondary"
+    },
+    {
+      "name": "Jamie, please.",
+      "file": "secondary/jamie-please.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/okxyow.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612763-jamie-please",
+      "status": "skipped",
+      "bytes": 45019,
+      "tier": "secondary"
+    },
+    {
+      "name": "Jimmy, I'm here coming.",
+      "file": "secondary/jimmy-im-here-coming.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/wkjgxk.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612755-jimmy-im-here-coming",
+      "status": "skipped",
+      "bytes": 46765,
+      "tier": "secondary"
+    },
+    {
+      "name": "John Connor.",
+      "file": "secondary/john-connor.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/vdwagn.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612762-john-connor",
+      "status": "skipped",
+      "bytes": 33316,
+      "tier": "secondary"
+    },
+    {
+      "name": "John man.",
+      "file": "secondary/john-man.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/realgd.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612758-john-man",
+      "status": "skipped",
+      "bytes": 55886,
+      "tier": "secondary"
+    },
+    {
+      "name": "Judgment Day is inevitable.",
+      "file": "primary/judgment-day-is-inevitable.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/jjpaba.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612760-judgment-day-is-inevitable",
+      "status": "skipped",
+      "bytes": 63827,
+      "tier": "primary"
+    },
+    {
+      "name": "Just do what I tell you.",
+      "file": "secondary/just-do-what-i-tell-you.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/lepxvn.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612759-just-do-what-i-tell-you",
+      "status": "skipped",
+      "bytes": 55050,
+      "tier": "secondary"
+    },
+    {
+      "name": "Just doing my job.",
+      "file": "secondary/just-doing-my-job.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/penpnx.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612774-just-doing-my-job",
+      "status": "skipped",
+      "bytes": 48781,
+      "tier": "secondary"
+    },
+    {
+      "name": "Kind of just become self aware.",
+      "file": "secondary/kind-of-just-become-self-aware.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/ezxrbj.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612695-kind-of-just-become-self-aware",
+      "status": "skipped",
+      "bytes": 48781,
+      "tier": "secondary"
+    },
+    {
+      "name": "Let me talk to your mother.",
+      "file": "secondary/let-me-talk-to-your-mother.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/xdjxnj.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612753-let-me-talk-to-your-mother",
+      "status": "skipped",
+      "bytes": 35824,
+      "tier": "secondary"
+    },
+    {
+      "name": "Let's do it.",
+      "file": "secondary/lets-do-it.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/gzwjbb.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612752-lets-do-it",
+      "status": "skipped",
+      "bytes": 23285,
+      "tier": "secondary"
+    },
+    {
+      "name": "Miami.",
+      "file": "secondary/miami.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/kergvb.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612750-miami",
+      "status": "skipped",
+      "bytes": 47945,
+      "tier": "secondary"
+    },
+    {
+      "name": "Mom.",
+      "file": "secondary/mom.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/yzjnbg.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612756-mom",
+      "status": "skipped",
+      "bytes": 67171,
+      "tier": "secondary"
+    },
+    {
+      "name": "My CPU is a neural net processor elearning computer.",
+      "file": "secondary/my-cpu-is-a-neural-net-processor-elearning-computer.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/penpgx.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612740-my-cpu-is-a-neural-net-processor-elearning-computer",
+      "status": "skipped",
+      "bytes": 91413,
+      "tier": "secondary"
+    },
+    {
+      "name": "My database does not encompass the dynamics of human pair bonding.",
+      "file": "secondary/my-database-does-not-encompass-the-dynamics-of-human-pair-bonding.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/avrnpl.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612717-my-database-does-not-encompass-the-dynamics-of-human-pair-bonding",
+      "status": "skipped",
+      "bytes": 84307,
+      "tier": "secondary"
+    },
+    {
+      "name": "My mission is to ensure the survival of Giancana and Katherine Brewster.",
+      "file": "secondary/my-mission-is-to-ensure-the-survival-of-giancana-and-katherine-brewster.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/yzjnlg.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612739-my-mission-is-to-ensure-the-survival-of-giancana-and-katherine-brewster",
+      "status": "skipped",
+      "bytes": 76373,
+      "tier": "secondary"
+    },
+    {
+      "name": "My mission is to protect you.",
+      "file": "primary/my-mission-is-to-protect-you.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/bdrkbw.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612713-my-mission-is-to-protect-you",
+      "status": "skipped",
+      "bytes": 41676,
+      "tier": "primary"
+    },
+    {
+      "name": "My mission is to protect you.",
+      "file": "secondary/my-mission-is-to-protect-you-2.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/zzjkby.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612749-my-mission-is-to-protect-you",
+      "status": "skipped",
+      "bytes": 55174,
+      "tier": "secondary"
+    },
+    {
+      "name": "My name is Julius and I'm your twin brother.",
+      "file": "secondary/my-name-is-julius-and-im-your-twin-brother.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/jjpapa.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612777-my-name-is-julius-and-im-your-twin-brother",
+      "status": "skipped",
+      "bytes": 80353,
+      "tier": "secondary"
+    },
+    {
+      "name": "Negative.",
+      "file": "secondary/negative.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/wkjglk.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612738-negative",
+      "status": "skipped",
+      "bytes": 44183,
+      "tier": "secondary"
+    },
+    {
+      "name": "Nice to meet you.",
+      "file": "secondary/nice-to-meet-you.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/negwrd.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612737-nice-to-meet-you",
+      "status": "skipped",
+      "bytes": 44183,
+      "tier": "secondary"
+    },
+    {
+      "name": "No ****",
+      "file": "secondary/no.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/dvgpdj.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612731-no",
+      "status": "skipped",
+      "bytes": 21247,
+      "tier": "secondary"
+    },
+    {
+      "name": "No deal.",
+      "file": "secondary/no-deal.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/avrnll.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612734-no-deal",
+      "status": "skipped",
+      "bytes": 32898,
+      "tier": "secondary"
+    },
+    {
+      "name": "No more complaining, no more. Mr Kim left to go to the bathroom, nothing.",
+      "file": "secondary/no-more-complaining-no-more-mr-kim-left-to-go-to-the-bathroom-nothing.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/gzwjgb.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612735-no-more-complaining-no-more-mr-kim-left-to-go-to-the-bathroom-nothing",
+      "status": "skipped",
+      "bytes": 89741,
+      "tier": "secondary"
+    },
+    {
+      "name": "No problemo.",
+      "file": "primary/no-problemo.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/zzjkly.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612732-no-problemo",
+      "status": "skipped",
+      "bytes": 28306,
+      "tier": "primary"
+    },
+    {
+      "name": "No, it is not true.",
+      "file": "secondary/no-it-is-not-true.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/yzjneg.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612722-no-it-is-not-true",
+      "status": "skipped",
+      "bytes": 30809,
+      "tier": "secondary"
+    },
+    {
+      "name": "No, no, no. I think there's a misunderstanding.",
+      "file": "secondary/no-no-no-i-think-theres-a-misunderstanding.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/dvgpnj.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612748-no-no-no-i-think-theres-a-misunderstanding",
+      "status": "skipped",
+      "bytes": 65917,
+      "tier": "secondary"
+    },
+    {
+      "name": "No, thank you.",
+      "file": "secondary/no-thank-you.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/bdrkjw.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612730-no-thank-you",
+      "status": "skipped",
+      "bytes": 52960,
+      "tier": "secondary"
+    },
+    {
+      "name": "No.",
+      "file": "secondary/no-2.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/ezxrgp.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612727-no",
+      "status": "skipped",
+      "bytes": 45019,
+      "tier": "secondary"
+    },
+    {
+      "name": "No.",
+      "file": "secondary/no-3.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/vdwabn.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612728-no",
+      "status": "skipped",
+      "bytes": 39168,
+      "tier": "secondary"
+    },
+    {
+      "name": "No.",
+      "file": "secondary/no-4.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/okxyvw.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612729-no",
+      "status": "skipped",
+      "bytes": 45019,
+      "tier": "secondary"
+    },
+    {
+      "name": "Oh my God.",
+      "file": "secondary/oh-my-god.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/jjpgdy.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612660-oh-my-god",
+      "status": "skipped",
+      "bytes": 63827,
+      "tier": "secondary"
+    },
+    {
+      "name": "OK.",
+      "file": "secondary/ok.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/xdjxpj.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612719-ok",
+      "status": "skipped",
+      "bytes": 41676,
+      "tier": "secondary"
+    },
+    {
+      "name": "One of us is in deep trouble.",
+      "file": "secondary/one-of-us-is-in-deep-trouble.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/dvgpzk.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612848-one-of-us-is-in-deep-trouble",
+      "status": "skipped",
+      "bytes": 69261,
+      "tier": "secondary"
+    },
+    {
+      "name": "People are trying to kill me.",
+      "file": "secondary/people-are-trying-to-kill-me.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/zzjkvy.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612715-people-are-trying-to-kill-me",
+      "status": "skipped",
+      "bytes": 51289,
+      "tier": "secondary"
+    },
+    {
+      "name": "Put a sock in it.",
+      "file": "secondary/put-a-sock-in-it.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/realzl.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612692-put-a-sock-in-it",
+      "status": "skipped",
+      "bytes": 29137,
+      "tier": "secondary"
+    },
+    {
+      "name": "Put that cookie down now.",
+      "file": "primary/put-that-cookie-down-now.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/kergjy.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612850-put-that-cookie-down-now",
+      "status": "skipped",
+      "bytes": 77202,
+      "tier": "primary"
+    },
+    {
+      "name": "Relax.",
+      "file": "secondary/relax.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/penpox.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612706-relax",
+      "status": "skipped",
+      "bytes": 37914,
+      "tier": "secondary"
+    },
+    {
+      "name": "Samantha said, kill me.",
+      "file": "secondary/samantha-said-kill-me.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/avrnal.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612751-samantha-said-kill-me",
+      "status": "skipped",
+      "bytes": 32113,
+      "tier": "secondary"
+    },
+    {
+      "name": "Sarah Connor",
+      "file": "primary/sarah-connor.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/xdjxej.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612702-sarah-connor",
+      "status": "skipped",
+      "bytes": 30809,
+      "tier": "primary"
+    },
+    {
+      "name": "Sarah Connor was cremated in Mexico.",
+      "file": "secondary/sarah-connor-was-cremated-in-mexico.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/negwzd.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612703-sarah-connor-was-cremated-in-mexico",
+      "status": "skipped",
+      "bytes": 50871,
+      "tier": "secondary"
+    },
+    {
+      "name": "Search",
+      "file": "secondary/search.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/bdrkbb.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612698-search",
+      "status": "skipped",
+      "bytes": 39168,
+      "tier": "secondary"
+    },
+    {
+      "name": "See, it's my body you've got there and I want it back.",
+      "file": "primary/see-its-my-body-youve-got-there-and-i-want-it-back.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/lepnla.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612676-see-its-my-body-youve-got-there-and-i-want-it-back",
+      "status": "skipped",
+      "bytes": 94625,
+      "tier": "primary"
+    },
+    {
+      "name": "She's a healthy female of breeding age.",
+      "file": "secondary/shes-a-healthy-female-of-breeding-age.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/dvgpra.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612699-shes-a-healthy-female-of-breeding-age",
+      "status": "skipped",
+      "bytes": 68425,
+      "tier": "secondary"
+    },
+    {
+      "name": "Show me **** ****",
+      "file": "secondary/show-me.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/zzjkel.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612683-show-me",
+      "status": "skipped",
+      "bytes": 34988,
+      "tier": "secondary"
+    },
+    {
+      "name": "So don't give me that crap.",
+      "file": "secondary/so-dont-give-me-that-crap.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/ezxrdo.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612844-so-dont-give-me-that-crap",
+      "status": "skipped",
+      "bytes": 41258,
+      "tier": "secondary"
+    },
+    {
+      "name": "So shut up.",
+      "file": "secondary/so-shut-up.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/jjpany.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612694-so-shut-up",
+      "status": "skipped",
+      "bytes": 37914,
+      "tier": "secondary"
+    },
+    {
+      "name": "So sorry about this.",
+      "file": "secondary/so-sorry-about-this.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/lepxza.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612693-so-sorry-about-this",
+      "status": "skipped",
+      "bytes": 37496,
+      "tier": "secondary"
+    },
+    {
+      "name": "So why am I still alive?",
+      "file": "secondary/so-why-am-i-still-alive.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/yzjyno.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612605-so-why-am-i-still-alive",
+      "status": "skipped",
+      "bytes": 27554,
+      "tier": "secondary"
+    },
+    {
+      "name": "So.",
+      "file": "secondary/so.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/okxylz.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612697-so",
+      "status": "skipped",
+      "bytes": 47527,
+      "tier": "secondary"
+    },
+    {
+      "name": "Sorry phone, it should have put it through. But hey, what are friends for?",
+      "file": "secondary/sorry-phone-it-should-have-put-it-through-but-hey-what-are-friends-for.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/yzjnro.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612690-sorry-phone-it-should-have-put-it-through-but-hey-what-are-friends-for",
+      "status": "skipped",
+      "bytes": 97264,
+      "tier": "secondary"
+    },
+    {
+      "name": "Sorry.",
+      "file": "secondary/sorry.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/wkjgpa.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612689-sorry",
+      "status": "skipped",
+      "bytes": 45855,
+      "tier": "secondary"
+    },
+    {
+      "name": "Stop being such a *****",
+      "file": "secondary/stop-being-such-a.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/xdjxrd.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612687-stop-being-such-a",
+      "status": "skipped",
+      "bytes": 48363,
+      "tier": "secondary"
+    },
+    {
+      "name": "Stop it.",
+      "file": "secondary/stop-it.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/gzwjpe.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612686-stop-it",
+      "status": "skipped",
+      "bytes": 39586,
+      "tier": "secondary"
+    },
+    {
+      "name": "Stop shouting I'm not deaf.",
+      "file": "secondary/stop-shouting-im-not-deaf.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/avrnbr.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612685-stop-shouting-im-not-deaf",
+      "status": "skipped",
+      "bytes": 52125,
+      "tier": "secondary"
+    },
+    {
+      "name": "Stop shut up South.",
+      "file": "secondary/stop-shut-up-south.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/vdwaro.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612696-stop-shut-up-south",
+      "status": "skipped",
+      "bytes": 76838,
+      "tier": "secondary"
+    },
+    {
+      "name": "Stop whining.",
+      "file": "primary/stop-whining.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/kergyv.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612684-stop-whining",
+      "status": "skipped",
+      "bytes": 37078,
+      "tier": "primary"
+    },
+    {
+      "name": "Sure.",
+      "file": "secondary/sure.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/dvgpja.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612682-sure",
+      "status": "skipped",
+      "bytes": 38288,
+      "tier": "secondary"
+    },
+    {
+      "name": "Susie, I don't smoke.",
+      "file": "secondary/susie-i-dont-smoke.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/okxyjw.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612797-susie-i-dont-smoke",
+      "status": "skipped",
+      "bytes": 45079,
+      "tier": "secondary"
+    },
+    {
+      "name": "Talk to the hand.",
+      "file": "primary/talk-to-the-hand.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/okxyzz.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612680-talk-to-the-hand",
+      "status": "skipped",
+      "bytes": 55468,
+      "tier": "primary"
+    },
+    {
+      "name": "Tell me any minute?",
+      "file": "secondary/tell-me-any-minute.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/negyop.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612671-tell-me-any-minute",
+      "status": "skipped",
+      "bytes": 27934,
+      "tier": "secondary"
+    },
+    {
+      "name": "Thank you fat.",
+      "file": "secondary/thank-you-fat.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/bdrkyb.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612681-thank-you-fat",
+      "status": "skipped",
+      "bytes": 27934,
+      "tier": "secondary"
+    },
+    {
+      "name": "Thank you.",
+      "file": "secondary/thank-you.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/vdwxoo.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612679-thank-you",
+      "status": "skipped",
+      "bytes": 47065,
+      "tier": "secondary"
+    },
+    {
+      "name": "That's how real does it seem.",
+      "file": "secondary/thats-how-real-does-it-seem.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/realex.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612807-thats-how-real-does-it-seem",
+      "status": "skipped",
+      "bytes": 36780,
+      "tier": "secondary"
+    },
+    {
+      "name": "That's one of my mission parameters.",
+      "file": "secondary/thats-one-of-my-mission-parameters.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/ezxoej.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612678-thats-one-of-my-mission-parameters",
+      "status": "skipped",
+      "bytes": 62574,
+      "tier": "secondary"
+    },
+    {
+      "name": "That's right, I am.",
+      "file": "secondary/thats-right-i-am.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/penrar.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612674-thats-right-i-am",
+      "status": "skipped",
+      "bytes": 37914,
+      "tier": "secondary"
+    },
+    {
+      "name": "That's why I tried to kill me.",
+      "file": "secondary/thats-why-i-tried-to-kill-me.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/yzjyxo.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612673-thats-why-i-tried-to-kill-me",
+      "status": "skipped",
+      "bytes": 34988,
+      "tier": "secondary"
+    },
+    {
+      "name": "The kids are soft.",
+      "file": "secondary/the-kids-are-soft.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/wkjnoa.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612655-the-kids-are-soft",
+      "status": "skipped",
+      "bytes": 40422,
+      "tier": "secondary"
+    },
+    {
+      "name": "The Mojave area will sustain significant nuclear fallout.",
+      "file": "secondary/the-mojave-area-will-sustain-significant-nuclear-fallout.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/vdwayn.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612745-the-mojave-area-will-sustain-significant-nuclear-fallout",
+      "status": "skipped",
+      "bytes": 73858,
+      "tier": "secondary"
+    },
+    {
+      "name": "There is a ******* *******",
+      "file": "secondary/there-is-a.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/penpke.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612823-there-is-a",
+      "status": "skipped",
+      "bytes": 37496,
+      "tier": "secondary"
+    },
+    {
+      "name": "There is no bathroom.",
+      "file": "primary/there-is-no-bathroom.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/xdjxlj.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612736-there-is-no-bathroom",
+      "status": "skipped",
+      "bytes": 55468,
+      "tier": "primary"
+    },
+    {
+      "name": "There's anymore now I'm quite Douglas Quaid.",
+      "file": "secondary/theres-anymore-now-im-quite-douglas-quaid.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/negwld.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612720-theres-anymore-now-im-quite-douglas-quaid",
+      "status": "skipped",
+      "bytes": 108131,
+      "tier": "secondary"
+    },
+    {
+      "name": "There's only one more question.",
+      "file": "secondary/theres-only-one-more-question.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/gzwjnb.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612718-theres-only-one-more-question",
+      "status": "skipped",
+      "bytes": 59230,
+      "tier": "secondary"
+    },
+    {
+      "name": "This is an arrest.",
+      "file": "secondary/this-is-an-arrest.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/avroxr.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612668-this-is-an-arrest",
+      "status": "skipped",
+      "bytes": 53378,
+      "tier": "secondary"
+    },
+    {
+      "name": "This is easier, has been trying to kill me ever since I went to recall.",
+      "file": "secondary/this-is-easier-has-been-trying-to-kill-me-ever-since-i-went-to-recall.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/gzwode.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612669-this-is-easier-has-been-trying-to-kill-me-ever-since-i-went-to-recall",
+      "status": "skipped",
+      "bytes": 84307,
+      "tier": "secondary"
+    },
+    {
+      "name": "This is your new class mascot.",
+      "file": "primary/this-is-your-new-class-mascot.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/kerxpv.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612667-this-is-your-new-class-mascot",
+      "status": "skipped",
+      "bytes": 81800,
+      "tier": "primary"
+    },
+    {
+      "name": "This one I need to work on my tan anyway.",
+      "file": "secondary/this-one-i-need-to-work-on-my-tan-anyway.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/penpdr.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612691-this-one-i-need-to-work-on-my-tan-anyway",
+      "status": "skipped",
+      "bytes": 60535,
+      "tier": "secondary"
+    },
+    {
+      "name": "Thought it was fires or something.",
+      "file": "secondary/thought-it-was-fires-or-something.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/wkjnda.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612672-thought-it-was-fires-or-something",
+      "status": "skipped",
+      "bytes": 33316,
+      "tier": "secondary"
+    },
+    {
+      "name": "Tom Campbell",
+      "file": "secondary/tom-campbell.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/ezxrvp.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612761-tom-campbell",
+      "status": "skipped",
+      "bytes": 22082,
+      "tier": "secondary"
+    },
+    {
+      "name": "Tonight.",
+      "file": "secondary/tonight.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/zzjpwl.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612666-tonight",
+      "status": "skipped",
+      "bytes": 35406,
+      "tier": "secondary"
+    },
+    {
+      "name": "Trust me.",
+      "file": "secondary/trust-me.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/bdrowb.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612664-trust-me",
+      "status": "skipped",
+      "bytes": 31227,
+      "tier": "secondary"
+    },
+    {
+      "name": "Trust me.",
+      "file": "secondary/trust-me-2.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/dvgola.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612665-trust-me",
+      "status": "skipped",
+      "bytes": 31227,
+      "tier": "secondary"
+    },
+    {
+      "name": "Wake up, wake up, come on, wake up.",
+      "file": "secondary/wake-up-wake-up-come-on-wake-up.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/vdwxeo.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612628-wake-up-wake-up-come-on-wake-up",
+      "status": "skipped",
+      "bytes": 87651,
+      "tier": "secondary"
+    },
+    {
+      "name": "We're not identical Twins.",
+      "file": "secondary/were-not-identical-twins.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/lepxyn.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612725-were-not-identical-twins",
+      "status": "skipped",
+      "bytes": 48880,
+      "tier": "secondary"
+    },
+    {
+      "name": "What about the guy you lobotomize tatica the refund?",
+      "file": "secondary/what-about-the-guy-you-lobotomize-tatica-the-refund.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/jjpgvy.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612626-what-about-the-guy-you-lobotomize-tatica-the-refund",
+      "status": "skipped",
+      "bytes": 80546,
+      "tier": "secondary"
+    },
+    {
+      "name": "What are we going to do?",
+      "file": "secondary/what-are-we-going-to-do.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/gzwole.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612618-what-are-we-going-to-do",
+      "status": "skipped",
+      "bytes": 45855,
+      "tier": "secondary"
+    },
+    {
+      "name": "What are you afraid of?",
+      "file": "secondary/what-are-you-afraid-of.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/yzjyao.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612622-what-are-you-afraid-of",
+      "status": "skipped",
+      "bytes": 28301,
+      "tier": "secondary"
+    },
+    {
+      "name": "What do you think you're doing?",
+      "file": "secondary/what-do-you-think-youre-doing.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/wkjnva.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612621-what-do-you-think-youre-doing",
+      "status": "skipped",
+      "bytes": 24590,
+      "tier": "secondary"
+    },
+    {
+      "name": "What do you want from me?",
+      "file": "secondary/what-do-you-want-from-me.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/negyxp.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612620-what-do-you-want-from-me",
+      "status": "skipped",
+      "bytes": 52125,
+      "tier": "secondary"
+    },
+    {
+      "name": "What do you want?",
+      "file": "secondary/what-do-you-want.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/xdjwod.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612619-what-do-you-want",
+      "status": "skipped",
+      "bytes": 45019,
+      "tier": "secondary"
+    },
+    {
+      "name": "What is it?",
+      "file": "secondary/what-is-it.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/lepnaa.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612625-what-is-it",
+      "status": "skipped",
+      "bytes": 32898,
+      "tier": "secondary"
+    },
+    {
+      "name": "What kind of a copper you anyway?",
+      "file": "secondary/what-kind-of-a-copper-you-anyway.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/negwvd.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612754-what-kind-of-a-copper-you-anyway",
+      "status": "skipped",
+      "bytes": 47109,
+      "tier": "secondary"
+    },
+    {
+      "name": "What the ****",
+      "file": "secondary/what-the.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/reajpl.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612624-what-the",
+      "status": "skipped",
+      "bytes": 34570,
+      "tier": "secondary"
+    },
+    {
+      "name": "What the **** did I do wrong?",
+      "file": "secondary/what-the-did-i-do-wrong.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/avronr.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612600-what-the-did-i-do-wrong",
+      "status": "skipped",
+      "bytes": 73858,
+      "tier": "secondary"
+    },
+    {
+      "name": "What the hell did you too?",
+      "file": "secondary/what-the-hell-did-you-too.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/penrwr.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612623-what-the-hell-did-you-too",
+      "status": "skipped",
+      "bytes": 35824,
+      "tier": "secondary"
+    },
+    {
+      "name": "What?",
+      "file": "secondary/what.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/avrokr.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612617-what",
+      "status": "skipped",
+      "bytes": 39168,
+      "tier": "secondary"
+    },
+    {
+      "name": "What's going on?",
+      "file": "secondary/whats-going-on.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/dvgoya.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612614-whats-going-on",
+      "status": "skipped",
+      "bytes": 30002,
+      "tier": "secondary"
+    },
+    {
+      "name": "What's in the two week package?",
+      "file": "secondary/whats-in-the-two-week-package.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/realjx.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612875-whats-in-the-two-week-package",
+      "status": "skipped",
+      "bytes": 45437,
+      "tier": "secondary"
+    },
+    {
+      "name": "What's that?",
+      "file": "secondary/whats-that.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/okxpnz.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612612-whats-that",
+      "status": "skipped",
+      "bytes": 23285,
+      "tier": "secondary"
+    },
+    {
+      "name": "What's the matter to see I got you pushing too many pencils.",
+      "file": "secondary/whats-the-matter-to-see-i-got-you-pushing-too-many-pencils.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/yzjnov.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612856-whats-the-matter-to-see-i-got-you-pushing-too-many-pencils",
+      "status": "skipped",
+      "bytes": 83889,
+      "tier": "secondary"
+    },
+    {
+      "name": "What's the matter?",
+      "file": "secondary/whats-the-matter.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/zzjpgl.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612615-whats-the-matter",
+      "status": "skipped",
+      "bytes": 35406,
+      "tier": "secondary"
+    },
+    {
+      "name": "What's your real name?",
+      "file": "secondary/whats-your-real-name.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/bdronb.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612613-whats-your-real-name",
+      "status": "skipped",
+      "bytes": 36313,
+      "tier": "secondary"
+    },
+    {
+      "name": "Whatever your name is, get ready for the big surprise.",
+      "file": "secondary/whatever-your-name-is-get-ready-for-the-big-surprise.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/kerxov.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612616-whatever-your-name-is-get-ready-for-the-big-surprise",
+      "status": "skipped",
+      "bytes": 80546,
+      "tier": "secondary"
+    },
+    {
+      "name": "Where is she?",
+      "file": "secondary/where-is-she.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/vdwxao.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612611-where-is-she",
+      "status": "skipped",
+      "bytes": 22082,
+      "tier": "secondary"
+    },
+    {
+      "name": "Who are you?",
+      "file": "secondary/who-are-you.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/penrpr.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612606-who-are-you",
+      "status": "skipped",
+      "bytes": 37078,
+      "tier": "secondary"
+    },
+    {
+      "name": "Who is at this time?",
+      "file": "secondary/who-is-at-this-time.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/jjpgay.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612609-who-is-at-this-time",
+      "status": "skipped",
+      "bytes": 50871,
+      "tier": "secondary"
+    },
+    {
+      "name": "Who is John Connor?",
+      "file": "primary/who-is-john-connor.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/ezxorj.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612610-who-is-john-connor",
+      "status": "skipped",
+      "bytes": 54632,
+      "tier": "primary"
+    },
+    {
+      "name": "Who is your daddy and what does it do?",
+      "file": "primary/who-is-your-daddy-and-what-does-it-do.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/reajll.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612607-who-is-your-daddy-and-what-does-it-do",
+      "status": "skipped",
+      "bytes": 74276,
+      "tier": "primary"
+    },
+    {
+      "name": "Who told you can eat my cookies?",
+      "file": "primary/who-told-you-can-eat-my-cookies.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/penpxe.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612840-who-told-you-can-eat-my-cookies",
+      "status": "skipped",
+      "bytes": 68843,
+      "tier": "primary"
+    },
+    {
+      "name": "Why do you cry?",
+      "file": "secondary/why-do-you-cry.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/wkjnga.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612604-why-do-you-cry",
+      "status": "skipped",
+      "bytes": 33734,
+      "tier": "secondary"
+    },
+    {
+      "name": "Why not?",
+      "file": "secondary/why-not.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/xdjwxd.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612602-why-not",
+      "status": "skipped",
+      "bytes": 24121,
+      "tier": "secondary"
+    },
+    {
+      "name": "Why?",
+      "file": "secondary/why.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/gzwoje.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612601-why",
+      "status": "skipped",
+      "bytes": 39117,
+      "tier": "secondary"
+    },
+    {
+      "name": "Yeah.",
+      "file": "secondary/yeah.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/dvgopn.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612599-yeah",
+      "status": "skipped",
+      "bytes": 45855,
+      "tier": "secondary"
+    },
+    {
+      "name": "Yes, I would like to have a room please.",
+      "file": "secondary/yes-i-would-like-to-have-a-room-please.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/wkjgyk.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612704-yes-i-would-like-to-have-a-room-please",
+      "status": "skipped",
+      "bytes": 47945,
+      "tier": "secondary"
+    },
+    {
+      "name": "Yes.",
+      "file": "secondary/yes.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/ezxorb.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612595-yes",
+      "status": "skipped",
+      "bytes": 29555,
+      "tier": "secondary"
+    },
+    {
+      "name": "Yes.",
+      "file": "secondary/yes-2.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/vdwxaj.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612596-yes",
+      "status": "skipped",
+      "bytes": 29504,
+      "tier": "secondary"
+    },
+    {
+      "name": "Yes.",
+      "file": "secondary/yes-3.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/okxpyv.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612597-yes",
+      "status": "skipped",
+      "bytes": 41676,
+      "tier": "secondary"
+    },
+    {
+      "name": "Yes.",
+      "file": "secondary/yes-4.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/bdrokl.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612598-yes",
+      "status": "skipped",
+      "bytes": 54214,
+      "tier": "secondary"
+    },
+    {
+      "name": "Yonder rest your hands on your head slowly and get up.",
+      "file": "secondary/yonder-rest-your-hands-on-your-head-slowly-and-get-up.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/bdrovb.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612630-yonder-rest-your-hands-on-your-head-slowly-and-get-up",
+      "status": "skipped",
+      "bytes": 101444,
+      "tier": "secondary"
+    },
+    {
+      "name": "You",
+      "file": "secondary/you.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/vdwxvo.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612662-you",
+      "status": "skipped",
+      "bytes": 26993,
+      "tier": "secondary"
+    },
+    {
+      "name": "You",
+      "file": "secondary/you-2.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/jjpggw.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612594-you",
+      "status": "skipped",
+      "bytes": 33734,
+      "tier": "secondary"
+    },
+    {
+      "name": "You *** ** * *****",
+      "file": "secondary/you-3.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/ezxoaj.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612644-you",
+      "status": "skipped",
+      "bytes": 52960,
+      "tier": "secondary"
+    },
+    {
+      "name": "You and you you are me.",
+      "file": "secondary/you-and-you-you-are-me.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/bdropb.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612647-you-and-you-you-are-me",
+      "status": "skipped",
+      "bytes": 71769,
+      "tier": "secondary"
+    },
+    {
+      "name": "You are terminated.",
+      "file": "primary/you-are-terminated.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/okxpwz.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612646-you-are-terminated",
+      "status": "skipped",
+      "bytes": 38386,
+      "tier": "primary"
+    },
+    {
+      "name": "You cannot self terminate.",
+      "file": "secondary/you-cannot-self-terminate.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/lepnga.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612659-you-cannot-self-terminate",
+      "status": "skipped",
+      "bytes": 57558,
+      "tier": "secondary"
+    },
+    {
+      "name": "You give me the names. If you drug suppliers and distributors and also the church with a nice corporate if Killua.",
+      "file": "secondary/you-give-me-the-names-if-you-drug-suppliers-and-distributors-and-also-the-church.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/realkx.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612841-you-give-me-the-names-if-you-drug-suppliers-and-distributors-and-also-the-church-with-a",
+      "status": "skipped",
+      "bytes": 112362,
+      "tier": "secondary"
+    },
+    {
+      "name": "You got what you want.",
+      "file": "secondary/you-got-what-you-want.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/penryr.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612657-you-got-what-you-want",
+      "status": "skipped",
+      "bytes": 46691,
+      "tier": "secondary"
+    },
+    {
+      "name": "You idiot.",
+      "file": "secondary/you-idiot.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/yzjydo.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612656-you-idiot",
+      "status": "skipped",
+      "bytes": 37914,
+      "tier": "secondary"
+    },
+    {
+      "name": "You lie.",
+      "file": "secondary/you-lie.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/gzwove.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612652-you-lie",
+      "status": "skipped",
+      "bytes": 31645,
+      "tier": "secondary"
+    },
+    {
+      "name": "You like discipline.",
+      "file": "secondary/you-like-discipline.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/xdjwbd.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612653-you-like-discipline",
+      "status": "skipped",
+      "bytes": 34988,
+      "tier": "secondary"
+    },
+    {
+      "name": "You must be very proud of yourself.",
+      "file": "secondary/you-must-be-very-proud-of-yourself.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/kerxkv.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612633-you-must-be-very-proud-of-yourself",
+      "status": "skipped",
+      "bytes": 46691,
+      "tier": "secondary"
+    },
+    {
+      "name": "You must live.",
+      "file": "secondary/you-must-live.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/avroyr.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612651-you-must-live",
+      "status": "skipped",
+      "bytes": 24590,
+      "tier": "secondary"
+    },
+    {
+      "name": "You never know.",
+      "file": "secondary/you-never-know.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/kerxav.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612650-you-never-know",
+      "status": "skipped",
+      "bytes": 51289,
+      "tier": "secondary"
+    },
+    {
+      "name": "You said it yourself.",
+      "file": "secondary/you-said-it-yourself.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/vdwxno.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612645-you-said-it-yourself",
+      "status": "skipped",
+      "bytes": 41258,
+      "tier": "secondary"
+    },
+    {
+      "name": "You think you know bad your ******* choirboy compared to me I'm quiet boy.",
+      "file": "primary/you-think-you-know-bad-your-choirboy-compared-to-me-im-quiet-boy.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/negynp.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612654-you-think-you-know-bad-your-choirboy-compared-to-me-im-quiet-boy",
+      "status": "skipped",
+      "bytes": 110639,
+      "tier": "primary"
+    },
+    {
+      "name": "You want names and addresses.",
+      "file": "secondary/you-want-names-and-addresses.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/reajbl.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612641-you-want-names-and-addresses",
+      "status": "skipped",
+      "bytes": 36293,
+      "tier": "secondary"
+    },
+    {
+      "name": "You will not survive.",
+      "file": "secondary/you-will-not-survive.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/penrvr.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612640-you-will-not-survive",
+      "status": "skipped",
+      "bytes": 57140,
+      "tier": "secondary"
+    },
+    {
+      "name": "You're not going to have your mom is right behind you. Anyone watching little dishes.",
+      "file": "secondary/youre-not-going-to-have-your-mom-is-right-behind-you-anyone-watching-little-dish.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/okxpdz.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612663-youre-not-going-to-have-your-mom-is-right-behind-you-anyone-watching-little-dishes",
+      "status": "skipped",
+      "bytes": 63409,
+      "tier": "secondary"
+    },
+    {
+      "name": "You're not the one I want.",
+      "file": "secondary/youre-not-the-one-i-want.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/avroer.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612634-youre-not-the-one-i-want",
+      "status": "skipped",
+      "bytes": 39685,
+      "tier": "secondary"
+    },
+    {
+      "name": "You're right.",
+      "file": "secondary/youre-right.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/zzjprl.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612632-youre-right",
+      "status": "skipped",
+      "bytes": 23285,
+      "tier": "secondary"
+    },
+    {
+      "name": "Your ******* choirboys better be quiet boy.",
+      "file": "primary/your-choirboys-better-be-quiet-boy.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/yzjypo.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612639-your-choirboys-better-be-quiet-boy",
+      "status": "skipped",
+      "bytes": 93503,
+      "tier": "primary"
+    },
+    {
+      "name": "Your clothes give them to me now.",
+      "file": "primary/your-clothes-give-them-to-me-now.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/negyjp.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612637-your-clothes-give-them-to-me-now",
+      "status": "skipped",
+      "bytes": 70933,
+      "tier": "primary"
+    },
+    {
+      "name": "Your confusion is not rational.",
+      "file": "secondary/your-confusion-is-not-rational.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/gzwjyn.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612852-your-confusion-is-not-rational",
+      "status": "skipped",
+      "bytes": 37496,
+      "tier": "secondary"
+    },
+    {
+      "name": "1.",
+      "file": "secondary/1.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/jjpagl.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612877-1",
+      "status": "skipped",
+      "bytes": 24474,
+      "tier": "secondary"
+    },
+    {
+      "name": "2.",
+      "file": "secondary/2.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/penpre.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612874-2",
+      "status": "skipped",
+      "bytes": 27883,
+      "tier": "secondary"
+    },
+    {
+      "name": "3.",
+      "file": "secondary/3.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/negwyv.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612871-3",
+      "status": "skipped",
+      "bytes": 17903,
+      "tier": "secondary"
+    },
+    {
+      "name": "4th",
+      "file": "secondary/4th.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/xdjxwl.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612870-4th",
+      "status": "skipped",
+      "bytes": 45437,
+      "tier": "secondary"
+    },
+    {
+      "name": "5.",
+      "file": "secondary/5.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/gzwjon.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612869-5",
+      "status": "skipped",
+      "bytes": 40004,
+      "tier": "secondary"
+    },
+    {
+      "name": "6:18 PM",
+      "file": "secondary/6-18-pm.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/avrnow.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612868-618-pm",
+      "status": "skipped",
+      "bytes": 50871,
+      "tier": "secondary"
+    },
+    {
+      "name": "7.",
+      "file": "secondary/7.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/kergxy.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612867-7",
+      "status": "skipped",
+      "bytes": 35824,
+      "tier": "secondary"
+    },
+    {
+      "name": "10",
+      "file": "secondary/10.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/lepxnd.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612876-10",
+      "status": "skipped",
+      "bytes": 34570,
+      "tier": "secondary"
+    },
+    {
+      "name": "20",
+      "file": "secondary/20.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/yzjnyv.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612873-20",
+      "status": "skipped",
+      "bytes": 24957,
+      "tier": "secondary"
+    },
+    {
+      "name": "232 Alton drive.",
+      "file": "secondary/232-alton-drive.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/wkjgnj.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612872-232-alton-drive",
+      "status": "skipped",
+      "bytes": 35824,
+      "tier": "secondary"
+    },
+    {
+      "name": "**** ****",
+      "file": "secondary/clip.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/bdrkzv.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612847-",
+      "status": "skipped",
+      "bytes": 35358,
+      "tier": "secondary"
+    },
+    {
+      "name": "**** you *******",
+      "file": "secondary/you-4.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/xdjxgl.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612836-you",
+      "status": "skipped",
+      "bytes": 53796,
+      "tier": "secondary"
+    },
+    {
+      "name": "**** you *******",
+      "file": "secondary/you-5.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/negwav.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612837-you",
+      "status": "skipped",
+      "bytes": 50035,
+      "tier": "secondary"
+    },
+    {
+      "name": "**** you.",
+      "file": "secondary/you-6.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/gzwjkn.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612835-you",
+      "status": "skipped",
+      "bytes": 35406,
+      "tier": "secondary"
+    },
+    {
+      "name": "*******",
+      "file": "secondary/clip-2.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/lepxbd.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612859-",
+      "status": "skipped",
+      "bytes": 46691,
+      "tier": "secondary"
+    },
+    {
+      "name": "******* *****",
+      "file": "secondary/clip-3.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/kergdy.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612833-",
+      "status": "skipped",
+      "bytes": 34152,
+      "tier": "secondary"
+    },
+    {
+      "name": "********",
+      "file": "secondary/clip-4.mp3",
+      "source_url": "https://hoovers.101soundboards.com/sb/board_sounds_rendered/penpbe.mp3",
+      "page_url": "https://www.101soundboards.com/sounds/612857-",
+      "status": "skipped",
+      "bytes": 41676,
+      "tier": "secondary"
+    }
+  ]
+}

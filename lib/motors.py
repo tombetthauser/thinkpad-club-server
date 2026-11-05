@@ -111,9 +111,9 @@ class Program:
                 motor.closed = node.func.attr == 'close' or motor.closed
                 return
             if node.func.attr in ('forward', 'backward') and len(args) <= 1 and not motor.closed:
-                speed = self.number(args[0] if args else .6, .6)
+                speed = self.number(args[0] if args else .6, 1)
                 if speed < 0:
-                    raise ValueError('Motor speed must be between 0 and 0.6.')
+                    raise ValueError('Motor speed must be between 0 and 1.0.')
                 motor.value = speed if node.func.attr == 'forward' else -speed
                 return
             raise ValueError('Use motor.value, motor.stop(), or motor.close().')
@@ -162,10 +162,10 @@ class Program:
         if name in ('left', 'right', 'forward', 'backward', 'stop') and function is None:
             if name == 'stop' and not args:
                 self.steps.append({'action': 'stop', 'speed': 0})
-            elif name != 'stop' and len(args) == 1 and 0 <= self.number(args[0], .6) <= .6:
+            elif name != 'stop' and len(args) == 1 and 0 <= self.number(args[0], 1) <= 1:
                 self.steps.append({'action': name, 'speed': args[0]})
             else:
-                raise ValueError('Use a speed from 0 to 0.6, or stop() with no arguments.')
+                raise ValueError('Use a speed from 0 to 1.0, or stop() with no arguments.')
             self.seconds += .5
             if self.seconds > 10 or len(self.steps) > 80:
                 raise ValueError('Programs may run for at most 10 seconds.')
@@ -202,7 +202,7 @@ class Program:
                         motor = self.expression(target.value, scope)
                         if not isinstance(motor, ProgramMotor) or motor.closed:
                             raise ValueError('Assign value only on an open motor.')
-                        motor.value = self.number(value, .6)
+                        motor.value = self.number(value, 1)
                     else:
                         raise ValueError('Unsupported assignment.')
                 elif isinstance(node, ast.Expr):
@@ -292,12 +292,12 @@ class Motors:
                               'left': (-1, 1), 'right': (1, -1)}
                 if action == 'wheels':
                     if (not isinstance(speed, list) or len(speed) != 2 or
-                            any(type(value) not in (int, float) or not math.isfinite(value) or abs(value) > .6 for value in speed)):
-                        raise ValueError('Wheel speeds must be between -0.6 and 0.6.')
+                            any(type(value) not in (int, float) or not math.isfinite(value) or abs(value) > 1 for value in speed)):
+                        raise ValueError('Wheel speeds must be between -1.0 and 1.0.')
                     values = speed
                 else:
-                    if type(speed) not in (int, float) or not math.isfinite(speed) or not 0 <= speed <= .6:
-                        raise ValueError('Speed must be between 0 and 0.6')
+                    if type(speed) not in (int, float) or not math.isfinite(speed) or not 0 <= speed <= 1:
+                        raise ValueError('Speed must be between 0 and 1.0')
                     values = [value * sign * speed for value, sign in zip(directions[action], self.signs)]
                 remaining = min(.5, expires - time.time())
                 if not math.isfinite(remaining) or remaining <= 0:

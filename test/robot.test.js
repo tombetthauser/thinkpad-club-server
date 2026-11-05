@@ -40,7 +40,7 @@ test('robot serializes commands, enforces lease, validates speed, and allows eme
   await assert.rejects(service.command('left', .3, 'two'), { status: 409 });
   assert.equal((await moving).state, 'forward');
   await assert.rejects(service.command('left', .3, 'two'), { status: 409 });
-  for (const speed of [-1, .61, '0.3', NaN, Infinity]) {
+  for (const speed of [-1, 1.01, '0.3', NaN, Infinity]) {
     await assert.rejects(service.command('forward', speed, 'one'), { status: 400 });
   }
   assert.equal((await service.command('stop', undefined, 'two')).state, 'stop');
@@ -71,12 +71,26 @@ test('program validation uses the worker without movement and reports errors wit
   await service.command('forward', .3, 'one');
 });
 
+test('robot accepts full speed and signed full-speed wheels and rejects values above 1', async t => {
+  const child = worker();
+  const service = robot({ enabled: true, spawn: () => child });
+  t.after(() => service.close());
+  child.stdout.write('{"ready":true}\n');
+  assert.equal(service.status().maxSpeed, 1);
+  await service.command('forward', 1, 'one');
+  await service.command('wheels', [-1, 1], 'one');
+  assert.equal(child.commands[0].speed, 1);
+  assert.deepEqual(child.commands[1].speed, [-1, 1]);
+  await assert.rejects(service.command('forward', 1.01, 'one'), { status: 400 });
+  await assert.rejects(service.command('wheels', [-1.01, 1], 'one'), { status: 400 });
+});
+
 test('raw wheel commands retain validation, controller ownership, and expiry', async t => {
   const child = worker();
   const service = robot({ enabled: true, spawn: () => child });
   t.after(() => service.close());
   child.stdout.write('{"ready":true}\n');
-  for (const speed of [.5, [0], [.7, 0], [0, NaN], [false, 0], ['0.5', 0]]) {
+  for (const speed of [.5, [0], [1.1, 0], [0, NaN], [false, 0], ['0.5', 0]]) {
     await assert.rejects(service.command('wheels', speed, 'one'), { status: 400 });
   }
   await service.command('wheels', [.5, -.5], 'one');
@@ -148,6 +162,9 @@ test('motor routes work without passwords and require same origin, explicit JSON
   assert.match(html, /Rotate left/);
   assert.match(html, /Rotate right/);
   assert.match(html, /id="dance"/);
+  assert.match(html, /data-device-webcam/);
+  assert.match(html, /\/assets\/device-widgets.js/);
+  assert.match(page.headers.get('content-security-policy'), /img-src 'self'/);
   assert.match(html, /type="range"/);
   assert.doesNotMatch(html, /type="password"/);
   assert.doesNotMatch(html, /<style|stylesheet|\/assets\/robot|id="connect"|calibration/i);
@@ -188,7 +205,7 @@ test('robot controls honor the configured HTTPS public origin behind a proxy', a
 
 function browser({ programError = '', holdProgram = false, programSteps } = {}) {
   const elements = {
-    speed: { value: '.3' }, status: { textContent: 'Stopped' }, stop: {}, dance: {}, execute: {}, code: {}, easy: {}, hard: {}
+    speed: { value: '.6' }, status: { textContent: 'Stopped' }, stop: {}, dance: {}, execute: {}, code: {}, easy: {}, hard: {}
   };
   const button = { dataset: { direction: 'forward' } };
   const document = {
@@ -230,7 +247,7 @@ test('a direction click sends one movement command and stops after 500 ms', asyn
   const page = browser();
   const move = page.button.onclick();
   await page.settle();
-  assert.deepEqual(page.calls[0], { action: 'forward', speed: .3 });
+  assert.deepEqual(page.calls[0], { action: 'forward', speed: .6 });
   assert.deepEqual(page.delays, [500]);
   page.button.onclick();
   assert.equal(page.calls.length, 1);

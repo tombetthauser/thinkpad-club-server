@@ -30,6 +30,11 @@ class FakeMotor:
 
 
 class ProgramTests(unittest.TestCase):
+    def test_program_accepts_full_speed(self):
+        self.assertEqual(module.parse_program('forward(1)'), [{'action': 'forward', 'speed': 1}])
+        steps = module.parse_program('from gpiozero import Motor\nfrom time import sleep\nm = Motor(forward=17, backward=27)\nm.value = -1\nsleep(0.1)\nm.forward(1)\nsleep(0.1)')
+        self.assertEqual([step['speed'] for step in steps], [[-1, 0], [1, 0]])
+
     def test_worker_protocol_reports_errors_then_accepts_another_program(self):
         html = Path(__file__).resolve().parents[1].joinpath('public/control.html').read_text()
         hard = re.search(r'<textarea[^>]*>([\s\S]*?)</textarea>', html).group(1)
@@ -119,7 +124,7 @@ wheel.close()
             'from time import sleep\nfor i in range(20): sleep(1)',
             'def repeat():\n    repeat()\nrepeat()',
             'for a in range(20):\n    for b in range(20):\n        for c in range(20):\n            power = 0.5',
-            'from gpiozero import Motor\nm = Motor(forward=17, backward=27)\nm.value = 0.7',
+            'from gpiozero import Motor\nm = Motor(forward=17, backward=27)\nm.value = 1.1',
             'from gpiozero import Motor\nm = Motor(forward=17, backward=27)\nm.__class__',
             'from gpiozero import Motor\nm = Motor(forward=17, backward=27)\nm.close()\nm.value = 0.2',
             'forward(' + '9' * 1000 + ')'
@@ -129,7 +134,7 @@ wheel.close()
 
     def test_program_limits_and_syntax_errors(self):
         for code in ['', '# only a comment', 'left(0.5)\n' * 21, '#' * 4097,
-                     None, 'forward(True)', 'forward(0.7)', 'forward(-0.1)',
+                     None, 'forward(True)', 'forward(1.1)', 'forward(-0.1)',
                      'forward(1e999)', 'forward()', 'forward(0.2, 0.3)', 'stop(0.5)']:
             with self.subTest(code=code), self.assertRaises(ValueError):
                 module.parse_program(code)
@@ -157,6 +162,12 @@ class MotorTests(unittest.TestCase):
         self.motors.stop()
         self.assertEqual((self.motors.left.value, self.motors.right.value), (0, 0))
 
+    def test_full_speed_reaches_both_motors(self):
+        self.motors.drive('forward', 1, time.time() + .5)
+        self.assertEqual((self.motors.left.value, self.motors.right.value), (1, 1))
+        self.motors.drive('wheels', [-1, 1], time.time() + .5)
+        self.assertEqual((self.motors.left.value, self.motors.right.value), (-1, 1))
+
     def test_independent_watchdog_and_expired_commands(self):
         self.motors.drive('forward', .3, time.time() + .5)
         time.sleep(.56)
@@ -166,7 +177,7 @@ class MotorTests(unittest.TestCase):
         self.assertEqual(self.motors.deadline, 0)
 
     def test_errors_stop_and_shutdown_closes_both(self):
-        for speed in [-1, .61, float('nan'), True, '0.3']:
+        for speed in [-1, 1.01, float('nan'), True, '0.3']:
             self.motors.drive('forward', .3, time.time() + .5)
             with self.assertRaises(ValueError):
                 self.motors.drive('forward', speed, time.time() + .5)
@@ -214,7 +225,7 @@ class MotorTests(unittest.TestCase):
         self.motors.signs = [1, -1]
         self.motors.drive('wheels', [.5, -.5], time.time() + .5)
         self.assertEqual((self.motors.left.value, self.motors.right.value), (.5, -.5))
-        for speeds in [[.7, 0], [0, float('nan')], [0], .5, [True, 0]]:
+        for speeds in [[1.1, 0], [0, float('nan')], [0], .5, [True, 0]]:
             with self.subTest(speeds=speeds), self.assertRaises(ValueError):
                 self.motors.drive('wheels', speeds, time.time() + .5)
             self.assertEqual((self.motors.left.value, self.motors.right.value), (0, 0))

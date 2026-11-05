@@ -10,12 +10,18 @@
 <button data-direction="left">Rotate left</button>
 <button data-direction="right">Rotate right</button>
 <button id="stop">Stop</button>
-<p><label>Speed <input id="speed" type="range" min="0" max="0.6" step="0.05" value="0.3"></label></p>
+<p><label>Speed <input id="speed" type="range" min="0" max="1" step="0.05" value="0.6"></label></p>
 <button id="dance">Dance</button>
+<section data-device-webcam>
+  <h2>Webcam</h2>
+  <img src="/webcam/current.jpg" width="320" alt="Latest photo from the server webcam"><br>
+  <button type="button">Update webcam</button>
+  <p role="status"></p>
+</section>
 <h2>Python motor program</h2>
 <button id="easy">Easy</button>
 <button id="hard">Hard</button>
-<p id="program-help">Easy uses half-second motor commands. Hard includes pins, motor objects, functions, and timing. Switching replaces your code. Speeds are limited to 0.6 and programs to 10 seconds. Supported Python includes these examples, arithmetic, if, and for loops using range(n), where n is 0–20. Pins must match the configured motor pairs; other imports and system access are unavailable.</p>
+<p id="program-help">Easy uses half-second motor commands. Hard includes pins, motor objects, functions, and timing. Switching replaces your code. Speeds are limited to 1.0 and programs to 10 seconds. Supported Python includes these examples, arithmetic, if, and for loops using range(n), where n is 0–20. Pins must match the configured motor pairs; other imports and system access are unavailable.</p>
 <label for="code">Code</label><br>
 <textarea id="code" rows="24" cols="60" spellcheck="false" aria-describedby="program-help">from gpiozero import Motor
 from time import sleep
@@ -159,4 +165,5 @@ window.addEventListener('blur', stop);
 window.addEventListener('pagehide', stop);
 document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });
 </script>
+<script src="/assets/device-widgets.js" defer></script>
 </html>

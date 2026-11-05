@@ -29,6 +29,62 @@ function put(base, slug, html, headers = {}) {
   });
 }
 
+test("Arnold lists the sorted Realm collection and serves and plays its categorized filenames", async t => {
+  const { EventEmitter } = require("node:events");
+  const { arnold } = require("../lib/arnold");
+  const starts = [];
+  let stopped = 0;
+  const sounds = arnold({ spawn: (command, args) => {
+    starts.push({ command, args });
+    return Object.assign(new EventEmitter(), { kill() { stopped++; } });
+  } });
+  const { base } = await fixture(t, { arnold: sounds });
+  const page = await fetch(`${base}/arnold`);
+  assert.equal(page.status, 200);
+  assert.match(await page.text(), /id="search"/);
+  const html = await (await fetch(`${base}/arnold`)).text();
+  assert.match(html, /data-device-robot/);
+  assert.match(html, /data-device-speed type="range" min="0" max="1" step="0.05" value="0.6"/);
+  assert.match(html, /data-device-webcam/);
+  assert.match(page.headers.get('content-security-policy'), /img-src 'self'/);
+  const widgets = await fetch(`${base}/assets/device-widgets.js`);
+  assert.equal(widgets.status, 200);
+  assert.match(widgets.headers.get('content-type'), /javascript/);
+  const clips = await (await fetch(`${base}/api/arnold/clips`)).json();
+  assert.equal(clips.length, 428);
+  assert.equal(clips[0].section, "greetings");
+  assert.equal(clips.at(-1).section, "enders");
+  assert.equal(new Set(clips.map(c => c.section)).size, 16);
+  assert.ok(clips.some(c => c.tier === "secondary"));
+  assert.ok(clips.every(c => !c.name.includes("Stop Sounds")));
+  const clip = clips.find(c => c.file === "primary/choppa.mp3");
+  assert.ok(clip);
+  assert.equal(clip.name, "Get to the chopper!");
+  assert.equal(clip.section, "action");
+  assert.equal(clips.find(c => c.file === "primary/daddy.mp3").section, "questions");
+  assert.equal(clips.find(c => c.file === "primary/cop.mp3").section, "identity");
+  const audio = await fetch(`${base}/arnold/audio/${clip.file}`);
+  assert.equal(audio.status, 200);
+  assert.equal(audio.headers.get("content-type"), "audio/mpeg");
+  assert.deepEqual(Buffer.from(await audio.arrayBuffer()), await sounds.read(clip.file));
+  assert.equal((await fetch(`${base}/arnold/audio/not-a-clip.mp3`)).status, 404);
+  const play = body => fetch(`${base}/api/arnold/play`, {
+    method: "POST", headers: { "Content-Type": "application/json", Origin: base },
+    body: JSON.stringify(body)
+  });
+  assert.equal((await play({ file: clip.file })).status, 200);
+  assert.equal(starts.length, 1);
+  assert.equal((await fetch(`${base}/api/arnold/stop`)).status, 405);
+  assert.equal((await fetch(`${base}/api/arnold/stop`, { method: "POST", headers: { Origin: "https://other.example" } })).status, 403);
+  assert.equal(stopped, 0);
+  assert.equal((await fetch(`${base}/api/arnold/stop`, { method: "POST", headers: { Origin: base } })).status, 200);
+  assert.equal(stopped, 1);
+  assert.ok(starts[0].args.at(-1).endsWith("assets/audio/arnold-realm/primary/choppa.mp3"));
+  assert.equal((await play({ file: "../other.mp3" })).status, 404);
+  assert.equal((await play(null)).status, 400);
+  assert.equal(starts.length, 1);
+});
+
 test("visiting a new page shows a standalone viewer and starter without creating a file", async t => {
   const { base, dataDirectory } = await fixture(t);
   const response = await fetch(`${base}/dannys-page`);

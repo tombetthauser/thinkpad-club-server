@@ -146,7 +146,7 @@ and restart to disable sound.
 
 Optional Raspberry Pi motor controls are available at `/control`.
 Click Forward, Backward, Rotate left, or Rotate right for a half-second run. The speed
-slider starts at 30% and allows up to 60%. Dance makes three pairs of short
+slider starts at 60% and allows up to 100%. Dance makes three pairs of short
 left/right turns, with stopped pauses; STOP cancels it. Motor controls are disabled
 by default and require explicit enablement and a Python GPIO worker. No robot
 password is required; anyone who can reach the server can operate the enabled robot.
@@ -173,7 +173,7 @@ browser sends these through the existing GPIO worker with its independent 500 ms
 watchdog. Hard's explicit right-wheel reversal is applied directly, rather than
 applying `ROBOT_INVERT_RIGHT` a second time. Declared pins must match the configured
 motor pairs, optionally swapped to reverse orientation; access to other pins is
-rejected. Speeds remain limited to -0.6 through 0.6.
+rejected. Speeds remain limited to -1.0 through 1.0.
 
 Three files implement the controls: `public/control.html` contains the plain HTML
 and browser script, `lib/robot.js` connects Node to Python, and `lib/motors.py`
@@ -216,7 +216,7 @@ Stop removes drive power; the wheels may coast. Disconnect the motor battery to
 physically remove motor power.
 
 Movement uses `POST /api/robot/{forward,backward,left,right,stop}`, JSON speed from
-0 to 0.6, and a per-tab `X-Robot-Controller` UUID. Cross-origin requests are
+0 to 1.0, and a per-tab `X-Robot-Controller` UUID. Cross-origin requests are
 rejected and only one tab can drive at a time; any tab can stop it. Python stops
 on expiry, EOF, signals, or command errors. Worker failure requires a server
 restart; movement is never replayed automatically.

@@ -6,6 +6,7 @@ const { ROOT, validSlug, starterPage, pageStore } = require("./lib/pages");
 
 const { webcam } = require("./lib/webcam");
 const { robot } = require("./lib/robot");
+const { arnold } = require("./lib/arnold");
 
 const PAGE_LIMIT = 1024 * 1024;
 const IMAGE_LIMIT = 5 * 1024 * 1024;
@@ -55,6 +56,7 @@ function createServer(options = {}) {
   const pages = pageStore(path.join(dataDirectory, "pages"));
   const uploads = path.join(dataDirectory, "uploads");
   const camera = options.webcam || webcam();
+  const sounds = options.arnold || arnold();
   const motors = options.robot || robot({ enabled: process.env.ROBOT_ENABLED === '1' });
 
   function checkOrigin(req) {
@@ -136,7 +138,7 @@ function createServer(options = {}) {
         const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
         const hash = createHash('sha256').update(script).digest('base64');
         return reply(200, html, 'text/html; charset=utf-8', {
-          'Content-Security-Policy': `default-src 'none'; script-src 'sha256-${hash}'; connect-src 'self'; frame-ancestors 'none'; form-action 'none'; base-uri 'none'`,
+          'Content-Security-Policy': `default-src 'none'; script-src 'sha256-${hash}' 'self'; img-src 'self'; connect-src 'self'; frame-ancestors 'none'; form-action 'none'; base-uri 'none'`,
           'X-Frame-Options': 'DENY'
         });
       }
@@ -153,7 +155,44 @@ function createServer(options = {}) {
         });
       }
 
+      if (pathname === "/arnold" && method === "GET") {
+        const html = await fs.readFile(path.join(ROOT, "public/arnold.html"), "utf8");
+        const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
+        const hash = createHash("sha256").update(script).digest("base64");
+        return reply(200, html, "text/html; charset=utf-8", {
+          "Content-Security-Policy": `default-src 'none'; script-src 'sha256-${hash}' 'self'; img-src 'self'; style-src 'unsafe-inline'; connect-src 'self'; media-src 'self'; frame-ancestors 'none'; form-action 'none'; base-uri 'none'`,
+          "X-Frame-Options": "DENY"
+        });
+      }
+
+      if (pathname === "/api/arnold/clips" && method === "GET") return json(sounds.clips());
+
+      if (pathname === "/api/arnold/stop") {
+        if (method !== "POST") return reply(405, "Use POST.", undefined, { Allow: "POST" });
+        checkOrigin(req);
+        sounds.stop();
+        return json({ stopped: true });
+      }
+
+      if (pathname === "/api/arnold/play") {
+        if (method !== "POST") return reply(405, "Use POST.", undefined, { Allow: "POST" });
+        checkOrigin(req);
+        if (req.headers["content-type"]?.split(";")[0].trim() !== "application/json") throw fail(415, "Send application/json.");
+        let body;
+        try { body = JSON.parse((await readBody(req, 1024)).toString("utf8")); } catch { throw fail(400, "Invalid JSON."); }
+        if (!body || typeof body.file !== "string") throw fail(400, "Send a clip filename.");
+        return json({ playing: sounds.play(body.file).name });
+      }
+
+      const clipAudio = /^\/arnold\/audio\/((?:(?:primary|secondary)\/)?[a-zA-Z0-9_-]+\.mp3)$/.exec(pathname);
+      if (clipAudio && method === "GET") {
+        const bytes = await sounds.read(clipAudio[1]);
+        if (!bytes) throw fail(404, "Clip not found.");
+        return reply(200, bytes, "audio/mpeg");
+      }
+
       const assets = {
+        "/assets/device-widgets.js": ["device-widgets.js", "text/javascript; charset=utf-8"],
         "/assets/viewer.js": ["viewer.js", "text/javascript; charset=utf-8"],
         "/assets/viewer.css": ["viewer.css", "text/css; charset=utf-8"],
         "/assets/editor.js": ["editor.js", "text/javascript; charset=utf-8"],
