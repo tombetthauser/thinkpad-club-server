@@ -5,7 +5,7 @@ const path = require("node:path");
 const vm = require("node:vm");
 
 async function playbackFixture({ holdPlay = false, failStop = false } = {}) {
-  const nodes = Object.fromEntries(["status", "play-server", "play-browser", "search", "sections"].map(id => [id, {
+  const nodes = Object.fromEntries(["status", "play-server", "play-browser", "search", "sections", "speech-play", "speech-text", "speech-status"].map(id => [id, {
     value: "", checked: false, append() {}, replaceChildren() {},
     addEventListener(type, callback) { this[type] = callback; }
   }]));
@@ -104,6 +104,18 @@ test("browser playback does not start if stopping the server fails", async () =>
   assert.match(f.nodes.status.textContent, /Playback failed/);
 });
 
+test("custom speech validates input and uses the server regardless of clip output settings", async () => {
+  const f = await playbackFixture();
+  await f.nodes["speech-play"].click();
+  assert.match(f.nodes["speech-status"].textContent, /Enter up to 300/);
+  assert.deepEqual(f.requests, []);
+  f.nodes["speech-text"].value = "Hello there";
+  f.nodes["play-server"].checked = false;
+  await f.nodes["speech-play"].click();
+  assert.deepEqual(f.requests, ["/api/arnold/speak"]);
+  assert.match(f.nodes["speech-status"].textContent, /Speaking/);
+});
+
 test("Arnold renders every clip once in section order and searches names, files, and sections", async () => {
   function element() {
     return {
@@ -114,8 +126,8 @@ test("Arnold renders every clip once in section order and searches names, files,
       addEventListener(type, callback) { this[type] = callback; }
     };
   }
-  const nodes = Object.fromEntries(["status", "play-server", "play-browser", "search", "sections"].map(id => [id, element()]));
-  const clips = JSON.parse(fs.readFileSync(path.join(__dirname, "../assets/audio/arnold-realm/manifest.json"))).clips;
+  const nodes = Object.fromEntries(["status", "play-server", "play-browser", "search", "sections", "speech-play", "speech-text", "speech-status"].map(id => [id, element()]));
+  const clips = require("../lib/arnold").arnold().clips();
   const html = fs.readFileSync(path.join(__dirname, "../public/arnold.html"), "utf8");
   vm.runInNewContext(html.match(/<script>([\s\S]*?)<\/script>/)[1], {
     document: { getElementById: id => nodes[id], createElement: element },
@@ -127,7 +139,7 @@ test("Arnold renders every clip once in section order and searches names, files,
   assert.equal(sections().length, 16);
   assert.equal(sections()[0]['aria-label'], "Greetings & conversation starters");
   assert.equal(sections().at(-1)['aria-label'], "Conversation enders & stepping away");
-  assert.equal(names().length, 428);
+  assert.equal(names().length, clips.length);
   assert.deepEqual(names(), clips.map(c => c.name));
   nodes.search.value = "who is your daddy";
   nodes.search.input();
@@ -143,5 +155,5 @@ test("Arnold renders every clip once in section order and searches names, files,
   nodes.search.value = "not-a-real-clip";
   nodes.search.input();
   assert.equal(sections().length, 0);
-  assert.equal(nodes.status.textContent, "0 of 428 sounds");
+  assert.equal(nodes.status.textContent, `0 of ${clips.length} sounds`);
 });

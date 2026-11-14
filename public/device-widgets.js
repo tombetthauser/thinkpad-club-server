@@ -1,4 +1,11 @@
 (() => {
+  for (const player of document.querySelectorAll('[data-music-player]')) {
+    const audio = player.querySelector('audio');
+    const loop = player.querySelector('[data-music-loop]');
+    if (!audio || !loop) continue;
+    audio.loop = loop.checked;
+    loop.addEventListener('change', () => { audio.loop = loop.checked; });
+  }
   for (const button of document.querySelectorAll('[data-device-beep]')) {
     button.addEventListener('click', async () => {
       if (button.disabled) return;

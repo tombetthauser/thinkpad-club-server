@@ -55,6 +55,18 @@ Expand **Tools** for element insertion, styles, webcam markup, image uploads,
 simple code view, and Reset. Reset immediately saves a starter document and has
 no undo history. Editing source or adding elements is not saved until Save.
 
+### Add music to a page
+
+In **Tools**, paste a single YouTube video URL and click **Add music**. Only import
+audio you have permission to use. The server downloads and converts the audio to
+MP3, then inserts an audio player into the draft. Click **Save** to publish it.
+The player loops by default; its Loop audio checkbox can turn looping on or off.
+The audio file is stored immediately, even if the draft is not saved. These files
+are public, shared, and included in `data/uploads/` backups, just like images.
+Imports require the class password when configured. One import can run at a time;
+videos must have a known duration of at most 10 minutes, the resulting file must
+be at most 50 MB, and an import times out after three minutes.
+
 ### Put a picture on your page
 
 1. Open **Tools** below the code box and click **Upload image**.
@@ -174,7 +186,8 @@ and restart to disable sound.
 
 ### Arnold soundboard
 
-`/arnold` also accepts a single YouTube video URL for server-speaker playback.
+The optional YouTube server-speaker controls are currently hidden on `/arnold`.
+The server API also accepts a single YouTube video URL for speaker playback.
 It streams bytes through `yt-dlp`, `ffmpeg`, and `aplay`; it does not create an
 audio/video file or download cache. It requests direct HTTPS media, so videos
 available only as segmented/live streams may not work. There is a 45-second
@@ -220,7 +233,7 @@ status refreshed every two seconds. No password is required. Changes require a
 same-origin POST, as the existing movement buttons do.
 
 Disabling audio terminates registered speaker processes (including Python beep
-process groups), cancels YouTube, and blocks new Arnold, YouTube, and beep requests.
+process groups), cancels YouTube, and blocks new Arnold, speech, YouTube, and beep requests.
 Webcam photos still work quietly. This controls the server speaker; browser-only
 audio previews are independent. Disabling movement sends Stop and blocks all
 movement/program commands except Stop. Re-enabling allows new requests; it does
@@ -236,11 +249,21 @@ using `ARNOLD_SOUND_DEVICE` if set, otherwise the webcam beep's
 installation and service audio permissions as the beeps. macOS development
 continues to use `afplay`.
 
+The text field on `/arnold` speaks up to 300 characters on the server speaker,
+independently of the clip playback destination checkboxes. On Raspberry Pi OS,
+install `espeak-ng` and `alsa-utils` (`sudo apt install espeak-ng alsa-utils`);
+speech is synthesized locally and piped to `aplay` on the same device as Arnold
+clips. On macOS it uses `say`. Starting a clip or new speech stops the previous
+Arnold playback, and the admin audio switch also stops speech. The clip list
+omits names containing common curse words; clip descriptions are inferred and
+not guaranteed to transcribe every spoken word.
+
 The MP3s are used for browser playback. Deploy the accompanying `.wav` files in
 `assets/audio/arnold-realm/primary/` and `secondary/` for Pi speaker playback.
 After downloading new clips, run `python3 scripts/prepare_arnold_audio.py` on a
 development machine with `ffmpeg` installed, then deploy the generated WAVs.
-The Pi does not need `ffmpeg` or `mpg123`. To test from the repo directory on the Pi:
+The soundboard itself does not need `ffmpeg` or `mpg123` (music imports do need
+`ffmpeg`). To test from the repo directory on the Pi:
 
 ```bash
 aplay -q -D plughw:1,0 assets/audio/arnold-realm/primary/choppa.wav
@@ -474,7 +497,9 @@ for saving. Webcam archives are not served or automatically pruned.
 | `PUT /api/pages/<page-name>` | Saves the raw HTML request body; requires `Content-Type: text/html`. |
 | `GET /api/pages/<page-name>/preview` | Renders the student's HTML with restrictive browser policies. |
 | `POST /api/uploads` | Accepts raw image bytes, returns JSON containing `url` and an `html` image tag. |
-| `GET /uploads/<generated-filename>` | Serves an uploaded image. |
+| `POST /api/music` | Imports a YouTube URL as an MP3 and returns its `url`; requires edit authorization. |
+| `POST /api/arnold/speak` | Speaks JSON `text` on the server speaker (maximum 300 characters). |
+| `GET /uploads/<generated-filename>` | Serves an uploaded image or imported MP3; MP3s support byte ranges. |
 | `GET /assets/editor.js` and `/assets/editor.css` | Shared editor assets. |
 | `POST /api/webcam/capture` | Takes a fresh photo and returns a cache-busting image `url`. |
 | `GET /webcam/current.jpg` | Latest shared webcam photo; no capture is triggered by reading it. |

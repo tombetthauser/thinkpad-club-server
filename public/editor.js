@@ -219,6 +219,34 @@ document.getElementById("reset-page").addEventListener("click", () => savePage(t
 document.getElementById("upload-image").addEventListener("click", () => { uploadForPreview = false; fileInput.click(); });
 document.getElementById("upload-preview-image").addEventListener("click", () => { uploadForPreview = true; fileInput.click(); });
 
+document.getElementById("add-music").addEventListener("click", async () => {
+  if (busy) return;
+  const url = document.getElementById("music-url").value.trim();
+  if (!url) { status.textContent = "Enter a YouTube video URL."; return; }
+  if (!/<body\b[^>]*>/i.test(source.value)) {
+    status.textContent = "Add an opening <body> tag before inserting music.";
+    return;
+  }
+  setBusy(true);
+  status.textContent = "Importing music. This may take a few minutes…";
+  try {
+    const response = await fetch("/api/music", {
+      method: "POST",
+      headers: { ...passwordHeaders(), "Content-Type": "application/json" },
+      body: JSON.stringify({ url })
+    });
+    if (!response.ok) throw new Error(await response.text());
+    const imported = await response.json();
+    if (!/^\/uploads\/[a-f0-9-]{36}\.mp3$/.test(imported.url)) throw new Error("The server returned an invalid audio URL.");
+    addElement(`  <section data-music-player>\n    <audio controls loop src="${imported.url}">Your browser does not support audio.</audio>\n    <label><input type="checkbox" data-music-loop checked> Loop audio</label>\n  </section>`);
+    status.textContent = "Music added to your code. Click Save to publish.";
+  } catch (error) {
+    status.textContent = "Music import: " + error.message;
+  } finally {
+    setBusy(false);
+  }
+});
+
 function setPreviewImage(url) {
   if (!/^(https?:\/\/|\/(?!\/))/i.test(url)) throw new Error('Use an https:// image URL or a path beginning with /.');
   captureEdits();

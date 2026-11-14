@@ -1,5 +1,6 @@
 const http = require("node:http");
 const fs = require("node:fs/promises");
+const { createReadStream } = require("node:fs");
 const path = require("node:path");
 const { randomUUID, createHash, timingSafeEqual } = require("node:crypto");
 const { ROOT, validSlug, starterPage, pageStore } = require("./lib/pages");
@@ -11,6 +12,7 @@ const { beep } = require("./lib/beep");
 const { linkPreview } = require("./lib/link-preview");
 const { audioControl } = require('./lib/audio-control');
 const { youtube } = require('./lib/youtube');
+const { music } = require('./lib/music');
 
 const PAGE_LIMIT = 1024 * 1024;
 const IMAGE_LIMIT = 5 * 1024 * 1024;
@@ -59,6 +61,7 @@ function createServer(options = {}) {
   const publicOrigin = options.publicOrigin ?? process.env.PUBLIC_ORIGIN ?? "";
   const pages = pageStore(path.join(dataDirectory, "pages"));
   const uploads = path.join(dataDirectory, "uploads");
+  const musicImports = options.music || music({ directory: uploads });
   const audio = audioControl();
   const camera = options.webcam || webcam({ audio });
   const sounds = options.arnold || arnold({ audio });
@@ -254,6 +257,19 @@ function createServer(options = {}) {
         return json({ playing: (await sounds.play(body.file)).name });
       }
 
+      if (pathname === "/api/arnold/speak") {
+        if (method !== "POST") return reply(405, "Use POST.", undefined, { Allow: "POST" });
+        checkOrigin(req);
+        if (req.headers["content-type"]?.split(";")[0].trim() !== "application/json") throw fail(415, "Send application/json.");
+        const bytes = await readBody(req, 2048);
+        let body;
+        try { body = JSON.parse(bytes.toString("utf8")); } catch { throw fail(400, "Invalid JSON."); }
+        if (!body || typeof body.text !== "string" || !body.text.trim() || body.text.length > 300) throw fail(400, "Enter up to 300 characters to speak.");
+        audio.assertAvailable();
+        await sounds.speak(body.text);
+        return json({ playing: true });
+      }
+
       const clipAudio = /^\/arnold\/audio\/((?:(?:primary|secondary)\/)?[a-zA-Z0-9_-]+\.mp3)$/.exec(pathname);
       if (clipAudio && method === "GET") {
         const bytes = await sounds.read(clipAudio[1]);
@@ -314,6 +330,48 @@ function createServer(options = {}) {
         await fs.writeFile(path.join(uploads, filename), bytes, { flag: "wx" });
         const url = `/uploads/${filename}`;
         return json({ url, html: `<img src="${url}" alt="Describe your image">` }, 201);
+      }
+
+      if (pathname === "/api/music") {
+        if (method !== "POST") return reply(405, "Use POST.", undefined, { Allow: "POST" });
+        authorize(req);
+        if (req.headers["content-type"]?.split(";")[0].trim() !== "application/json") throw fail(415, "Send application/json.");
+        const bytes = await readBody(req, 2048);
+        let body;
+        try { body = JSON.parse(bytes.toString("utf8")); } catch { throw fail(400, "Invalid JSON."); }
+        if (!body || typeof body.url !== "string") throw fail(400, "Paste a YouTube video URL.");
+        return json(await musicImports.download(body.url), 201);
+      }
+
+      const musicFile = /^\/uploads\/([a-f0-9-]{36}\.mp3)$/.exec(pathname);
+      if (musicFile && (method === "GET" || method === "HEAD")) {
+        const file = path.join(uploads, musicFile[1]);
+        let info;
+        try { info = await fs.stat(file); }
+        catch (error) {
+          if (error.code === "ENOENT") throw fail(404, "Audio not found.");
+          throw error;
+        }
+        let start = 0, end = info.size - 1, code = 200;
+        if (req.headers.range) {
+          const range = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range);
+          if (!range || (!range[1] && !range[2])) return reply(416, "", undefined, { "Content-Range": `bytes */${info.size}` });
+          if (!range[1]) start = Math.max(0, info.size - Number(range[2]));
+          else start = Number(range[1]);
+          if (range[1] && range[2]) end = Math.min(end, Number(range[2]));
+          if (!Number.isSafeInteger(start) || !Number.isSafeInteger(end) || start > end) return reply(416, "", undefined, { "Content-Range": `bytes */${info.size}` });
+          code = 206;
+        }
+        res.writeHead(code, {
+          "Content-Type": "audio/mpeg", "Content-Length": end - start + 1,
+          "Accept-Ranges": "bytes", "Cache-Control": "public, max-age=31536000, immutable",
+          "X-Content-Type-Options": "nosniff", ...(code === 206 ? { "Content-Range": `bytes ${start}-${end}/${info.size}` } : {})
+        });
+        if (method === "HEAD") return res.end();
+        const stream = createReadStream(file, { start, end });
+        stream.on("error", error => { console.error("Could not read music:", error); res.destroy(error); });
+        res.on("close", () => stream.destroy());
+        return stream.pipe(res);
       }
 
       const upload = /^\/uploads\/([a-f0-9-]{36}\.(png|jpg|gif|webp))$/.exec(pathname);

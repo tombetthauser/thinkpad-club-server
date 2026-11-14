@@ -15,7 +15,7 @@ function fixture({ motor = true, statuses = [200], prompt = 'secret' } = {}) {
   const speed = { value: '0.6' };
   const camera = { querySelector: selector => ({ img: image, button: update, '[role="status"]': cameraStatus })[selector] };
   const robot = { querySelector: selector => selector === '[data-stop]' ? stop : selector === '[data-device-speed]' ? speed : motorStatus, querySelectorAll: () => directions };
-  const document = element({ hidden: false, querySelectorAll: () => [beep], querySelector: selector => selector === '[data-device-webcam]' ? camera : motor ? robot : null });
+  const document = element({ hidden: false, querySelectorAll: selector => selector === '[data-device-beep]' ? [beep] : [], querySelector: selector => selector === '[data-device-webcam]' ? camera : motor ? robot : null });
   const window = element({ prompt: () => prompt });
   const requests = [], timers = [], delays = [];
   let fail = false;
@@ -110,4 +110,19 @@ test('student beep button only calls the server and unlocks after success or fai
   await f.beep.click();
   assert.match(f.beepStatus.textContent, /Connection lost/);
   assert.equal(f.beep.disabled, false);
+});
+
+test('music loop checkboxes independently control their audio elements', () => {
+  const players = [0, 1].map(() => {
+    const audio = { loop: false };
+    const checkbox = { checked: true, addEventListener(type, handler) { this[type] = handler; } };
+    return { audio, checkbox, querySelector: selector => selector === 'audio' ? audio : checkbox };
+  });
+  const document = { querySelectorAll: selector => selector === '[data-music-player]' ? players : [], querySelector: () => null };
+  vm.runInNewContext(fs.readFileSync(require.resolve('../public/device-widgets.js'), 'utf8'), { document });
+  assert.ok(players.every(p => p.audio.loop));
+  players[0].checkbox.checked = false;
+  players[0].checkbox.change();
+  assert.equal(players[0].audio.loop, false);
+  assert.equal(players[1].audio.loop, true);
 });

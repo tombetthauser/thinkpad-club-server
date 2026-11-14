@@ -116,6 +116,45 @@ test('YouTube endpoints validate requests, expose status, and permit the owner s
   assert.equal(playing, false);
 });
 
+test('speech endpoint validates requests and obeys the audio switch', async t => {
+  const spoken = [];
+  const { base } = await fixture(t, { arnold: { async speak(text) { spoken.push(text); }, stop() {} } });
+  const speak = (text, origin = base) => fetch(base + '/api/arnold/speak', {
+    method: 'POST', headers: { 'Content-Type': 'application/json', Origin: origin }, body: JSON.stringify({ text })
+  });
+  assert.equal((await speak('hello', 'https://other.example')).status, 403);
+  assert.equal((await speak(' ')).status, 400);
+  assert.equal((await speak('a'.repeat(301))).status, 400);
+  assert.equal((await speak('hello')).status, 200);
+  assert.deepEqual(spoken, ['hello']);
+  await fetch(base + '/api/admin/hardware', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ control: 'audio', enabled: false }) });
+  assert.equal((await speak('hello')).status, 503);
+});
+
+test('music imports require edit authorization and uploaded audio supports byte ranges', async t => {
+  let called = 0;
+  const name = '12345678-1234-1234-1234-123456789012.mp3';
+  const f = await fixture(t, { editPassword: 'secret', music: { async download(url) {
+    called++;
+    assert.equal(url, 'https://youtu.be/BaW_jenozKc');
+    return { url: '/uploads/' + name };
+  } } });
+  const upload = headers => fetch(f.base + '/api/music', { method: 'POST', headers: { 'Content-Type': 'application/json', ...headers }, body: JSON.stringify({ url: 'https://youtu.be/BaW_jenozKc' }) });
+  assert.equal((await upload({})).status, 401);
+  assert.equal((await upload({ 'X-Edit-Password': 'secret', Origin: 'https://other.example' })).status, 403);
+  assert.equal((await upload({ 'X-Edit-Password': 'secret' })).status, 201);
+  assert.equal(called, 1);
+  await fs.mkdir(path.join(f.dataDirectory, 'uploads'), { recursive: true });
+  await fs.writeFile(path.join(f.dataDirectory, 'uploads', name), Buffer.from('0123456789'));
+  const audio = await fetch(f.base + '/uploads/' + name, { headers: { Range: 'bytes=2-5' } });
+  assert.equal(audio.status, 206);
+  assert.equal(audio.headers.get('content-range'), 'bytes 2-5/10');
+  assert.equal(audio.headers.get('content-type'), 'audio/mpeg');
+  assert.equal(await audio.text(), '2345');
+  assert.equal((await fetch(f.base + '/uploads/' + name, { headers: { Range: 'bytes=20-' } })).status, 416);
+  assert.equal(await (await fetch(f.base + '/uploads/' + name)).text(), '0123456789');
+});
+
 test("Arnold lists the sorted Realm collection and serves and plays its categorized filenames", async t => {
   const { EventEmitter } = require("node:events");
   const { arnold } = require("../lib/arnold");
@@ -140,7 +179,8 @@ test("Arnold lists the sorted Realm collection and serves and plays its categori
   assert.equal(widgets.status, 200);
   assert.match(widgets.headers.get('content-type'), /javascript/);
   const clips = await (await fetch(`${base}/api/arnold/clips`)).json();
-  assert.equal(clips.length, 428);
+  assert.ok(clips.length < 428);
+  assert.ok(clips.every(c => !/\b(?:fuck\w*|motherfuck\w*|shit\w*|bullshit\w*|bitch\w*|asshole\w*|bastard\w*|damn\w*|hell|crap|piss\w*)\b/i.test(c.name)));
   assert.equal(clips[0].section, "greetings");
   assert.equal(clips.at(-1).section, "enders");
   assert.equal(new Set(clips.map(c => c.section)).size, 16);
@@ -170,6 +210,10 @@ test("Arnold lists the sorted Realm collection and serves and plays its categori
   assert.equal(stopped, 1);
   assert.match(starts[0].args.at(-1), /assets\/audio\/arnold-realm\/primary\/choppa\.(mp3|wav)$/);
   assert.equal((await play({ file: "../other.mp3" })).status, 404);
+  assert.equal((await play({ file: "secondary/wtf.mp3" })).status, 404);
+  assert.equal((await fetch(`${base}/arnold/audio/secondary/wtf.mp3`)).status, 404);
+  assert.equal((await play({ file: "secondary/guysass.mp3" })).status, 404);
+  assert.equal((await play({ file: "secondary/stoppussy.mp3" })).status, 404);
   assert.equal((await play(null)).status, 400);
   assert.equal(starts.length, 1);
 });

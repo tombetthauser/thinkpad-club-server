@@ -17,7 +17,7 @@ async function editorFixture({ failSave = false, failCapture = false, confirmRan
   }
   const ids = ["page-editor", "view-page", "page-source", "update-status", "show-all-code",
     "edit-password", "image-file", "add-style", "update-page", "reset-page", "upload-image",
-    "image-result", "image-code", "password-area", "page-info", "preview-page", "random-html", "close-preview", "draft-frame", "draft-preview", "add-preview-image", "upload-preview-image"];
+    "image-result", "image-code", "password-area", "page-info", "preview-page", "random-html", "close-preview", "draft-frame", "draft-preview", "add-preview-image", "upload-preview-image", "add-music", "music-url"];
   const nodes = Object.fromEntries(ids.map(id => [id, element()]));
   const addButtons = ["paragraph", "title", "list", "link", "webcam", "motors", "beep"].map(kind => ({ ...element(), dataset: { add: kind } }));
   const controls = [nodes["update-page"], nodes["reset-page"], nodes["page-source"], nodes["show-all-code"], ...addButtons];
@@ -41,6 +41,7 @@ async function editorFixture({ failSave = false, failCapture = false, confirmRan
         text: async () => "USB webcam is not connected.",
         json: async () => ({ url: "/webcam/current.jpg?t=new" })
       };
+      if (url === "/api/music") return { ok: true, json: async () => ({ url: "/uploads/12345678-1234-1234-1234-123456789012.mp3" }) };
       if (options.method === "POST") return { ok: true, json: async () => ({ url: '/uploads/example.png', html: '<img src="/uploads/example.png" alt="Describe your image">' }) };
       return { ok: true, json: async () => ({ html, starter, saved: true, passwordRequired: true }) };
     }
@@ -93,6 +94,21 @@ test("Upload inserts usable image HTML but does not save the page until Update",
   assert.equal(f.requests.some(request => request.method === "PUT"), false);
   await f.nodes["update-page"].listeners.click();
   assert.match(f.requests.find(request => request.method === "PUT").body, /\/uploads\/example.png/);
+});
+
+test("music import uses the class password and inserts a loopable player without saving", async () => {
+  const f = await editorFixture();
+  f.nodes["edit-password"].value = "secret";
+  f.nodes["music-url"].value = "https://youtu.be/BaW_jenozKc";
+  await f.nodes["add-music"].listeners.click();
+  const request = f.requests.find(r => r.url === "/api/music");
+  assert.equal(request.headers["X-Edit-Password"], "secret");
+  assert.deepEqual(JSON.parse(request.body), { url: "https://youtu.be/BaW_jenozKc" });
+  assert.match(f.nodes["page-source"].value, /<audio controls loop src="\/uploads\/.*\.mp3"/);
+  assert.match(f.nodes["page-source"].value, /data-music-loop checked/);
+  assert.equal(f.requests.some(r => r.method === "PUT"), false);
+  await f.nodes["update-page"].listeners.click();
+  assert.match(f.requests.find(r => r.method === "PUT").body, /data-music-player/);
 });
 
 test("failed Reset restores unsaved work and leaves the controls usable", async () => {
