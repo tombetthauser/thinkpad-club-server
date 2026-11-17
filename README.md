@@ -359,6 +359,62 @@ speeds, retaining the same validation, controller lease, and timeout.
 Run `node --test` and `python3 -B -m unittest discover -s test -p 'test_*.py'`
 for software checks without GPIO hardware.
 
+### Nokia 5110 LCD test
+
+The standalone test in `hardware/lcd/` uses SPI0 and BCM GPIO 24 (DC) and
+GPIO 25 (RST). These pins do not overlap the robot motor pins (GPIO 17, 27,
+22, and 23). It does not change the web server or start a background service.
+Keep LIGHT disconnected and power the display from 3.3V, not 5V.
+
+On the Pi, first inspect the hardware and SPI setup over SSH:
+
+```bash
+tr -d '\0' < /proc/device-tree/model; echo
+cat /etc/os-release
+ls -l /dev/spidev0.0
+sudo fuser -v /dev/spidev0.0
+```
+
+The `fuser` command reports processes currently using the SPI device, if any.
+If `/dev/spidev0.0` is missing, check that SPI is not needed by another device,
+then enable it with `sudo raspi-config` → **Interface Options** → **SPI** →
+**Enable**. Reboot if prompted and reconnect over SSH. Do not change SPI
+configuration until you have checked for other SPI hardware.
+
+Make sure these files are present in the Pi's checkout of this repository, then
+replace the example directory below with that checkout's path:
+
+```bash
+cd /path/to/thinkpad-club-server
+sudo apt update
+sudo apt install -y python3-venv python3-pil python3-rpi.gpio python3-spidev
+python3 -m venv --system-site-packages ~/thinkpad-lcd-venv
+~/thinkpad-lcd-venv/bin/python -m pip install luma.lcd
+~/thinkpad-lcd-venv/bin/python hardware/lcd/check_spi.py
+```
+
+The virtual environment keeps the LCD Python package isolated while making the
+Pi's apt-installed GPIO and SPI bindings available. If the check reports a
+permission problem, inspect `id` and `ls -l /dev/spidev0.0 /dev/gpiomem`. On
+Raspberry Pi OS, add the SSH user to the `spi` and `gpio` groups if those groups
+are present, then disconnect and reconnect so the new group membership applies:
+
+```bash
+sudo usermod -aG spi,gpio "$(id -un)"
+```
+
+Once the SPI check passes, run the display test:
+
+```bash
+~/thinkpad-lcd-venv/bin/python hardware/lcd/test_lcd.py
+```
+
+It displays a brief “LCD test” screen, then “Hello World” and leaves it visible
+until you press Ctrl+C in the SSH terminal. The test process must stay running;
+the display library clears the screen when the process exits. If SPI setup and
+permissions are correct but the display is still blank, check the wiring and
+LCD contrast before concluding that SPI communication failed.
+
 ### How a page is made
 
 The app uses Node's built-in HTTP server and the filesystem. Public pages render
