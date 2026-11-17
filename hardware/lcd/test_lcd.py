@@ -35,15 +35,15 @@ def main():
 
     with canvas(lcd) as draw:
         draw.rectangle(lcd.bounding_box, outline="white", fill="black")
-        draw.text((24, 18), "LCD test", fill="white")
-    print("LCD initialized; showing a test screen.")
+        draw.text((24, 18), "Hello LCD world! Testing :^)", fill="white")
+    print("LCD test screen should be displayed.")
 
     time.sleep(2)
 
     with canvas(lcd) as draw:
         draw.rectangle(lcd.bounding_box, outline="white", fill="black")
-        draw.text((8, 18), "Hello World", fill="white")
-    print("Hello World is on the LCD. Press Ctrl+C to exit.")
+        draw.text((8, 18), "Hello World :^P", fill="white")
+    print("Hello World should be on the LCD. Press Ctrl+C to exit.")
 
     try:
         while True:
