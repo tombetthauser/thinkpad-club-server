@@ -273,6 +273,38 @@ Use the same device that worked for the beeps. Player errors appear in
 `journalctl -u thinkpad-server -n 50`; missing player/asset errors also appear
 on the soundboard page.
 
+### Listening to the server microphone
+
+**Start listening** on `/arnold` streams the Pi's microphone to the browser over
+WebRTC, so the operator can hear Arnold land and hear people answer back. It is
+listen-only: the browser does not ask for or send its own microphone. Click again
+to stop. One listener at a time; a new listener hangs up the previous one, and
+disabling audio on `/admin` hangs up and blocks listening. Listening uses the same
+class password as webcam captures when one is configured.
+
+The browser posts its offer to the server, which runs `lib/listen.py` (Python
+[aiortc](https://github.com/aiortc/aiortc)) to answer and stream the mic. Audio
+travels directly between the browser and the Pi over UDP, not through the reverse
+proxy; both sides use `stun.l.google.com` to get through home NAT. Very strict
+networks may need a TURN server. Install aiortc in the existing audio venv:
+
+```bash
+~/.local/share/thinkpad-audio/bin/python -m pip install aiortc
+arecord -l
+```
+
+Then set the Python path and capture device (from `arecord -l`) in
+`sudo systemctl edit thinkpad-server`, and restart:
+
+```ini
+[Service]
+Environment="ARNOLD_LISTEN_PYTHON=/home/tom/.local/share/thinkpad-audio/bin/python"
+Environment="ARNOLD_MIC_DEVICE=plughw:1,0"
+```
+
+To test without a microphone, set `ARNOLD_MIC_FORMAT=lavfi` and
+`ARNOLD_MIC_DEVICE=sine=frequency=440` to stream a tone.
+
 ### Robot controls
 
 Optional Raspberry Pi motor controls are available at `/control`.
@@ -496,6 +528,9 @@ have separate data; there is no automatic synchronization between them.
 | `EDIT_PASSWORD` | Empty | Optional shared class password required for saves, resets, uploads, and webcam captures. |
 | `WEBCAM_DIR` | `~/Pictures/Webcam` for the Node service user | Latest webcam photo and archive location, matching the old app. |
 | `WEBCAM_DEVICE` | `/dev/video0` | Linux USB camera device passed to fswebcam. |
+| `ARNOLD_MIC_DEVICE` | `plughw:1,0` | Microphone for `/arnold` listening (`:0` with avfoundation on macOS). |
+| `ARNOLD_MIC_FORMAT` | `alsa` (`avfoundation` on macOS) | ffmpeg input format for the microphone. |
+| `ARNOLD_LISTEN_PYTHON` | `python3` | Python with aiortc installed. |
 | `PUBLIC_ORIGIN` | Check the request's host | Exact browser-facing origin for write checks, for example `https://thinkpad.club`. No trailing slash. |
 
 Example local run with a class password:
@@ -555,6 +590,8 @@ for saving. Webcam archives are not served or automatically pruned.
 | `POST /api/uploads` | Accepts raw image bytes, returns JSON containing `url` and an `html` image tag. |
 | `POST /api/music` | Imports a YouTube URL as an MP3 and returns its `url`; requires edit authorization. |
 | `POST /api/arnold/speak` | Speaks JSON `text` on the server speaker (maximum 300 characters). |
+| `POST /api/arnold/listen` | Answers a JSON WebRTC `offer` with an `answer` that streams the server microphone. |
+| `POST /api/arnold/listen/stop` | Hangs up the current listener. |
 | `GET /uploads/<generated-filename>` | Serves an uploaded image or imported MP3; MP3s support byte ranges. |
 | `GET /assets/editor.js` and `/assets/editor.css` | Shared editor assets. |
 | `POST /api/webcam/capture` | Takes a fresh photo and returns a cache-busting image `url`. |

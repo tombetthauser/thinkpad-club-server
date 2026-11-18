@@ -22,6 +22,11 @@
   <button type="button">Update webcam</button>
   <p role="status"></p>
 </section>
+<section aria-label="Server microphone">
+  <button type="button" id="listen">Start listening</button>
+  <p id="listen-status" role="status">Hear the server microphone, so you know how Arnold landed.</p>
+  <audio id="listen-audio" autoplay></audio>
+</section>
 <!-- <section>
   <p><label>YouTube video <input id="youtube-url" type="url" placeholder="https://www.youtube.com/watch?v=…"></label></p>
   <button type="button" id="youtube-play">Play YouTube on server</button>
@@ -189,5 +194,6 @@ fetch("/api/arnold/clips").then(r => {
 </script>
 <script src="/assets/device-widgets.js" defer></script>
 <script src="/assets/youtube-player.js" defer></script>
+<script src="/assets/arnold-listen.js" defer></script>
 </body>
 </html>
