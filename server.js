@@ -13,6 +13,7 @@ const { linkPreview } = require("./lib/link-preview");
 const { audioControl } = require('./lib/audio-control');
 const { youtube } = require('./lib/youtube');
 const { music } = require('./lib/music');
+const { listen } = require('./lib/listen');
 
 const PAGE_LIMIT = 1024 * 1024;
 const IMAGE_LIMIT = 5 * 1024 * 1024;
@@ -67,6 +68,7 @@ function createServer(options = {}) {
   const sounds = options.arnold || arnold({ audio });
   const speaker = options.beep || beep({ audio });
   const videos = options.youtube || youtube({ audio });
+  const listener = options.listen || listen();
   const motors = options.robot || robot({ enabled: process.env.ROBOT_ENABLED === '1' });
   let movementEnabled = true;
   const hardwareStatus = () => ({ audio: audio.status(), movement: { enabled: movementEnabled }, youtube: videos.status() });
@@ -138,7 +140,7 @@ function createServer(options = {}) {
         let warning = '';
         if (body.control === 'audio') {
           audio.setEnabled(body.enabled);
-          if (!body.enabled) { videos.stop(null, true); sounds.stop(); }
+          if (!body.enabled) { videos.stop(null, true); sounds.stop(); listener.stop(); }
         } else {
           movementEnabled = body.enabled;
           if (!body.enabled) {
@@ -270,6 +272,19 @@ function createServer(options = {}) {
         return json({ playing: true });
       }
 
+      if (pathname === "/api/arnold/listen" || pathname === "/api/arnold/listen/stop") {
+        if (method !== "POST") return reply(405, "Use POST.", undefined, { Allow: "POST" });
+        checkOrigin(req);
+        if (pathname.endsWith("/stop")) { listener.stop(); return json({ stopped: true }); }
+        authorize(req);
+        if (!audio.status().enabled) throw fail(503, "Server audio is disabled by the administrator.");
+        if (req.headers["content-type"]?.split(";")[0].trim() !== "application/json") throw fail(415, "Send application/json.");
+        let body;
+        try { body = JSON.parse((await readBody(req, 65536)).toString("utf8")); } catch { throw fail(400, "Invalid JSON."); }
+        if (!body || body.type !== "offer" || typeof body.sdp !== "string") throw fail(400, "Send a WebRTC offer.");
+        return json(await listener.answer({ type: body.type, sdp: body.sdp }));
+      }
+
       const clipAudio = /^\/arnold\/audio\/((?:(?:primary|secondary)\/)?[a-zA-Z0-9_-]+\.mp3)$/.exec(pathname);
       if (clipAudio && method === "GET") {
         const bytes = await sounds.read(clipAudio[1]);
@@ -280,6 +295,7 @@ function createServer(options = {}) {
       const assets = {
         "/assets/youtube-player.js": ["youtube-player.js", "text/javascript; charset=utf-8"],
         "/assets/device-widgets.js": ["device-widgets.js", "text/javascript; charset=utf-8"],
+        "/assets/arnold-listen.js": ["arnold-listen.js", "text/javascript; charset=utf-8"],
         "/assets/viewer.js": ["viewer.js", "text/javascript; charset=utf-8"],
         "/assets/viewer.css": ["viewer.css", "text/css; charset=utf-8"],
         "/assets/editor.js": ["editor.js", "text/javascript; charset=utf-8"],
@@ -418,8 +434,8 @@ function createServer(options = {}) {
       if (!res.headersSent) reply(error.status || 500, error.status ? error.message : "Could not read or save. Please try again.");
     }
   });
-  server.on('close', () => { motors.close(); audio.setEnabled(false); videos.stop(null, true); sounds.stop(); });
-  server.stopAudio = () => { audio.setEnabled(false); videos.stop(null, true); sounds.stop(); };
+  server.on('close', () => { motors.close(); audio.setEnabled(false); videos.stop(null, true); sounds.stop(); listener.stop(); });
+  server.stopAudio = () => { audio.setEnabled(false); videos.stop(null, true); sounds.stop(); listener.stop(); };
   server.stopRobot = () => motors.close();
   return server;
 }
